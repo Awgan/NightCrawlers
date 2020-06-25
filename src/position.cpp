@@ -1,0 +1,119 @@
+#include <cstdio>
+
+#include "comm_const.h"
+#include "position.h"
+
+Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
+	
+	limits.min = { 0, 0, 0 };
+	limits.max = { WIN_WIDTH, WIN_HIGHT, 0 };
+	
+	if ( _x >= limits.min.x && _x <= limits.max.x )
+		coor.x = _x;
+	else {
+		
+		if ( _x <= limits.min.x )
+			coor.x = limits.min.x;
+		if ( _x >= limits.max.x )
+			coor.x = limits.max.x;
+	}
+	
+	if ( _y >= limits.min.y && _y <= limits.max.y )
+		coor.y = _y;
+	else {
+		
+		if ( _y <= limits.min.y )
+			coor.y = limits.min.y;
+		if ( _y >= limits.max.y )
+			coor.y= limits.max.y;
+	}
+	
+	//
+	//it can be use for 3D, if at all it happens
+	/*
+	if ( _z >= limits.min.z && _x <= limits.max.z )
+		coor.z = _z;
+	else {
+		
+		if ( _z <= limits.min.z )
+			coor.z = limits.min.z;
+		if ( _z >= limits.max.z )
+			coor.z = limits.max.z;
+	}
+	*/
+	coor.z = 0;
+	
+	
+	coor.dir = _dir;
+	
+	
+	
+}
+
+bool Position::within_lim_min( const int & xyz, const int & _lim ) {
+	
+	return ( xyz <= _lim );
+}
+
+bool Position::within_lim_max( const int & xyz, const int & _lim ) {
+	
+	return ( xyz >= _lim );
+}
+
+void Position::set_coor( int _x, int _y, int _z ) { 
+	
+	//checking limits
+	if ( within_lim_min( limits.min.x, _x ) && within_lim_min( limits.min.y, _y ) && within_lim_min( limits.min.z, _z )
+	&& within_lim_max( limits.max.x, _x ) && within_lim_max( limits.max.y, _y ) && within_lim_max( limits.max.z, _z ) ) {
+		
+		coor = { _x, _y, _z }; 
+	}
+}
+void Position::set_coor_x( int _x )	{ 
+	
+	//checking limits
+	if ( within_lim_min( limits.min.x, _x ) && within_lim_max( limits.max.x, _x ) ) {
+		
+		coor.x = _x;
+	}
+}
+
+void Position::set_coor_y( int _y )	{ 
+	
+	//checking limits
+	if ( within_lim_min( limits.min.y, _y ) && within_lim_max( limits.max.y, _y ) ) {
+		
+		coor.y = _y;
+	}
+}
+
+void Position::set_coor_z( int _z )	{ 
+	
+	//checking limits
+	if ( within_lim_min( limits.min.z, _z ) && within_lim_max( limits.max.z, _z ) ) {
+		
+		coor.z = _z;
+	}
+}
+
+void Position::inc_coor_x( int _x ) {
+	
+	set_coor_x( coor.x + _x);
+}
+
+void Position::inc_coor_y( int _y ) {
+	
+	set_coor_y( coor.y + _y);
+}
+
+void Position::inc_coor_z( int _z ) {
+	
+	set_coor_z( coor.z + _z);
+}
+
+
+void Position::print() const {
+	
+	printf( "Coordinates: x: %d, y: %d, z: %d\n", coor.x, coor.y, coor.z );
+	
+}
