@@ -7,6 +7,7 @@
 
 #include "comm_const.h"
 
+
 struct Stru_property {
 	
 	
@@ -21,6 +22,7 @@ struct Stru_property {
 	int 	i_move_points;
 	int 	i_strenght;
 	int 	i_fire_accuracy;
+	
 	//int ...
 	
 };
@@ -31,12 +33,12 @@ class Property {
 
 	private:
 		Stru_property prop;
-		
+		Property() {};
 	protected:
 
 	public:
 		
-		Property();
+		Property( Stru_property & _prop );
 		~Property();
 
 		//point type
@@ -62,18 +64,18 @@ class Property {
 		const int & get_speed() const			{ return prop.i_speed; }
 		
 		//move points
-		void set_move_points( int _mp )			{ prop.i_move_points = _mp; }
+		void set_move_points( int _mp );
 		void change_move_points( int _dm );
 		const int & get_move_points() const		{ return prop.i_move_points; }
 		
 		//strenght
-		void set_strenght( int _s )				{ prop.i_strenght = _s; }
-		void change_strenght( int _s );
+		void set_strenght( int _s );
+		void change_strenght( int _ds );
 		const int & get_strenght() const		{ return prop.i_strenght; }
 		
 		//fire accuracy
-		void set_fire_accuracy( int _fa )		{ prop.i_fire_accuracy = _fa; }
-		void change_fire_accuracy( int _fa );
+		void set_fire_accuracy( int _fa );
+		void change_fire_accuracy( int _dfa );
 		const int & get_fire_accuracy() const	{ return prop.i_fire_accuracy; }
 		
 		//metody typu get
@@ -81,6 +83,8 @@ class Property {
 		//metody typu set
 		
 		//metody typu  
+		
+		void print();
 		
 };
 
