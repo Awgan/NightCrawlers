@@ -10,8 +10,6 @@
 
 struct Stru_property {
 	
-	
-	
 	Point_type	type;	
 	
 	bool 	b_mobile;
@@ -33,11 +31,11 @@ class Property {
 
 	private:
 		Stru_property prop;
-		Property() {};
+		
 	protected:
 
 	public:
-		
+		Property();
 		Property( Stru_property & _prop );
 		~Property();
 

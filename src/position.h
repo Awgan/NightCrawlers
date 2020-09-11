@@ -1,6 +1,8 @@
 #ifndef POSITION_H_
 #define POSITION_H_
 
+#include <stdlib.h>
+
 #include "comm_const.h"
 
 struct Coordinate {
@@ -31,13 +33,16 @@ class Position {
 	private:
 		Coordinate coor;
 		Coord_Limits limits;
-	
+		int offset;
+			
 	protected:
-		bool within_lim_min( const int & xyz, const int & _lim );		
-		bool within_lim_max( const int & xyz, const int & _lim );
+		bool within_lim_min( const int & _lim_min, const int & xyz );		
+		bool within_lim_max( const int & _lim_max, const int & xyz );
 		
 	public:
 		Position( int _x = 0, int _y = 0, int _z = 0, CoorDir _dir = Coordinate::up );
+		Position( Coordinate & _coord );
+		Position( const Position & _p ) {printf("Position DEF\n");}
 		~Position() {};
 		
 		const Coordinate & get_coor() const		{ return coor; }
@@ -75,6 +80,9 @@ class Position {
 		
 		void set_lim_min( int _x, int _y, int _z = 0 )	{ limits.min = { _x, _y, _z }; }
 		void set_lim_max( int _x, int _y, int _z = 0 )	{ limits.max = { _x, _y, _z }; }
+		
+		//offset is to know what is width of the object for not moving more than right edge of the monitor
+		void set_offset( int _off ) { offset = _off; }
 		
 		void print() const;
 };

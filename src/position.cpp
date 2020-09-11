@@ -46,18 +46,64 @@ Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
 	
 	coor.dir = _dir;
 	
-	
+	offset = 0;
 	
 }
 
-bool Position::within_lim_min( const int & xyz, const int & _lim ) {
+Position::Position( Coordinate & _coord ) {
 	
-	return ( xyz <= _lim );
+	limits.min = { 0, 0, 0 };
+	limits.max = { WIN_WIDTH, WIN_HIGHT, 0 };
+	
+	if ( _coord.x >= limits.min.x && _coord.x <= limits.max.x )
+		coor.x = _coord.x;
+	else {
+		
+		if ( _coord.x <= limits.min.x )
+			coor.x = limits.min.x;
+		if ( _coord.x >= limits.max.x )
+			coor.x = limits.max.x;
+	}
+	
+	if ( _coord.y >= limits.min.y && _coord.y <= limits.max.y )
+		coor.y = _coord.y;
+	else {
+		
+		if ( _coord.y <= limits.min.y )
+			coor.y = limits.min.y;
+		if ( _coord.y >= limits.max.y )
+			coor.y= limits.max.y;
+	}
+	
+	//
+	//it can be use for 3D, if at all it happens
+	/*
+	if ( _coord.z >= limits.min.z && _coord.x <= limits.max.z )
+		coor.z = _coord.z;
+	else {
+		
+		if ( _coord.z <= limits.min.z )
+			coor.z = limits.min.z;
+		if ( _coord.z >= limits.max.z )
+			coor.z = limits.max.z;
+	}
+	*/
+	coor.z = 0;
+	
+	
+	coor.dir = _coord.dir;
+	
+	offset = 0;	
 }
 
-bool Position::within_lim_max( const int & xyz, const int & _lim ) {
+bool Position::within_lim_min( const int & _lim_min, const int & xyz ) {
 	
-	return ( xyz >= _lim );
+	return ( xyz >= _lim_min );
+}
+
+bool Position::within_lim_max( const int & _lim_max, const int & xyz ) {
+	
+	return ( xyz <= _lim_max - offset );
 }
 
 void Position::set_coor( int _x, int _y, int _z ) { 

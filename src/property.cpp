@@ -2,9 +2,24 @@
 
 #include "property.h"
 
+Property::Property() {
+	
+	prop.type				= Point_type::hero;
+	
+	prop.b_mobile 			= true;
+	prop.b_visible 			= true;
+
+	prop.i_health 			= 100;
+	prop.i_speed 			= 15;
+	prop.i_move_points 		= 45;
+	prop.i_strenght 		= 60;
+	prop.i_fire_accuracy 	= 46;
+	
+}
+
 Property::Property( Stru_property & _prop ) {
 
-
+		prop.type				= _prop.type;
 
 		prop.b_mobile 			= _prop.b_mobile;
 		prop.b_visible 			= _prop.b_visible;

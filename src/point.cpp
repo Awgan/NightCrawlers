@@ -1,80 +1,39 @@
 #include <cstdio>
 
 #include "point.h"
+#include "terminal_info.h"
 
-Point::Point( int _x, int _y, int _z, CoorDir _dir ) : Position( _x, _y, _z, _dir ) {
+Point::Point() {
 	
-	prop.b_mobile = true;
-	prop.b_visible = true;
-	
-	prop.health = DEF_HEALTH;
-	prop.speed	= DEF_SPEED;
 	
 }
 
-Point::Point( const Graphic_Prop & _g_prop, Coordinate & _coor ) : Position( _coor.x, _coor.y, _coor.z, _coor.dir ) {
+Point::Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop _gprop ) : Position( _cord ), Property( _prop ), Graph_prop( _prop.type, _gprop ){
 	
-	prop.type = neutral;
-
-	prop.b_mobile = true;
-	prop.b_visible = true;
-	
-	prop.health = DEF_HEALTH;
-	prop.speed	= DEF_SPEED;
-
-	grap_prop = _g_prop;
-	
-}
-
-void Point::change_health( int _dh ) {
-	
-	prop.health += _dh;
-	
-	if ( prop.health <= 0 ) {
 		
-		prop.health 	= 0;
-		prop.b_visible 	= false;
-		prop.b_mobile 	= false;
-	}
-}
-void Point::set_healt( int _h ) {
-	
-	if ( _h >= 0 ) {
-		prop.health = _h;
-	}
-	
-	if ( prop.health <= 0 ) {
-		
-		prop.health 	= 0;
-		prop.b_visible 	= false;
-		prop.b_mobile 	= false;
-	}	
 }
 
-void Point::change_speed( int _ds ) {
+Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _p ) {
 	
-	prop.speed += _ds;
+	const_move_x = _p.const_move_x;
+	const_move_y = _p.const_move_y;
+	const_move_z = _p.const_move_z;
 	
-	if ( prop.speed < 0 ) {
-		prop.speed = 0;
-	}
+	komun("class Point, copy constructor");
+}
+
+Point::~Point() {
 	
 }
-void Point::set_speed( int _s ) {
-	
-	prop.speed = _s;
-	
-	if ( prop.speed < 0 ) {
-		prop.speed = 0;
-	}
-}
+
+
 
 
 void Point::move_dx( int _dx ) {
 	int temp = get_coor_x() + _dx * DEF_SPEED;
 	
 	//checking limits
-	if ( check_lim_min( get_lim_min_x(), temp ) && check_lim_max( get_lim_max_x(), temp ) ) {
+	if ( within_lim_min( get_lim_min_x(), temp ) && within_lim_max( get_lim_max_x(), temp ) ) {
 		
 		set_coor_x( temp );
 	}
@@ -93,7 +52,7 @@ void Point::move_dy( int _dy ) {
 	int temp = get_coor_y() + _dy * DEF_SPEED;
 	
 	//checking limits
-	if ( check_lim_min( get_lim_min_y(), temp ) && check_lim_max( get_lim_max_y(), temp ) ) {
+	if ( within_lim_min( get_lim_min_y(), temp ) && within_lim_max( get_lim_max_y(), temp ) ) {
 		
 		set_coor_y( temp );
 	}
@@ -112,7 +71,7 @@ void Point::move_dz( int _dz ) {
 	int temp = get_coor_z() + _dz * DEF_SPEED;
 	
 	//checking limits
-	if ( check_lim_min( get_lim_min_z(), temp ) && check_lim_max( get_lim_max_z(), temp ) ) {
+	if ( within_lim_min( get_lim_min_z(), temp ) && within_lim_max( get_lim_max_z(), temp ) ) {
 		
 		set_coor_z( temp );
 	}
@@ -127,11 +86,39 @@ void Point::move_dz( int _dz ) {
 	
 }
 
-void Point::print_status() const {
+bool Point::move() {
 	
-	Position::print_status();
+	if ( const_move_x != 0 || const_move_y != 0 || const_move_z != 0 ) {
+		
+		move_dx( const_move_x );
+		move_dy( const_move_y );
+		move_dz( const_move_z );
+		return true;
+	}
+	
+	return false;
+}
+
+bool Point::check_collision() {
+	
+	//switch (point type)
+	
+	//for hero check obstacle and bullet
+	
+	//for bullet check hero and obstacle
+	
+	//for obstacle do nothing
+	
+	
+	return false;
+}
+
+
+void Point::print_status() {
+	
+	Position::print();
 	
 	printf( "Health: %d, speed: %d, is_visible: %d, is_mobile: %d, sprite: %s, width: %d, hight: %d\n", 
-			prop.health, prop.speed, prop.b_visible, prop.b_mobile, grap_prop.sprite, grap_prop.width, grap_prop.hight ); 
+			get_health(), get_speed(), is_visible(), is_mobile(), get_graph_sprite().c_str(), get_graph_widht(), get_graph_hight() ); 
 
 }

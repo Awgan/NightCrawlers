@@ -4,15 +4,34 @@
 
 #include "point.h"
 
-class Point_Container {
+struct point_stru {
 
-	private:
-		int number;
+	point_stru * next;
+	point_stru * prev;
+	
+	Point * thing;
+};
+
+class Point_Container {
+	
+	public:
 		
-		//there will be 3 diffrent subgroups for 3 diffrent point types
-		Point * hero_first;
-		Point * bullet_first;
-		Point * obstacle_first;
+		friend bool Point::check_collision();
+	
+	private:
+		int number_hero;
+		int number_bullet;	
+		int number_obstacle;
+
+		//3 diffrent subgroups for 3 diffrent point types
+		point_stru * hero_first;
+		point_stru * hero_last;
+		
+		point_stru * bullet_first;
+		point_stru * bullet_last;
+		
+		point_stru * obstacle_first;
+		point_stru * obstacle_last;
 
 	protected:
 
@@ -20,8 +39,16 @@ class Point_Container {
 		Point_Container();
 		~Point_Container();
 		
-		void add( Point _p );
+		bool add( Point * _p );
+		bool del( Point * _p );
 		
+		bool add_from_file ( const char * _f_name );
+		
+		bool collision_hero_with_obstacle( Point * _p );
+		bool collision_hero_with_bullet( Point * _p );
+		bool collision_bullet_with_obstacle( Point * _p );
+		
+		void status_test();
 		
 
 };
