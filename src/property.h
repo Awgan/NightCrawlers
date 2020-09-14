@@ -22,7 +22,7 @@ struct Stru_property {
 	int 	i_fire_accuracy;
 	
 	//int ...
-	
+	void show();
 };
 
 
