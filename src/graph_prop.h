@@ -16,6 +16,8 @@ struct Stru_graph_prop {
 	
 	int i_width;				//object dimensions on the screen
 	int i_hight;
+	
+	void show();
 };
 
 class Graph_prop {

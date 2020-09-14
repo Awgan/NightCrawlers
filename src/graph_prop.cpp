@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <iostream>
 
 #include "graph_prop.h"
 
@@ -82,6 +83,13 @@ void create_arr_sprite( Point_type & _pt, Stru_graph_prop & _gp) {
 }
 
 //end function
+
+void Stru_graph_prop::show() {
+	
+	std::cout << "sprite: " << s_sprite << " num_sprite: " << i_num_sprite << " width: " << i_width << " i_hight: " << i_hight << std::endl;
+
+	
+}
 
 Graph_prop::Graph_prop( Point_type & _pt, std::string _str, int & _wid, int & _hig ) {
 	
