@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string>
 
+#include "comm_const.h"
 #include "graph_prop.h"
 #include "position.h"
 #include "property.h"
@@ -24,34 +25,46 @@ struct GPP {
 	in_GPP * array;
 	int numb;
 	
-	friend void fx( GPP & _gpp, const std::string _arr [][17] );
+	friend void gpp_transfer( GPP & _gpp, const std::string _arr [][17] );
 };
+
+Point_type p_type_conv( const std::string & _str ) {
+	
+	//Point_type --> { neutral = 0, hero = 1, bullet = 2, obstacle = 3 };
+	
+	if ( _str == "neutral" ) {
+		return Point_type::neutral;
+	}
+	else if ( _str == "hero" ) {
+		return Point_type::hero;
+	}
+	else if ( _str == "bullet" ) {
+		return Point_type::bullet;
+	}
+	else if ( _str == "obstacle" ) {
+		return Point_type::obstacle;
+	}
+		
+	return Point_type::neutral;
+}
 
 //TODO::change the '17' by const variable
 
-void fx( GPP & _gpp, const std::string _arr [][17] ) {
-	
+void gpp_transfer( GPP & _gpp, const std::string _arr [][17] ) {
+		
 	for ( int i = 0; i < _gpp.numb; ++i ) {
 		
-		_gpp.array[i].start_coord = { _arr[i][0], _arr[i][1], _arr[i][2] };
+		_gpp.array[i].start_coord = { std::stoi(_arr[i][0]), std::stoi(_arr[i][1]), std::stoi(_arr[i][2]), dir_conv( _arr[i][3] ) };
 		
-		/*for ( int j = 0; i < 17; ++i ) {
-			
-			if ( j >= 0 && j <= 4 ) {
-				_gpp.array[j] = _arr[i][j];
-			}
-			else if ( j > 4 && j <= 8 ) {
-				
-			}
-			else if ( j > 8 && j <= 17 ) {
-				
-			} 
-			
-		}*/
+		_gpp.array[i].start_prop = { p_type_conv( _arr[i][4] ), std::stoi(_arr[i][5]), std::stoi(_arr[i][6]), std::stoi(_arr[i][7]), std::stoi(_arr[i][8]), std::stoi(_arr[i][9]), std::stoi(_arr[i][10]), std::stoi(_arr[i][11]) };
 		
+		_gpp.array[i].start_graph = { _arr[i][12], std::stoi(_arr[i][13]), NULL, std::stoi(_arr[i][15]), std::stoi(_arr[i][16]) };
+	
 	}
 	
 }
+
+/******************************************************************/
 
 void read_conf_file ( const char * _fname, GPP * _gpp ) {
 	// _fname 		=> file name of object properties
@@ -114,7 +127,7 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 			
 			//BEGIN : parsing data to structure
 			std::string tmp_all_ = tmp_file_;
-						
+			
 			int start_of_read_ = tmp_all_.find_last_of( '\n', tmp_all_.find(',') ) + 1;
 			int end_of_read_ = 0;
 			std::string pos_1_;
@@ -137,12 +150,15 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 			}
 			//END : parsing data to structure
 			
+			gpp_transfer( *_gpp, arr_pars_ );
+			
 			//checking
-			for ( int i = 0; i < line_numb_; ++i ) {
-				for ( int j = 0; j < 17; ++j ) {
-					std::cout << arr_pars_[i][j] << "";
-				}
-				std::cout << '\n';
+			for ( int i = 0; i < _gpp->numb; ++i ) {
+				
+					_gpp->array[i].start_coord.show();
+					_gpp->array[i].start_prop.show();
+					_gpp->array[i].start_graph.show();
+				
 			}
 			//
 			
