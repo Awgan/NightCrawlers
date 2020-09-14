@@ -2,8 +2,11 @@
 #define POSITION_H_
 
 #include <stdlib.h>
+#include <string>
 
 #include "comm_const.h"
+
+
 
 struct Coordinate {
 	
@@ -14,8 +17,15 @@ struct Coordinate {
 	enum Direction { right, up, left, down, deep, shallow };	
 	
 	Direction dir;	
+		
+	void show();
+	
+	//for convert directiona as a string to enum Direction, and return enum value
+	friend Direction dir_conv( const std::string & _str );
 	
 };
+
+Coordinate::Direction dir_conv( const std::string & _str );
 
 typedef Coordinate::Direction	CoorDir;
 

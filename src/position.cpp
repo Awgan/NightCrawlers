@@ -1,7 +1,41 @@
 #include <cstdio>
+#include <iostream>
 
 #include "comm_const.h"
 #include "position.h"
+
+void Coordinate::show() {
+	
+	std::cout << "x: " << x << " y: " << y << " z: " << z << " dir: " << (int)dir << std::endl;
+	
+}
+
+Coordinate::Direction dir_conv( const std::string & _str ) {
+		
+	//Direction -->{ right, up, left, down, deep, shallow }	
+	
+	if ( _str == "right" ) {
+		return Coordinate::Direction::right;
+	}
+	else if ( _str == "up" ) {
+		return Coordinate::Direction::up;
+	}
+	else if ( _str == "left" ) {
+		return Coordinate::Direction::left;
+	}
+	else if ( _str == "down" ) {
+		return Coordinate::Direction::down;
+	}
+	else if ( _str == "deep" ) {
+		return Coordinate::Direction::deep;
+	}
+	else if ( _str == "shallow" ) {
+		return Coordinate::Direction::shallow;
+	}
+		
+	return Coordinate::Direction::right;
+}
+
 
 Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
 	
