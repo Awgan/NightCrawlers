@@ -5,7 +5,7 @@
 
 void Stru_property::show() {
 	
-	std::cout << "type: " << (int)type << " mobile: " << b_mobile << " visible: " << b_visible << " health: " << i_health << " speed: " << i_speed << " move_p: " << i_move_points << " strenght: " << i_strenght << " fire: " << i_fire_accuracy << std::endl;
+	std::cout << "PROPERTY show() > type: " << (int)type << " mobile: " << b_mobile << " visible: " << b_visible << " health: " << i_health << " speed: " << i_speed << " move_p: " << i_move_points << " strenght: " << i_strenght << " fire: " << i_fire_accuracy << std::endl;
 }
 
 

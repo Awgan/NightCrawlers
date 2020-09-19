@@ -1,21 +1,22 @@
 #include <stdlib.h>
 
 #include "point_container.h"
+#include "terminal_info.h"
 
 Point_Container::Point_Container(){
 	
-	number_hero = 0;
-	number_bullet = 0;	
+	number_hero		= 0;
+	number_bullet 	= 0;	
 	number_obstacle = 0;
 
-	hero_first = NULL;
-	hero_last = NULL;
+	hero_first 		= NULL;
+	hero_last 		= NULL;
 	
-	bullet_first = NULL;
-	bullet_last = NULL;
+	bullet_first 	= NULL;
+	bullet_last 	= NULL;
 	
-	obstacle_first = NULL;
-	obstacle_last= NULL;
+	obstacle_first	 = NULL;
+	obstacle_last	= NULL;
 	
 }
 
@@ -45,13 +46,16 @@ bool Point_Container::add( Point * _p ){
 		case Point_type::hero: {
 			
 			point_stru * temp = new point_stru;
+			temp->next = new point_stru;
+			temp->prev = new point_stru;
+			temp->thing = new Point;
 			
-			/* cheking addresses 
-			printf("%p\n",temp->thing);
-			printf("%p\n",temp->next);
-			printf("%p\n",temp->prev);
-			*/
-			
+			printf("cheking addresses \n");
+			printf("temp: %p\n",temp);
+			printf("thing: %p\n",temp->thing);
+			printf("next: %p\n",temp->next);
+			printf("prev: %p\n",temp->prev);
+						
 			if ( hero_first == NULL ) {
 				
 				hero_first = temp;				
@@ -59,7 +63,7 @@ bool Point_Container::add( Point * _p ){
 				
 				hero_first->next = NULL;
 				hero_first->prev = NULL;
-				
+				printf("hero_first NULL\n");
 			} 
 			else
 			{
@@ -67,18 +71,21 @@ bool Point_Container::add( Point * _p ){
 				temp->prev = hero_last;
 				hero_last = temp;
 				hero_last->next = NULL;
+				printf("hero_first NOT NULL\n");
 			}
 			
 			//project
 				//Point * pp = new Point( _p);
 			//end project
-			
-			temp->thing = _p; //todo::
-			
+			printf("point_container: _p pointer: %p\n", _p);
+			*(temp->thing) = *_p; //todo::
+			printf("point_container: thing pointer: %p\n", temp->thing);
 			number_hero++;
+			komun(_p->get_graph_sprite().c_str());
+			komun(temp->thing->get_graph_sprite().c_str());
 				
 		/**/
-		break;
+			break;
 			}
 		case Point_type::bullet:
 		
@@ -148,6 +155,23 @@ bool Point_Container::del( Point * _p ) {
 	return false;
 }
 
+Point * Point_Container::get_point_hero( const int numb ) { 
+	//not finish
+	
+	if ( numb >= 0 && numb < number_hero ) {
+		
+		point_stru	* temp = hero_first;
+		
+		for( int i = 0; i < numb; ++i ) {
+			
+			temp = temp->next;			
+		}			
+		
+		return temp->thing;		
+	}
+	
+return NULL;
+}
 
 void Point_Container::status_test() {
 	

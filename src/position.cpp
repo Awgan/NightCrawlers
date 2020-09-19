@@ -6,7 +6,7 @@
 
 void Coordinate::show() {
 	
-	std::cout << "x: " << x << " y: " << y << " z: " << z << " dir: " << (int)dir << std::endl;
+	std::cout << "COORDINATE show() > x: " << x << " y: " << y << " z: " << z << " dir: " << (int)dir << std::endl;
 	
 }
 

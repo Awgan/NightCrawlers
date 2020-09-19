@@ -28,9 +28,9 @@ int main( int argc, char * argv[] ) {
 //END
 
 	GPP gpp_obj;
-	
+		
 	read_conf_file( "../conf/start_objects.txt", &gpp_obj );
-
+/*
 //making Maciek
 	Coordinate start_coord { 200, 300, 0, Coordinate::Direction::right };
 	Stru_property start_prop { Point_type::hero, 1, 1, 10, 15, 23, 50, 65 };
@@ -41,43 +41,69 @@ int main( int argc, char * argv[] ) {
 //END
 
 	point_box.add( &Maciek );
+*/	
 
+	Point Maciek;
+	
+	for ( int i = 0; i < gpp_obj.numb; ++i ) {
+		
+		Maciek = Point ( gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph );
+
+		point_box.add( &Maciek );
+		
+		Maciek.print_status();
+	}
+	
 	/**/ //example of SDL 
 		SDL_Surface * surf;
-		surf = SDL_LoadBMP( Maciek.get_graph_sprite().c_str() );
-		SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
-
-		SDL_Texture * tex;
-		tex = SDL_CreateTextureFromSurface( rend, surf );
-		SDL_FreeSurface( surf );
+		SDL_Texture *(*tex);
+		tex = new SDL_Texture* [ gpp_obj.numb ];
 		
+		for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+			surf = SDL_LoadBMP( point_box.get_point_hero(i)->get_graph_sprite().c_str() );
+			
+			SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
+		
+			//SDL_Texture * tex;
+			*(tex+i) = SDL_CreateTextureFromSurface( rend, surf );
+			
+			SDL_FreeSurface( surf );
+		}
+
 		//Dimensions of the sprite graph
 		SDL_Rect rect;
 		rect.x = comm_arr_sprite_dimensions[0][0];
 		rect.y = comm_arr_sprite_dimensions[0][1];
 		rect.w = comm_arr_sprite_dimensions[0][2];
 		rect.h = comm_arr_sprite_dimensions[0][3];
-		
-		//dimensions of the displayed graph
-		SDL_Rect rect_pos;
-		rect_pos.x = Maciek.get_coor_x();
-		rect_pos.y = Maciek.get_coor_y();
-		rect_pos.w = Maciek.get_graph_widht();
-		rect_pos.h = Maciek.get_graph_hight();
 
-		SDL_RenderCopy( rend, tex, &rect, &rect_pos );
+		//dimensions of the displayed graph
+		SDL_Rect * rect_pos = new SDL_Rect [gpp_obj.numb];
+		
+		for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+			rect_pos[i].x = point_box.get_point_hero(i)->get_coor_x();
+			rect_pos[i].y = point_box.get_point_hero(i)->get_coor_y();
+			rect_pos[i].w = point_box.get_point_hero(i)->get_graph_widht();
+			rect_pos[i].h = point_box.get_point_hero(i)->get_graph_hight();
+			
+			SDL_RenderCopy( rend, *(tex+i), &rect, (rect_pos + i) );
+		}
 	/**/
-	
+
 	//slow down the game
 	int game_delay = 20;
 	
-	time_t timer = 0;
+	time_t timer 	= 0;
 	time_t time_eye = 0;
 	time(&time_eye);
 	
-	Uint32 time_st = 0;
+	Uint32 time_st 	= 0;
 	
 	int t = 0;
+	
+	Point * active_hero = NULL;
+	int num_act_hero = 3;
+	active_hero = point_box.get_point_hero( num_act_hero );
 		
 	while( event.type != SDL_QUIT ) {
 		SDL_PollEvent(&event);
@@ -85,8 +111,10 @@ int main( int argc, char * argv[] ) {
 		time(&timer);
 		
 			SDL_PollEvent(&event);
+			
 			if ( event.type == SDL_QUIT )
 				break;
+				
 			SDL_RenderClear(rend);
 			
 			//choosing sprite of hero eye movment
@@ -97,20 +125,32 @@ int main( int argc, char * argv[] ) {
 				rect.h = comm_arr_sprite_dimensions[t%4][3];
 				
 				t++;
-				if ( t > 3 ) t = 0;
+				
+					if ( t > 3 )
+						t = 0;
 					
 				time(&time_eye);
 			}
 			
+			//TODO:: do for all heroes
+			//getting coordinates for the move; ONLY for hero number "0"
+			//printf("move:		%p\n", active_hero);
+			active_hero->move();
+			rect_pos[num_act_hero].x = active_hero->get_coor_x();
+			rect_pos[num_act_hero].y = active_hero->get_coor_y();
 			
-			//getting coordinates for the move
-			Maciek.move();
-			rect_pos.x = Maciek.get_coor_x();
-			rect_pos.y = Maciek.get_coor_y();
+			
+			
+			
+			
+			
 			
 			
 			//rendering the frame
-			SDL_RenderCopy( rend, tex, &rect, &rect_pos);
+			for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+			
+				SDL_RenderCopy( rend, *(tex+i), &rect, (rect_pos + i) );
+			}
 			
 			SDL_RenderPresent(rend);
 			SDL_Delay( game_delay );
@@ -139,24 +179,53 @@ int main( int argc, char * argv[] ) {
 				}
 				
 				else
-					move_control::move_keyboard( &Maciek, &event );				
+					move_control::move_keyboard( point_box.get_point_hero(num_act_hero), &event );				
 			}
-		
+			
+			if ( event.type == SDL_MOUSEBUTTONDOWN )		 {
+				komun("\nSDL_MOUSEBUTTONDOWN\n");
+				int ms_x, ms_y;
+				ms_x = event.button.x;
+				ms_y = event.button.y;
+				
+				//1. check if cursor is over hero
+				//2. change acvtive_hero
+				//3. end
+				for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+				printf( "%p\n", point_box.get_point_hero(i) );
+				}
+				
+				for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+					if ( 	ms_x >= rect_pos[i].x && ms_x <= rect_pos[i].x + rect_pos[i].w &&
+							ms_y >= rect_pos[i].y && ms_y <= rect_pos[i].y + rect_pos[i].h 		) {
+						
+						printf("before:		%p\n", active_hero);
+						num_act_hero = i;
+						//rect_pos[num_act_hero].x = ms_x;
+						//rect_pos[num_act_hero].y = ms_y;
+						active_hero = point_box.get_point_hero( num_act_hero );
+						printf("after:		%p\n", active_hero);
+						break;
+					}					
+				}				
+			}
 		
 		//point_box.status_test();
 	}
 	//end main loop
 	
+	delete [] tex;
+	delete [] rect_pos;
 	
-	point_box.del( &Maciek );
 	
-	delete [] arr_objects ;
+	for ( int i = 0; i < gpp_obj.numb; ++i ) {
+		
+		point_box.del( point_box.get_point_hero(i) );
+	}	
 	
 	SDL_DestroyWindow(win);
 	SDL_DestroyRenderer(rend);
 	SDL_Quit();
-	
-	
 	
 	return 0;
 }

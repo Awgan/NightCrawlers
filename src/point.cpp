@@ -9,8 +9,7 @@ Point::Point() {
 }
 
 Point::Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop _gprop ) : Position( _cord ), Property( _prop ), Graph_prop( _prop.type, _gprop ){
-	
-		
+			
 }
 
 Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _p ) {
@@ -25,9 +24,6 @@ Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _
 Point::~Point() {
 	
 }
-
-
-
 
 void Point::move_dx( int _dx ) {
 	int temp = get_coor_x() + _dx * DEF_SPEED;

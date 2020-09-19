@@ -58,8 +58,9 @@ void gpp_transfer( GPP & _gpp, const std::string _arr [][17] ) {
 		
 		_gpp.array[i].start_prop = { p_type_conv( _arr[i][4] ), std::stoi(_arr[i][5]), std::stoi(_arr[i][6]), std::stoi(_arr[i][7]), std::stoi(_arr[i][8]), std::stoi(_arr[i][9]), std::stoi(_arr[i][10]), std::stoi(_arr[i][11]) };
 		
+		_gpp.array[i].start_graph.init_arr(p_type_conv( _arr[i][4] ));
 		_gpp.array[i].start_graph = { _arr[i][12], std::stoi(_arr[i][13]), NULL, std::stoi(_arr[i][15]), std::stoi(_arr[i][16]) };
-	
+		
 	}
 	
 }
@@ -87,13 +88,13 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 				line_numb_++;
 			}
 			else {
-				printf( "there was '#' character\n" );
+				printf( "skip line, there was '#' character\n" );
 			}
 		}
 		
 		//get file size
 		
-		file_.clear(  );
+		file_.clear( );
 		
 		file_.seekg( 0, file_.end );
 		int size = file_.tellg();
@@ -113,8 +114,9 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 		//
 		if ( line_numb_ > 0 ) {
 			
-			_gpp->array = new GPP::in_GPP [line_numb_];
 			_gpp->numb = line_numb_;
+			_gpp->array = new GPP::in_GPP [line_numb_];
+			
 			
 				arr_pars_ = new std::string[line_numb_][17];
 			
@@ -126,7 +128,7 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 			file_.close();
 			
 			//BEGIN : parsing data to structure
-			std::string tmp_all_ = tmp_file_;
+			std::string tmp_all_ = tmp_file_; //changing c-string to string
 			
 			int start_of_read_ = tmp_all_.find_last_of( '\n', tmp_all_.find(',') ) + 1;
 			int end_of_read_ = 0;
@@ -152,13 +154,13 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 			
 			gpp_transfer( *_gpp, arr_pars_ );
 			
-			//checking
+			printf("\n\nchecking\n");
 			for ( int i = 0; i < _gpp->numb; ++i ) {
 				
 					_gpp->array[i].start_coord.show();
 					_gpp->array[i].start_prop.show();
 					_gpp->array[i].start_graph.show();
-				
+					printf("\n");
 			}
 			//
 			

@@ -11,10 +11,10 @@ enum Point_type { neutral = 0, hero = 1, bullet = 2, obstacle = 3 };
 enum Obstacle_type { wall = 0 };
 
 const std::string comm_arr_sprite_files[4] = { //TODO:: put real path to files
-	"xxx.bmp",				//neutral
-	"../fig/worms02.bmp",	//hero
-	"xxx.bmp",				//bullet
-	"xxx.bmp"				//obstacle
+	"../fig/xxx.bmp",				//neutral
+	"../fig/worms02.bmp",			//hero
+	"../fig/xxx.bmp",				//bullet
+	"../fig/xxx.bmp"				//obstacle
 };
 
 const int comm_arr_sprite_dimensions[4][4] = {

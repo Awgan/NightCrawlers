@@ -40,7 +40,7 @@ class Point : public Position, public Property, public Graph_prop {
 		
 		void print_status();
 		
-		Point & operator=( const Point & _p ) { return *this; }
+		//Point & operator=( const Point & _p );
 	
 };
 

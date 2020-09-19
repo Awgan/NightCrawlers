@@ -44,13 +44,15 @@ class Point_Container {
 		
 		bool add_from_file ( const char * _f_name );
 		
+		Point * get_point_hero( const int numb );
+		
 		bool collision_hero_with_obstacle( Point * _p );
 		bool collision_hero_with_bullet( Point * _p );
 		bool collision_bullet_with_obstacle( Point * _p );
 		
 		void status_test();
 		
-
+		//Point & operator[] (int i) {return this->;
 };
 
 #endif
