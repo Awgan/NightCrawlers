@@ -12,6 +12,13 @@
 #include "property.h"
 #include "read_file.h"
 
+void select_obj ( SDL_Event & r_event, Point * p_active, Point_Container & r_cont );	
+
+//**
+
+void speed_changing ( SDL_Event & r_event, Uint32 & i_time , int & i_delay );
+//*
+
 int main( int argc, char * argv[] ) {
 	
 	SDL_Window * win;
@@ -94,6 +101,10 @@ int main( int argc, char * argv[] ) {
 	int num_act_hero = 3;
 	
 	active_hero = point_box.get_point_hero( num_act_hero );
+
+//***********
+//MAIN LOOP//
+//***********
 		
 	while( event.type != SDL_QUIT ) {
 		
@@ -108,7 +119,7 @@ int main( int argc, char * argv[] ) {
 			
 		SDL_RenderClear(rend);
 		
-		//choesing sprite for hero eye movment. If time elapses than change picture
+		//choosing sprite for hero eye movment. If time elapses than change picture
 		if ( (timer - time_eye) >= 2.0 ) { 
 			rect.x = comm_arr_sprite_dimensions[t%4][0];
 			rect.y = comm_arr_sprite_dimensions[t%4][1];
@@ -138,65 +149,31 @@ int main( int argc, char * argv[] ) {
 		
 		SDL_RenderPresent(rend);
 		SDL_Delay( game_delay );
+	
+	switch (event.type) {
 		
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
+		//move function which use keybord entry
+		move_control::move_keyboard( active_hero, &event );
 		
-		//moving
-		if ( event.type ==  SDL_KEYDOWN || event.type == SDL_KEYUP ) {
-			
-			//changing game speed; FASTER
-			if ( event.key.timestamp - time_st > 300 && event.key.keysym.sym == SDLK_KP_PLUS )  {
-				game_delay += 10;
-				time_st = event.key.timestamp;
-				//event.key.keysym.sym = SDLK_KP_MULTIPLY;
-				printf("%d >> %d\n", game_delay, event.key.timestamp);
-			}
-			
-			else 
-			//changing game speed; SLOWER
-			if ( event.key.timestamp - time_st > 300 && event.key.keysym.sym == SDLK_KP_MINUS )  {
-				if( game_delay > 0 ) {
-					game_delay -= 10;
-					if ( game_delay < 0 ) game_delay = 0;
-				}
-				time_st = event.key.timestamp;
-				//event.key.keysym.sym = SDLK_KP_MULTIPLY;
-				printf("%d >> %d\n", game_delay, event.key.timestamp);
-			}
-			
-			//move function which use keybord entry
-			else
-				move_control::move_keyboard( point_box.get_point_hero(num_act_hero), &event );				
-		}
+		speed_changing ( event, time_st, game_delay );
+		break;
 		
-	//selecting a hero; left click
-		if ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT )		 {
-			komun("\nSDL_MOUSEBUTTONDOWN\n");
-			int ms_x, ms_y;
-			ms_x = event.button.x;
-			ms_y = event.button.y;
-			
-			//1. check if cursor is over hero
-			//2. change acvtive_hero
-			//3. end
-			for ( int i = 0; i < gpp_obj.numb; ++i ) { 
-			printf( "%p\n", point_box.get_point_hero(i) );
-			}
-			
-			for ( int i = 0; i < gpp_obj.numb; ++i ) { 
-				if ( 	ms_x >= rect_pos[i].x && ms_x <= rect_pos[i].x + rect_pos[i].w &&
-						ms_y >= rect_pos[i].y && ms_y <= rect_pos[i].y + rect_pos[i].h 		) {
-					
-					printf("before:		%p\n", active_hero);
-					num_act_hero = i;
-					//DEL::rect_pos[num_act_hero].x = ms_x;
-					//DEL::rect_pos[num_act_hero].y = ms_y;
-					active_hero = point_box.get_point_hero( num_act_hero );
-					printf("after:		%p\n", active_hero);
-					break;
-				}					
-			}				
-		}
+		case SDL_MOUSEBUTTONDOWN :
+			//object selecting function
+			select_obj( event, active_hero, point_box );		
+		break;
 		
+		default :
+		break;
+		
+	}
+		
+	
+
+	
+	
 	//showing frame with properties; right click
 		if ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT ) {
 			
@@ -235,3 +212,57 @@ int main( int argc, char * argv[] ) {
 	
 	return 0;
 }
+
+//selecting function UNDER CONSTRUCTION
+	
+	void select_obj ( SDL_Event & r_event, Point * p_active, Point_Container & r_cont ) {
+		
+		int ms_x, ms_y;
+		ms_x = r_event.button.x;
+		ms_y = r_event.button.y;
+		
+		for ( int i = 0; i < r_cont.get_number_hero(); ++i ) {
+			if ( 	ms_x >= r_cont.get_point_hero( i )->get_coor_x() && ms_x <= r_cont.get_point_hero( i )->get_coor_x() + r_cont.get_point_hero( i )->get_graph_widht() &&
+					ms_y >= r_cont.get_point_hero( i )->get_coor_y() && ms_y <= r_cont.get_point_hero( i )->get_coor_y() + r_cont.get_point_hero( i )->get_graph_hight()	) {
+				
+				printf("active before:		%p\n", p_active);
+				
+				p_active = r_cont.get_point_hero( i );
+				
+				printf("active after:		%p\n", p_active);
+				
+				return;
+			}
+		}		
+	}	
+//END : selecting function UNDER CONSTRUCTION
+
+
+//game speed changing
+void speed_changing ( SDL_Event & r_event, Uint32 & i_time , int & i_delay ) {
+			
+		if ( r_event.type ==  SDL_KEYDOWN || r_event.type == SDL_KEYUP ) {
+			
+			//changing game speed; FASTER
+			if ( r_event.key.timestamp - i_time > 300 && r_event.key.keysym.sym == SDLK_KP_MINUS)  {
+				if ( i_delay < 100 )
+					i_delay += 10;
+				i_time = r_event.key.timestamp;
+				//event.key.keysym.sym = SDLK_KP_MULTIPLY;
+				printf("%d >> %d\n", i_delay, r_event.key.timestamp);
+			}
+			
+			else 
+			//changing game speed; SLOWER
+			if ( r_event.key.timestamp - i_time > 300 && r_event.key.keysym.sym == SDLK_KP_PLUS )  {
+				if( i_delay > 0 ) {
+					i_delay -= 10;
+					if ( i_delay < 0 ) i_delay = 0;
+				}
+				i_time = r_event.key.timestamp;
+				//event.key.keysym.sym = SDLK_KP_MULTIPLY;
+				printf("%d >> %d\n", i_delay, r_event.key.timestamp);
+			}							
+		}		
+	}
+//END : game speed changing
