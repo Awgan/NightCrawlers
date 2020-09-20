@@ -23,76 +23,65 @@ int main( int argc, char * argv[] ) {
 	win = SDL_CreateWindow("NightCrawlers", 0, 0, WIN_WIDTH, WIN_HIGHT, SDL_WINDOW_OPENGL);
 	rend = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
 	
-//makin point container
+//making point container
 	Point_Container point_box;
-//END
 
+//GPP constain 3 structures for position, graph and property
 	GPP gpp_obj;
-		
+
+//reading data from hero configuration file, where are all information about hero		
 	read_conf_file( "../conf/start_objects.txt", &gpp_obj );
-/*
-//making Maciek
-	Coordinate start_coord { 200, 300, 0, Coordinate::Direction::right };
-	Stru_property start_prop { Point_type::hero, 1, 1, 10, 15, 23, 50, 65 };
-	Stru_graph_prop start_graph { comm_arr_sprite_files[1].c_str(), 1, NULL, 50, 50 };
+
+
+//creating heroes	
+	for ( int i = 0; i < gpp_obj.numb; ++i ) {
+		
+		Point Maciek ( gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph );
+
+		point_box.add( &Maciek );
+	}
 	
-	Point Maciek( start_coord, start_prop, start_graph );
-	Maciek.set_offset( 50 );
-//END
-
-	point_box.add( &Maciek );
-*/	
-
-	Point Maciek;
+//example of SDL 
+	SDL_Surface * surf;
+	SDL_Texture *(*tex);
+	tex = new SDL_Texture* [ gpp_obj.numb ];
 	
 	for ( int i = 0; i < gpp_obj.numb; ++i ) {
 		
-		Maciek = Point ( gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph );
-
-		point_box.add( &Maciek );
+		surf = SDL_LoadBMP( point_box.get_point_hero(i)->get_graph_sprite().c_str() );
 		
-		Maciek.print_status();
-	}
+		SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
 	
-	/**/ //example of SDL 
-		SDL_Surface * surf;
-		SDL_Texture *(*tex);
-		tex = new SDL_Texture* [ gpp_obj.numb ];
+		//SDL_Texture * tex;
+		*(tex+i) = SDL_CreateTextureFromSurface( rend, surf );
 		
-		for ( int i = 0; i < gpp_obj.numb; ++i ) { 
-			surf = SDL_LoadBMP( point_box.get_point_hero(i)->get_graph_sprite().c_str() );
-			
-			SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
-		
-			//SDL_Texture * tex;
-			*(tex+i) = SDL_CreateTextureFromSurface( rend, surf );
-			
-			SDL_FreeSurface( surf );
-		}
+		SDL_FreeSurface( surf );
+	}
 
-		//Dimensions of the sprite graph
-		SDL_Rect rect;
+	//Dimensions of the picture taken from sprite
+	SDL_Rect rect;
 		rect.x = comm_arr_sprite_dimensions[0][0];
 		rect.y = comm_arr_sprite_dimensions[0][1];
 		rect.w = comm_arr_sprite_dimensions[0][2];
 		rect.h = comm_arr_sprite_dimensions[0][3];
 
-		//dimensions of the displayed graph
-		SDL_Rect * rect_pos = new SDL_Rect [gpp_obj.numb];
+	//dimensions of the displayed picture
+	SDL_Rect * rect_pos = new SDL_Rect [gpp_obj.numb];
+	
+	for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+		rect_pos[i].x = point_box.get_point_hero(i)->get_coor_x();
+		rect_pos[i].y = point_box.get_point_hero(i)->get_coor_y();
+		rect_pos[i].w = point_box.get_point_hero(i)->get_graph_widht();
+		rect_pos[i].h = point_box.get_point_hero(i)->get_graph_hight();
 		
-		for ( int i = 0; i < gpp_obj.numb; ++i ) { 
-			rect_pos[i].x = point_box.get_point_hero(i)->get_coor_x();
-			rect_pos[i].y = point_box.get_point_hero(i)->get_coor_y();
-			rect_pos[i].w = point_box.get_point_hero(i)->get_graph_widht();
-			rect_pos[i].h = point_box.get_point_hero(i)->get_graph_hight();
-			
-			SDL_RenderCopy( rend, *(tex+i), &rect, (rect_pos + i) );
-		}
-	/**/
+		SDL_RenderCopy( rend, *(tex+i), &rect, (rect_pos + i) );
+	}
 
-	//slow down the game
+
+	//game speed
 	int game_delay = 20;
 	
+	//time variables for making picture dynamic
 	time_t timer 	= 0;
 	time_t time_eye = 0;
 	time(&time_eye);
@@ -103,116 +92,133 @@ int main( int argc, char * argv[] ) {
 	
 	Point * active_hero = NULL;
 	int num_act_hero = 3;
+	
 	active_hero = point_box.get_point_hero( num_act_hero );
 		
 	while( event.type != SDL_QUIT ) {
+		
 		SDL_PollEvent(&event);
 		
 		time(&timer);
 		
-			SDL_PollEvent(&event);
-			
-			if ( event.type == SDL_QUIT )
-				break;
-				
-			SDL_RenderClear(rend);
-			
-			//choosing sprite of hero eye movment
-			if ( (timer - time_eye) >= 2.0 ) { 
-				rect.x = comm_arr_sprite_dimensions[t%4][0];
-				rect.y = comm_arr_sprite_dimensions[t%4][1];
-				rect.w = comm_arr_sprite_dimensions[t%4][2];
-				rect.h = comm_arr_sprite_dimensions[t%4][3];
-				
-				t++;
-				
-					if ( t > 3 )
-						t = 0;
-					
-				time(&time_eye);
-			}
-			
-			//TODO:: do for all heroes
-			//getting coordinates for the move; ONLY for hero number "0"
-			//printf("move:		%p\n", active_hero);
-			active_hero->move();
-			rect_pos[num_act_hero].x = active_hero->get_coor_x();
-			rect_pos[num_act_hero].y = active_hero->get_coor_y();
-			
-			
-			
-			
-			
-			
-			
-			
-			//rendering the frame
-			for ( int i = 0; i < gpp_obj.numb; ++i ) { 
-			
-				SDL_RenderCopy( rend, *(tex+i), &rect, (rect_pos + i) );
-			}
-			
-			SDL_RenderPresent(rend);
-			SDL_Delay( game_delay );
-			
-			
-			//moving
-			if ( event.type ==  SDL_KEYDOWN || event.type == SDL_KEYUP ) {
-				
-				if ( event.key.timestamp - time_st > 300 && event.key.keysym.sym == SDLK_KP_PLUS )  {
-					game_delay += 10;
-					time_st = event.key.timestamp;
-					//event.key.keysym.sym = SDLK_KP_MULTIPLY;
-					printf("%d >> %d\n", game_delay, event.key.timestamp);
-				}
-				
-				else 
-				
-				if ( event.key.timestamp - time_st > 300 && event.key.keysym.sym == SDLK_KP_MINUS )  {
-					if( game_delay > 0 ) {
-						game_delay -= 10;
-						if ( game_delay < 0 ) game_delay = 0;
-					}
-					time_st = event.key.timestamp;
-					//event.key.keysym.sym = SDLK_KP_MULTIPLY;
-					printf("%d >> %d\n", game_delay, event.key.timestamp);
-				}
-				
-				else
-					move_control::move_keyboard( point_box.get_point_hero(num_act_hero), &event );				
-			}
-			
-			if ( event.type == SDL_MOUSEBUTTONDOWN )		 {
-				komun("\nSDL_MOUSEBUTTONDOWN\n");
-				int ms_x, ms_y;
-				ms_x = event.button.x;
-				ms_y = event.button.y;
-				
-				//1. check if cursor is over hero
-				//2. change acvtive_hero
-				//3. end
-				for ( int i = 0; i < gpp_obj.numb; ++i ) { 
-				printf( "%p\n", point_box.get_point_hero(i) );
-				}
-				
-				for ( int i = 0; i < gpp_obj.numb; ++i ) { 
-					if ( 	ms_x >= rect_pos[i].x && ms_x <= rect_pos[i].x + rect_pos[i].w &&
-							ms_y >= rect_pos[i].y && ms_y <= rect_pos[i].y + rect_pos[i].h 		) {
-						
-						printf("before:		%p\n", active_hero);
-						num_act_hero = i;
-						//rect_pos[num_act_hero].x = ms_x;
-						//rect_pos[num_act_hero].y = ms_y;
-						active_hero = point_box.get_point_hero( num_act_hero );
-						printf("after:		%p\n", active_hero);
-						break;
-					}					
-				}				
-			}
+		SDL_PollEvent(&event);
 		
-		//point_box.status_test();
+		if ( event.type == SDL_QUIT )
+			break;
+			
+		SDL_RenderClear(rend);
+		
+		//choesing sprite for hero eye movment. If time elapses than change picture
+		if ( (timer - time_eye) >= 2.0 ) { 
+			rect.x = comm_arr_sprite_dimensions[t%4][0];
+			rect.y = comm_arr_sprite_dimensions[t%4][1];
+			rect.w = comm_arr_sprite_dimensions[t%4][2];
+			rect.h = comm_arr_sprite_dimensions[t%4][3];
+			
+			t++;
+			
+				if ( t > 3 )
+					t = 0;
+				
+			time(&time_eye);
+		}
+		
+		//updating hero position. Note: it is not move function which get inf from keyboard. It only updates
+		active_hero->move();
+		rect_pos[num_act_hero].x = active_hero->get_coor_x();
+		rect_pos[num_act_hero].y = active_hero->get_coor_y();
+	
+		
+		
+		//rendering the frame
+		for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+		
+			SDL_RenderCopy( rend, *(tex+i), &rect, (rect_pos + i) );
+		}
+		
+		SDL_RenderPresent(rend);
+		SDL_Delay( game_delay );
+		
+		
+		//moving
+		if ( event.type ==  SDL_KEYDOWN || event.type == SDL_KEYUP ) {
+			
+			//changing game speed; FASTER
+			if ( event.key.timestamp - time_st > 300 && event.key.keysym.sym == SDLK_KP_PLUS )  {
+				game_delay += 10;
+				time_st = event.key.timestamp;
+				//event.key.keysym.sym = SDLK_KP_MULTIPLY;
+				printf("%d >> %d\n", game_delay, event.key.timestamp);
+			}
+			
+			else 
+			//changing game speed; SLOWER
+			if ( event.key.timestamp - time_st > 300 && event.key.keysym.sym == SDLK_KP_MINUS )  {
+				if( game_delay > 0 ) {
+					game_delay -= 10;
+					if ( game_delay < 0 ) game_delay = 0;
+				}
+				time_st = event.key.timestamp;
+				//event.key.keysym.sym = SDLK_KP_MULTIPLY;
+				printf("%d >> %d\n", game_delay, event.key.timestamp);
+			}
+			
+			//move function which use keybord entry
+			else
+				move_control::move_keyboard( point_box.get_point_hero(num_act_hero), &event );				
+		}
+		
+	//selecting a hero; left click
+		if ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT )		 {
+			komun("\nSDL_MOUSEBUTTONDOWN\n");
+			int ms_x, ms_y;
+			ms_x = event.button.x;
+			ms_y = event.button.y;
+			
+			//1. check if cursor is over hero
+			//2. change acvtive_hero
+			//3. end
+			for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+			printf( "%p\n", point_box.get_point_hero(i) );
+			}
+			
+			for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+				if ( 	ms_x >= rect_pos[i].x && ms_x <= rect_pos[i].x + rect_pos[i].w &&
+						ms_y >= rect_pos[i].y && ms_y <= rect_pos[i].y + rect_pos[i].h 		) {
+					
+					printf("before:		%p\n", active_hero);
+					num_act_hero = i;
+					//DEL::rect_pos[num_act_hero].x = ms_x;
+					//DEL::rect_pos[num_act_hero].y = ms_y;
+					active_hero = point_box.get_point_hero( num_act_hero );
+					printf("after:		%p\n", active_hero);
+					break;
+				}					
+			}				
+		}
+		
+	//showing frame with properties; right click
+		if ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT ) {
+			
+			//TODO:
+			//showing frame with all hero property; helth, position, etc
+			
+			SDL_Window * win_prop_inf;
+			{	
+				int ms_x, ms_y;
+				ms_x = event.button.x + active_hero->get_graph_widht();
+				ms_y = event.button.y + active_hero->get_graph_hight();
+						
+				win_prop_inf = SDL_CreateWindow( "Property", ms_x, ms_y, 50, 100, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS );
+			}
+			//1.	conect win_prop_inf with renderer. mabe ther must be second renderer for this.
+			//2.	update renderer; SDL_RenderCopy( ... );
+			//3. 	show the frame; SDL_RenderPresent( ... );
+			//4.	SDL_DestroyWindow( win_prop_inf );
+			
+		}
 	}
-	//end main loop
+//end main loop
 	
 	delete [] tex;
 	delete [] rect_pos;
