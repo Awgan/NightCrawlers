@@ -46,6 +46,8 @@ class Point_Container {
 		
 		Point * get_point_hero( const int numb );
 		
+		int get_number_hero()	{ return number_hero;}
+
 		bool collision_hero_with_obstacle( Point * _p );
 		bool collision_hero_with_bullet( Point * _p );
 		bool collision_bullet_with_obstacle( Point * _p );
