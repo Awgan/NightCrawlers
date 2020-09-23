@@ -1,10 +1,13 @@
 
+#include <string.h>
 #include <time.h>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "comm_const.h"
 #include "graph_prop.h"
+#include "info_win.h"
 #include "move_function.h"
 #include "point.h"
 #include "point_container.h"
@@ -12,7 +15,9 @@
 #include "property.h"
 #include "read_file.h"
 
-void select_obj ( SDL_Event & r_event, Point * p_active, Point_Container & r_cont );	
+bool is_select ( SDL_Event & r_event, Point_Container & r_cont ) ;
+
+Point * select_obj ( SDL_Event & r_event, Point * p_active, int & i_numb, Point_Container & r_cont );	
 
 //**
 
@@ -101,7 +106,9 @@ int main( int argc, char * argv[] ) {
 	int num_act_hero = 3;
 	
 	active_hero = point_box.get_point_hero( num_act_hero );
-
+	
+	Info_win infWin( &event, &point_box );
+	
 //***********
 //MAIN LOOP//
 //***********
@@ -111,9 +118,7 @@ int main( int argc, char * argv[] ) {
 		SDL_PollEvent(&event);
 		
 		time(&timer);
-		
-		SDL_PollEvent(&event);
-		
+			
 		if ( event.type == SDL_QUIT )
 			break;
 			
@@ -150,50 +155,43 @@ int main( int argc, char * argv[] ) {
 		SDL_RenderPresent(rend);
 		SDL_Delay( game_delay );
 	
-	switch (event.type) {
-		
-		case SDL_KEYDOWN:
-		case SDL_KEYUP:
-		//move function which use keybord entry
-		move_control::move_keyboard( active_hero, &event );
-		
-		speed_changing ( event, time_st, game_delay );
-		break;
-		
-		case SDL_MOUSEBUTTONDOWN :
-			//object selecting function
-			select_obj( event, active_hero, point_box );		
-		break;
-		
-		default :
-		break;
-		
-	}
-		
-	
-
-	
-	
-	//showing frame with properties; right click
-		if ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_RIGHT ) {
+		switch (event.type) {
 			
-			//TODO:
-			//showing frame with all hero property; helth, position, etc
+			case SDL_KEYDOWN:
+			case SDL_KEYUP:
+			//move function which use keybord entry
+			move_control::move_keyboard( active_hero, &event );
 			
-			SDL_Window * win_prop_inf;
-			{	
-				int ms_x, ms_y;
-				ms_x = event.button.x + active_hero->get_graph_widht();
-				ms_y = event.button.y + active_hero->get_graph_hight();
-						
-				win_prop_inf = SDL_CreateWindow( "Property", ms_x, ms_y, 50, 100, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS );
-			}
-			//1.	conect win_prop_inf with renderer. mabe ther must be second renderer for this.
-			//2.	update renderer; SDL_RenderCopy( ... );
-			//3. 	show the frame; SDL_RenderPresent( ... );
-			//4.	SDL_DestroyWindow( win_prop_inf );
+			speed_changing ( event, time_st, game_delay );
+			break;
+			
+			case SDL_MOUSEBUTTONDOWN :
+				//object selecting function
+				
+				active_hero = select_obj( event, active_hero, num_act_hero, point_box );
+				
+				//showing window with properties; right click
+				if ( event.button.button == SDL_BUTTON_RIGHT ) {
+				
+					if ( infWin.isPointed() ) {
+						infWin.show();
+				
+						while ( event.type != SDL_MOUSEBUTTONUP ) {
+							SDL_PollEvent( &event );
+						}				
+				
+						infWin.hide();
+					}
+				}
+					
+			break;
+			
+			default :
+			break;
 			
 		}
+	
+	
 	}
 //end main loop
 	
@@ -213,27 +211,48 @@ int main( int argc, char * argv[] ) {
 	return 0;
 }
 
+bool is_select ( SDL_Event & r_event, Point_Container & r_cont ) {
+	
+	int ms_x, ms_y;
+	ms_x = r_event.button.x;
+	ms_y = r_event.button.y;
+	
+	for ( int i = 0; i < r_cont.get_number_hero(); ++i ) {
+		
+		if ( 	ms_x >= r_cont.get_point_hero( i )->get_coor_x() && ms_x <= r_cont.get_point_hero( i )->get_coor_x() + r_cont.get_point_hero( i )->get_graph_widht() &&
+				ms_y >= r_cont.get_point_hero( i )->get_coor_y() && ms_y <= r_cont.get_point_hero( i )->get_coor_y() + r_cont.get_point_hero( i )->get_graph_hight()	) {
+		
+			return true;
+		}
+	}
+	return false;
+}
+
+
 //selecting function UNDER CONSTRUCTION
 	
-	void select_obj ( SDL_Event & r_event, Point * p_active, Point_Container & r_cont ) {
-		
-		int ms_x, ms_y;
-		ms_x = r_event.button.x;
-		ms_y = r_event.button.y;
-		
-		for ( int i = 0; i < r_cont.get_number_hero(); ++i ) {
-			if ( 	ms_x >= r_cont.get_point_hero( i )->get_coor_x() && ms_x <= r_cont.get_point_hero( i )->get_coor_x() + r_cont.get_point_hero( i )->get_graph_widht() &&
-					ms_y >= r_cont.get_point_hero( i )->get_coor_y() && ms_y <= r_cont.get_point_hero( i )->get_coor_y() + r_cont.get_point_hero( i )->get_graph_hight()	) {
-				
-				printf("active before:		%p\n", p_active);
-				
-				p_active = r_cont.get_point_hero( i );
-				
-				printf("active after:		%p\n", p_active);
-				
-				return;
+	Point * select_obj ( SDL_Event & r_event, Point * p_active, int & i_numb, Point_Container & r_cont ) {
+		if ( r_event.button.button == SDL_BUTTON_LEFT ) {
+			int ms_x, ms_y;
+			ms_x = r_event.button.x;
+			ms_y = r_event.button.y;
+			
+			for ( int i = 0; i < r_cont.get_number_hero(); ++i ) {
+				std::cout << r_cont.get_point_hero( i )->get_coor_x() << " " <<  r_cont.get_point_hero( i )->get_graph_widht() << "\n";
+				if ( 	ms_x >= r_cont.get_point_hero( i )->get_coor_x() && ms_x <= r_cont.get_point_hero( i )->get_coor_x() + r_cont.get_point_hero( i )->get_graph_widht() &&
+						ms_y >= r_cont.get_point_hero( i )->get_coor_y() && ms_y <= r_cont.get_point_hero( i )->get_coor_y() + r_cont.get_point_hero( i )->get_graph_hight()	) {
+					
+					printf("active %d  before:		%p\n", i, p_active);
+					i_numb = i;
+					p_active = r_cont.get_point_hero( i );
+					
+					printf("active %d  after:		%p\n", i, p_active);
+					
+					return r_cont.get_point_hero( i );
+				}
 			}
-		}		
+		}
+		return p_active;		
 	}	
 //END : selecting function UNDER CONSTRUCTION
 

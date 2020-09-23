@@ -1,7 +1,6 @@
 #include <cstdio>
 
 #include "point.h"
-#include "terminal_info.h"
 
 Point::Point() {
 	
@@ -17,8 +16,6 @@ Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _
 	const_move_x = _p.const_move_x;
 	const_move_y = _p.const_move_y;
 	const_move_z = _p.const_move_z;
-	
-	komun("class Point, copy constructor");
 }
 
 Point::~Point() {
@@ -118,3 +115,15 @@ void Point::print_status() {
 			get_health(), get_speed(), is_visible(), is_mobile(), get_graph_sprite().c_str(), get_graph_widht(), get_graph_hight() ); 
 
 }
+
+const std::string Point::print_info() {
+	
+	std::string s_tmp;
+	
+	s_tmp = "Health: " + std::to_string(get_health()) + "\nSpeed: " + std::to_string(get_speed()) 
+	+ "\nx: " + std::to_string(get_coor_x()) + "\ny: " + std::to_string(get_coor_y()) + "\nz: " + std::to_string(get_coor_z());
+	
+	return s_tmp;
+	
+}
+

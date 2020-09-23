@@ -40,7 +40,7 @@ Coordinate::Direction dir_conv( const std::string & _str ) {
 Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
 	
 	limits.min = { 0, 0, 0 };
-	limits.max = { WIN_WIDTH, WIN_HIGHT, 0 };
+	limits.max = { WIN_WIDTH - 50, WIN_HIGHT - 50, 0 };
 	
 	if ( _x >= limits.min.x && _x <= limits.max.x )
 		coor.x = _x;

@@ -1,7 +1,6 @@
 #include <stdlib.h>
 
 #include "point_container.h"
-#include "terminal_info.h"
 
 Point_Container::Point_Container(){
 	
@@ -49,12 +48,6 @@ bool Point_Container::add( Point * _p ){
 			temp->next = new point_stru;
 			temp->prev = new point_stru;
 			temp->thing = new Point;
-			
-			printf("cheking addresses \n");
-			printf("temp: %p\n",temp);
-			printf("thing: %p\n",temp->thing);
-			printf("next: %p\n",temp->next);
-			printf("prev: %p\n",temp->prev);
 						
 			if ( hero_first == NULL ) {
 				
@@ -63,7 +56,7 @@ bool Point_Container::add( Point * _p ){
 				
 				hero_first->next = NULL;
 				hero_first->prev = NULL;
-				printf("hero_first NULL\n");
+				
 			} 
 			else
 			{
@@ -71,18 +64,17 @@ bool Point_Container::add( Point * _p ){
 				temp->prev = hero_last;
 				hero_last = temp;
 				hero_last->next = NULL;
-				printf("hero_first NOT NULL\n");
+				
 			}
 			
 			//project
 				//Point * pp = new Point( _p);
 			//end project
-			printf("point_container: _p pointer: %p\n", _p);
+			
 			*(temp->thing) = *_p; //todo::
-			printf("point_container: thing pointer: %p\n", temp->thing);
+			
 			number_hero++;
-			komun(_p->get_graph_sprite().c_str());
-			komun(temp->thing->get_graph_sprite().c_str());
+			
 				
 		/**/
 			break;

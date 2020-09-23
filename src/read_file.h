@@ -11,7 +11,6 @@
 #include "graph_prop.h"
 #include "position.h"
 #include "property.h"
-#include "terminal_info.h"
 
 
 struct GPP {

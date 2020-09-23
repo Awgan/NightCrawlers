@@ -1,6 +1,8 @@
 #ifndef POINT_H_
 #define POINT_H_
 
+#include <string>
+
 #include "graph_prop.h"
 #include "position.h"
 
@@ -39,6 +41,8 @@ class Point : public Position, public Property, public Graph_prop {
 		const Point_type & get_type() { return get_point_type(); }
 		
 		void print_status();
+		
+		const std::string print_info();
 		
 		//Point & operator=( const Point & _p );
 	
