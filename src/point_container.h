@@ -1,6 +1,7 @@
 #ifndef POINT_CONTAINER_H_
 #define POINT_CONTAINER_H_
 
+#include <SDL2/SDL.h>
 
 #include "point.h"
 
@@ -11,6 +12,7 @@ struct point_stru {
 	
 	Point * thing;
 };
+
 
 class Point_Container {
 	
@@ -27,6 +29,9 @@ class Point_Container {
 		point_stru * hero_first;
 		point_stru * hero_last;
 		
+		Point * hero_active;
+		int 	hero_active_numb;
+		
 		point_stru * bullet_first;
 		point_stru * bullet_last;
 		
@@ -42,12 +47,15 @@ class Point_Container {
 		bool add( Point * _p );
 		bool del( Point * _p );
 		
+		Point * select_hero ( SDL_Event & r_event, int & i_numb );
+		
 		bool add_from_file ( const char * _f_name );
 		
 		Point * get_point_hero( const int numb );
 		
 		int get_number_hero()	{ return number_hero;}
 
+		bool collision_hero_with_hero();
 		bool collision_hero_with_obstacle( Point * _p );
 		bool collision_hero_with_bullet( Point * _p );
 		bool collision_bullet_with_obstacle( Point * _p );

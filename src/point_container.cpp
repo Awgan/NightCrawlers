@@ -10,6 +10,8 @@ Point_Container::Point_Container(){
 
 	hero_first 		= NULL;
 	hero_last 		= NULL;
+	hero_active		= NULL;
+	hero_active_numb = 0;
 	
 	bullet_first 	= NULL;
 	bullet_last 	= NULL;
@@ -57,6 +59,8 @@ bool Point_Container::add( Point * _p ){
 				hero_first->next = NULL;
 				hero_first->prev = NULL;
 				
+				hero_active = hero_first->thing;
+				hero_active_numb = 0;
 			} 
 			else
 			{
@@ -66,17 +70,11 @@ bool Point_Container::add( Point * _p ){
 				hero_last->next = NULL;
 				
 			}
-			
-			//project
-				//Point * pp = new Point( _p);
-			//end project
-			
-			*(temp->thing) = *_p; //todo::
+				
+			*(temp->thing) = *_p;
 			
 			number_hero++;
-			
-				
-		/**/
+
 			break;
 			}
 		case Point_type::bullet:
@@ -93,7 +91,6 @@ bool Point_Container::add( Point * _p ){
 	}
 	return 0;
 }
-
 
 bool Point_Container::del( Point * _p ) {
 	
@@ -164,6 +161,40 @@ Point * Point_Container::get_point_hero( const int numb ) {
 	
 return NULL;
 }
+/*
+bool Point_Container::collision_hero_with_hero() {
+	
+	for int i = 0; i < number_; ++i ) {
+		
+		
+		
+	}
+	
+}
+*/
+
+Point * Point_Container::select_hero ( SDL_Event & r_event, int & i_numb ) {
+		
+		if ( r_event.button.button == SDL_BUTTON_LEFT ) {
+			int ms_x, ms_y;
+			ms_x = r_event.button.x;
+			ms_y = r_event.button.y;
+			
+			for ( int i = 0; i < number_hero; ++i ) {
+				
+				if ( 	ms_x >= get_point_hero( i )->get_coor_x() && ms_x <= get_point_hero( i )->get_coor_x() + get_point_hero( i )->get_graph_widht() &&
+						ms_y >= get_point_hero( i )->get_coor_y() && ms_y <= get_point_hero( i )->get_coor_y() + get_point_hero( i )->get_graph_hight()	) {
+					
+					hero_active_numb = i;
+					i_numb = hero_active_numb;
+					hero_active = get_point_hero( i );
+						
+					return hero_active;
+				}
+			}
+		}
+		return hero_active;		
+	}	
 
 void Point_Container::status_test() {
 	

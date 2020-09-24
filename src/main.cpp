@@ -14,15 +14,11 @@
 #include "position.h"
 #include "property.h"
 #include "read_file.h"
-
-bool is_select ( SDL_Event & r_event, Point_Container & r_cont ) ;
-
-Point * select_obj ( SDL_Event & r_event, Point * p_active, int & i_numb, Point_Container & r_cont );	
-
-//**
+	
 
 void speed_changing ( SDL_Event & r_event, Uint32 & i_time , int & i_delay );
-//*
+
+
 
 int main( int argc, char * argv[] ) {
 	
@@ -168,7 +164,7 @@ int main( int argc, char * argv[] ) {
 			case SDL_MOUSEBUTTONDOWN :
 				//object selecting function
 				
-				active_hero = select_obj( event, active_hero, num_act_hero, point_box );
+				active_hero = point_box.select_hero( event, num_act_hero );
 				
 				//showing window with properties; right click
 				if ( event.button.button == SDL_BUTTON_RIGHT ) {
@@ -210,51 +206,6 @@ int main( int argc, char * argv[] ) {
 	
 	return 0;
 }
-
-bool is_select ( SDL_Event & r_event, Point_Container & r_cont ) {
-	
-	int ms_x, ms_y;
-	ms_x = r_event.button.x;
-	ms_y = r_event.button.y;
-	
-	for ( int i = 0; i < r_cont.get_number_hero(); ++i ) {
-		
-		if ( 	ms_x >= r_cont.get_point_hero( i )->get_coor_x() && ms_x <= r_cont.get_point_hero( i )->get_coor_x() + r_cont.get_point_hero( i )->get_graph_widht() &&
-				ms_y >= r_cont.get_point_hero( i )->get_coor_y() && ms_y <= r_cont.get_point_hero( i )->get_coor_y() + r_cont.get_point_hero( i )->get_graph_hight()	) {
-		
-			return true;
-		}
-	}
-	return false;
-}
-
-
-//selecting function UNDER CONSTRUCTION
-	
-	Point * select_obj ( SDL_Event & r_event, Point * p_active, int & i_numb, Point_Container & r_cont ) {
-		if ( r_event.button.button == SDL_BUTTON_LEFT ) {
-			int ms_x, ms_y;
-			ms_x = r_event.button.x;
-			ms_y = r_event.button.y;
-			
-			for ( int i = 0; i < r_cont.get_number_hero(); ++i ) {
-				std::cout << r_cont.get_point_hero( i )->get_coor_x() << " " <<  r_cont.get_point_hero( i )->get_graph_widht() << "\n";
-				if ( 	ms_x >= r_cont.get_point_hero( i )->get_coor_x() && ms_x <= r_cont.get_point_hero( i )->get_coor_x() + r_cont.get_point_hero( i )->get_graph_widht() &&
-						ms_y >= r_cont.get_point_hero( i )->get_coor_y() && ms_y <= r_cont.get_point_hero( i )->get_coor_y() + r_cont.get_point_hero( i )->get_graph_hight()	) {
-					
-					printf("active %d  before:		%p\n", i, p_active);
-					i_numb = i;
-					p_active = r_cont.get_point_hero( i );
-					
-					printf("active %d  after:		%p\n", i, p_active);
-					
-					return r_cont.get_point_hero( i );
-				}
-			}
-		}
-		return p_active;		
-	}	
-//END : selecting function UNDER CONSTRUCTION
 
 
 //game speed changing
