@@ -20,7 +20,7 @@ Info_win::Info_win() {
 	
 	win_posX 	= 0;
 	win_posY 	= 0;
-	win_widht	= 0;
+	win_width	= 0;
 	win_hight	= 0;
 	
 }
@@ -49,7 +49,7 @@ Info_win::Info_win( SDL_Event * _event, Point_Container * _pCont ) : event(_even
 	lines 		= 4;
 	win_posX 	= 0;
 	win_posY 	= 0;
-	win_widht	= 100;
+	win_width	= 100;
 	win_hight	= ( font_size + 2 ) * lines;	
 	
 }
@@ -62,7 +62,7 @@ bool Info_win::isPointed() {
 	
 	for ( int i = 0; i < pointCont->get_number_hero(); ++i ) {
 		
-		if ( 	ms_x >= pointCont->get_point_hero( i )->get_coor_x() && ms_x <= pointCont->get_point_hero( i )->get_coor_x() + pointCont->get_point_hero( i )->get_graph_widht() &&
+		if ( 	ms_x >= pointCont->get_point_hero( i )->get_coor_x() && ms_x <= pointCont->get_point_hero( i )->get_coor_x() + pointCont->get_point_hero( i )->get_graph_width() &&
 				ms_y >= pointCont->get_point_hero( i )->get_coor_y() && ms_y <= pointCont->get_point_hero( i )->get_coor_y() + pointCont->get_point_hero( i )->get_graph_hight()	) {
 			
 			actPoint = pointCont->get_point_hero( i );			
@@ -78,10 +78,10 @@ void Info_win::show() {
 	
 	if ( isPointed() ) {
 		
-		win_posX = actPoint->get_coor_x() + actPoint->get_graph_widht();
+		win_posX = actPoint->get_coor_x() + actPoint->get_graph_width();
 		win_posY = actPoint->get_coor_y();	
 		
-		win = SDL_CreateWindow( "Property", win_posX, win_posY, win_widht, win_hight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_HIDDEN );
+		win = SDL_CreateWindow( "Property", win_posX, win_posY, win_width, win_hight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_HIDDEN );
 		if ( win == NULL )
 			printf("#Info_win::		no win:	%s\n", SDL_GetError() );
 			

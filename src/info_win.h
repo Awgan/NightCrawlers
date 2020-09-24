@@ -34,7 +34,7 @@ class Info_win {
 		
 		int win_posX;
 		int win_posY;
-		int win_widht;
+		int win_width;
 		int win_hight;
 		
 	public:

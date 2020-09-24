@@ -72,6 +72,10 @@ bool Point_Container::add( Point * _p ){
 			}
 				
 			*(temp->thing) = *_p;
+			//temp->thing = _p;
+			
+			printf("\nbool Point_Container::add( Point * _p )");
+			temp->thing->print_borders();
 			
 			number_hero++;
 
@@ -161,19 +165,21 @@ Point * Point_Container::get_point_hero( const int numb ) {
 	
 return NULL;
 }
-/*
+
 bool Point_Container::collision_hero_with_hero() {
-	
-	for int i = 0; i < number_; ++i ) {
 		
+	for ( int i = 0; i < number_hero; ++i ) {
 		
+		if ( (hero_active != get_point_hero(i)) && hero_active->isCollision( get_point_hero(i) ) ) {
+			printf("\nCollision!#	number: %d	hit number: %d \n", get_active_hero_numb(), i );
+		}
 		
 	}
-	
+	return false;
 }
-*/
 
-Point * Point_Container::select_hero ( SDL_Event & r_event, int & i_numb ) {
+
+Point * Point_Container::select_hero ( SDL_Event & r_event ) {
 		
 		if ( r_event.button.button == SDL_BUTTON_LEFT ) {
 			int ms_x, ms_y;
@@ -182,11 +188,10 @@ Point * Point_Container::select_hero ( SDL_Event & r_event, int & i_numb ) {
 			
 			for ( int i = 0; i < number_hero; ++i ) {
 				
-				if ( 	ms_x >= get_point_hero( i )->get_coor_x() && ms_x <= get_point_hero( i )->get_coor_x() + get_point_hero( i )->get_graph_widht() &&
+				if ( 	ms_x >= get_point_hero( i )->get_coor_x() && ms_x <= get_point_hero( i )->get_coor_x() + get_point_hero( i )->get_graph_width() &&
 						ms_y >= get_point_hero( i )->get_coor_y() && ms_y <= get_point_hero( i )->get_coor_y() + get_point_hero( i )->get_graph_hight()	) {
 					
 					hero_active_numb = i;
-					i_numb = hero_active_numb;
 					hero_active = get_point_hero( i );
 						
 					return hero_active;

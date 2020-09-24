@@ -87,7 +87,7 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 				line_numb_++;
 			}
 			else {
-				printf( "skip line, there was '#' character\n" );
+				
 			}
 		}
 		
@@ -152,15 +152,7 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 			//END : parsing data to structure
 			
 			gpp_transfer( *_gpp, arr_pars_ );
-			
-			printf("\n\nchecking\n");
-			for ( int i = 0; i < _gpp->numb; ++i ) {
-				
-					_gpp->array[i].start_coord.show();
-					_gpp->array[i].start_prop.show();
-					_gpp->array[i].start_graph.show();
-					printf("\n");
-			}
+						
 			//
 			
 		}

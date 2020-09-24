@@ -18,7 +18,7 @@ class Point_Container {
 	
 	public:
 		
-		friend bool Point::check_collision();
+		//friend bool Point::check_collision();
 	
 	private:
 		int number_hero;
@@ -47,13 +47,15 @@ class Point_Container {
 		bool add( Point * _p );
 		bool del( Point * _p );
 		
-		Point * select_hero ( SDL_Event & r_event, int & i_numb );
+		Point * select_hero ( SDL_Event & r_event );
 		
 		bool add_from_file ( const char * _f_name );
 		
 		Point * get_point_hero( const int numb );
+		Point * get_active_hero()		{ return hero_active; }
 		
-		int get_number_hero()	{ return number_hero;}
+		int get_active_hero_numb()		{ return hero_active_numb; }
+		int get_number_hero()			{ return number_hero;}
 
 		bool collision_hero_with_hero();
 		bool collision_hero_with_obstacle( Point * _p );

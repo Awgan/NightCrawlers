@@ -85,8 +85,6 @@ void Stru_graph_prop::show() {
 
 Stru_graph_prop & Stru_graph_prop::operator=(const Stru_graph_prop & _str_) {
 	
-	printf("\nSTRU GRAPH::operator=		START\n");
-	
 	if( this == & _str_ )
 		return *this;
 	
@@ -122,8 +120,7 @@ Stru_graph_prop & Stru_graph_prop::operator=(const Stru_graph_prop & _str_) {
 	
 	i_width = _str_.i_width;
 	i_hight = _str_.i_hight;
-	this->show();
-	printf("STRU GRAPH::operator=::		STOP\n");
+	
 	
 	return *this;
 }

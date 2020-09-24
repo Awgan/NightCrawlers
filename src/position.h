@@ -60,9 +60,9 @@ class Position {
 		const int & get_coor_y() const 			{ return coor.y; }
 		const int & get_coor_z() const 			{ return coor.z; }
 		
-		const int * get_coor_x_p() const 			{ return &coor.x; }
-		const int * get_coor_y_p() const 			{ return &coor.y; }
-		const int * get_coor_z_p() const 			{ return &coor.z; }
+		int * get_coor_x_p()			{ return &coor.x; }
+		int * get_coor_y_p()			{ return &coor.y; }
+		int * get_coor_z_p()			{ return &coor.z; }
 		
 		void set_coor( int _x, int _y, int _z = 0 );
 		void set_coor_x( int _x );

@@ -10,15 +10,26 @@
 
 class Point : public Position, public Property, public Graph_prop {
 	
+	protected:
+		
+		struct point_borders {
+			
+			int * x;
+			int * y;
+			int * z;
+			
+			int * width;
+			int * hight;		
+		};
+	
 	private:
 		//variable for setting constant move of the object; idea is to make one key pressing to run and one key releasing to stop
 		int const_move_x;
 		int const_move_y;
 		int const_move_z;
 		
+		point_borders borders;
 		
-	protected:
-	
 	public:
 		Point ();
 		Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop _gprop );
@@ -36,7 +47,7 @@ class Point : public Position, public Property, public Graph_prop {
 		bool move();
 		
 		//Function for checking if points collide
-		bool check_collision();
+		bool isCollision( Point * secPoint );
 		
 		const Point_type & get_type() { return get_point_type(); }
 		
@@ -44,7 +55,9 @@ class Point : public Position, public Property, public Graph_prop {
 		
 		const std::string print_info();
 		
-		//Point & operator=( const Point & _p );
+		void print_borders();
+		
+		Point & operator=( const Point & _p );
 	
 };
 

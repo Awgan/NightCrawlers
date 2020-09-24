@@ -59,7 +59,7 @@ int main( int argc, char * argv[] ) {
 		surf = SDL_LoadBMP( point_box.get_point_hero(i)->get_graph_sprite().c_str() );
 		
 		SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
-	
+		
 		//SDL_Texture * tex;
 		*(tex+i) = SDL_CreateTextureFromSurface( rend, surf );
 		
@@ -79,7 +79,7 @@ int main( int argc, char * argv[] ) {
 	for ( int i = 0; i < gpp_obj.numb; ++i ) { 
 		rect_pos[i].x = point_box.get_point_hero(i)->get_coor_x();
 		rect_pos[i].y = point_box.get_point_hero(i)->get_coor_y();
-		rect_pos[i].w = point_box.get_point_hero(i)->get_graph_widht();
+		rect_pos[i].w = point_box.get_point_hero(i)->get_graph_width();
 		rect_pos[i].h = point_box.get_point_hero(i)->get_graph_hight();
 		
 		SDL_RenderCopy( rend, *(tex+i), &rect, (rect_pos + i) );
@@ -99,9 +99,9 @@ int main( int argc, char * argv[] ) {
 	int t = 0;
 	
 	Point * active_hero = NULL;
-	int num_act_hero = 3;
 	
-	active_hero = point_box.get_point_hero( num_act_hero );
+	
+	active_hero = point_box.get_active_hero();
 	
 	Info_win infWin( &event, &point_box );
 	
@@ -137,10 +137,10 @@ int main( int argc, char * argv[] ) {
 		
 		//updating hero position. Note: it is not move function which get inf from keyboard. It only updates
 		active_hero->move();
-		rect_pos[num_act_hero].x = active_hero->get_coor_x();
-		rect_pos[num_act_hero].y = active_hero->get_coor_y();
-	
+		rect_pos[point_box.get_active_hero_numb()].x = active_hero->get_coor_x();
+		rect_pos[point_box.get_active_hero_numb()].y = active_hero->get_coor_y();
 		
+		point_box.collision_hero_with_hero();	
 		
 		//rendering the frame
 		for ( int i = 0; i < gpp_obj.numb; ++i ) { 
@@ -162,11 +162,11 @@ int main( int argc, char * argv[] ) {
 			break;
 			
 			case SDL_MOUSEBUTTONDOWN :
-				//object selecting function
+						//object selecting function
 				
-				active_hero = point_box.select_hero( event, num_act_hero );
+				active_hero = point_box.select_hero( event );
 				
-				//showing window with properties; right click
+						//showing window with properties; right click
 				if ( event.button.button == SDL_BUTTON_RIGHT ) {
 				
 					if ( infWin.isPointed() ) {
