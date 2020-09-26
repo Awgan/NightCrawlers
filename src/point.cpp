@@ -1,6 +1,7 @@
 #include <cstdio>
 
 #include "point.h"
+#include "point_container.h"
 
 Point::Point() {
 
@@ -110,14 +111,16 @@ void Point::move_dz( int _dz ) {
 
 bool Point::move() {
 	
-	if ( const_move_x != 0 || const_move_y != 0 || const_move_z != 0 ) {
+	if ( isCollision( *pointCont ) == false ) {
 		
-		move_dx( const_move_x );
-		move_dy( const_move_y );
-		move_dz( const_move_z );
-		return true;
+		if ( const_move_x != 0 || const_move_y != 0 || const_move_z != 0 ) {
+			
+			move_dx( const_move_x );
+			move_dy( const_move_y );
+			move_dz( const_move_z );
+			return true;
+		}
 	}
-	
 	return false;
 }
 
@@ -131,7 +134,10 @@ bool Point::isCollision( Point * sP) {
 	
 	//for obstacle do nothing
 	//printf("\n%d	%d\n", *(borders.x), *(borders.width));
-	if ( 	(
+	printf("Point::isCollision() :: this: %p		sP: %p\n",this, sP);
+	if ( 	(this != sP) &&
+			(
+			(
 				(
 					((*borders.x + *borders.width) >= *sP->borders.x) && ((*borders.x + *borders.width) <= (*sP->borders.x + *sP->borders.width))
 				)			
@@ -150,9 +156,23 @@ bool Point::isCollision( Point * sP) {
 					((*borders.y + *borders.hight) >= *sP->borders.y) && (*borders.y <= (*sP->borders.y + *sP->borders.hight))
 				) 
 			)
+			)
 		) {
 			return true;
 		}	
+	return false;
+}
+
+bool Point::isCollision( Point_Container & pc ) {
+	
+	int numb = pc.get_number_hero();
+	
+	for ( int i = 0; i < numb; ++i ) {
+		if ( isCollision( pc.get_point_hero(i) ) ) {
+		
+			return true;
+		}	
+	}
 	return false;
 }
 

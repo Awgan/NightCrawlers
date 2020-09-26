@@ -62,8 +62,9 @@ class Point_Container {
 		bool collision_hero_with_bullet( Point * _p );
 		bool collision_bullet_with_obstacle( Point * _p );
 		
-		void status_test();
+		void status_test();		
 		
+		//friend bool Point::isCollision( Point_Container & pc ) ;
 		//Point & operator[] (int i) {return this->;
 };
 

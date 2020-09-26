@@ -5,8 +5,9 @@
 
 #include "graph_prop.h"
 #include "position.h"
-
 #include "property.h"
+
+class Point_Container;
 
 class Point : public Position, public Property, public Graph_prop {
 	
@@ -30,11 +31,15 @@ class Point : public Position, public Property, public Graph_prop {
 		
 		point_borders borders;
 		
+		Point_Container * pointCont;
+		
 	public:
 		Point ();
 		Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop _gprop );
 		Point( const Point & _p );
 		~Point() ;	
+		
+		void add_container( Point_Container * pc )	{ pointCont = pc; }
 		
 		void set_move_x( const int & _m) { const_move_x = _m; }
 		void set_move_y( const int & _m) { const_move_y = _m; }
@@ -48,6 +53,7 @@ class Point : public Position, public Property, public Graph_prop {
 		
 		//Function for checking if points collide
 		bool isCollision( Point * secPoint );
+		bool isCollision( Point_Container & pc );
 		
 		const Point_type & get_type() { return get_point_type(); }
 		
