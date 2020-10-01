@@ -73,6 +73,7 @@ bool Point_Container::add( Point * _p ){
 				
 			*(temp->thing) = *_p;
 			//temp->thing = _p;
+			
 			temp->thing->add_container( this );
 			
 			printf("\nbool Point_Container::add( Point * _p )");
@@ -172,7 +173,7 @@ bool Point_Container::collision_hero_with_hero() {
 	for ( int i = 0; i < number_hero; ++i ) {
 		
 		if ( (hero_active != get_point_hero(i)) && hero_active->isCollision( get_point_hero(i) ) ) {
-			printf("\nCollision!#	number: %d	hit number: %d \n", get_active_hero_numb(), i );
+			//printf("\nCollision!#	number: %d	hit number: %d \n", get_active_hero_numb(), i );
 			return true;
 		}		
 	}

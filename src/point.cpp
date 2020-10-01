@@ -18,7 +18,7 @@ Point::Point() {
 	
 }
 
-Point::Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop _gprop ) : Position( _cord ), Property( _prop ), Graph_prop( _prop.type, _gprop ){
+Point::Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop _gprop ) : Position( _cord ), Property( _prop ), Graph_prop( _prop.type, _gprop ) {
 	
 	const_move_x = 0;
 	const_move_y = 0;
@@ -54,74 +54,134 @@ Point::~Point() {
 
 void Point::move_dx( int _dx ) {
 	int temp = get_coor_x() + _dx * DEF_SPEED;
+	int before = get_coor_x();
 	
 	//checking limits
-	if ( within_lim_min( get_lim_min_x(), temp ) && within_lim_max( get_lim_max_x(), temp ) ) {
+	if ( within_lim_min_x( temp ) && within_lim_max_x(  temp ) ) {
 		
 		set_coor_x( temp );
+		
+		if ( isCollision( *pointCont ) == true) {
+			set_coor_x( before );
+		}
+		else {
+					//changing direction
+			int actSpr = getActualSprite();
+			printf("Point::move_dx direction %d >>\n",get_direction());
+			if ( _dx < 0 && get_direction() != CoorDir::left ) {
+				set_direction( CoorDir::left );
+				printf("move_dx:: From right to left sprite BEFORE %d >> \n",getActualSprite() );
+				switch ( actSpr ) {
+					
+					case 4:
+					setActualSprite( 3 );
+					break;
+					case 5:
+					setActualSprite( 2 );
+					break;
+					case 6:
+					setActualSprite( 1 );
+					break;
+					case 7:
+					setActualSprite( 0 );
+					break;
+					
+					default:
+					break;
+				}
+				printf("move_dx:: From right to left sprite AFTER %d >> \n",getActualSprite() );
+			}
+			else if ( _dx > 0 && get_direction() != CoorDir::right ) {
+				set_direction( CoorDir::right );
+				printf("zmiana kierunku \n");
+				printf("move_dx:: From left to right sprite BEFORE %d >> \n",getActualSprite() );
+				switch ( actSpr ) {
+					
+					case 0:
+					setActualSprite( 7 );
+					break;
+					case 1:
+					setActualSprite( 6 );
+					break;
+					case 2:
+					setActualSprite( 5 );
+					break;
+					case 3:
+					setActualSprite( 4 );
+					break;
+					
+					default:
+					break;
+				}
+				printf("move_dx:: From left to right sprite AFTER %d >> \n",getActualSprite() );
+			}
+		}	
 	}
-	
-	//changing direction
-	if ( _dx < 0 && get_direction() != CoorDir::left ) {
-		set_direction( CoorDir::left );
-	}
-	else if ( _dx > 0 && get_direction() != CoorDir::right ) {
-		set_direction( CoorDir::right );
-	}
-	
 }
 
 void Point::move_dy( int _dy ) {
 	int temp = get_coor_y() + _dy * DEF_SPEED;
+	int before = get_coor_y();
 	
 	//checking limits
-	if ( within_lim_min( get_lim_min_y(), temp ) && within_lim_max( get_lim_max_y(), temp ) ) {
+	if ( within_lim_min_y( temp ) && within_lim_max_y( temp ) ) {
 		
 		set_coor_y( temp );
+		if ( isCollision( *pointCont ) == true) {
+			set_coor_y(before);
+		}
+		else {
+					//changing direction
+			if ( _dy < 0 && get_direction() != CoorDir::up ) {
+				set_direction( CoorDir::up );
+			}
+			else if ( _dy > 0 && get_direction() != CoorDir::down ) {
+				set_direction( CoorDir::down );
+			}
+		}	
 	}
-	
-	//changing direction
-	if ( _dy < 0 && get_direction() != CoorDir::up ) {
-		set_direction( CoorDir::up );
-	}
-	else if ( _dy > 0 && get_direction() != CoorDir::down ) {
-		set_direction( CoorDir::down );
-	}
-	
 }
 
 void Point::move_dz( int _dz ) {
 	int temp = get_coor_z() + _dz * DEF_SPEED;
+	int before = get_coor_z();
 	
 	//checking limits
-	if ( within_lim_min( get_lim_min_z(), temp ) && within_lim_max( get_lim_max_z(), temp ) ) {
+	if ( within_lim_min_z( temp ) && within_lim_max_z( temp ) ) {
 		
 		set_coor_z( temp );
+		if ( isCollision( *pointCont ) == true) {
+			set_coor_z(before);
+		}
+		else {
+					//changing direction
+			if ( _dz < 0 && get_direction() != CoorDir::deep ) {
+				set_direction( CoorDir::deep );
+			}
+			else if ( _dz > 0 && get_direction() != CoorDir::shallow ) {
+				set_direction( CoorDir::shallow );
+			}
+		}	
 	}
-	
-	//changing direction
-	if ( _dz < 0 && get_direction() != CoorDir::deep ) {
-		set_direction( CoorDir::left );
-	}
-	else if ( _dz > 0 && get_direction() != CoorDir::shallow ) {
-		set_direction( CoorDir::shallow );
-	}
-	
 }
 
 bool Point::move() {
 	
-	if ( isCollision( *pointCont ) == false ) {
-		
-		if ( const_move_x != 0 || const_move_y != 0 || const_move_z != 0 ) {
-			
-			move_dx( const_move_x );
-			move_dy( const_move_y );
-			move_dz( const_move_z );
-			return true;
-		}
+	if ( const_move_x != 0 ) {
+		move_dx( const_move_x );
+		return true;
 	}
-	return false;
+	if ( const_move_y != 0  ) {
+		move_dy( const_move_y );
+		return true;
+	}
+	if ( const_move_z != 0 ) {
+		
+		move_dz( const_move_z );
+		return true;
+	}
+	
+return false;
 }
 
 bool Point::isCollision( Point * sP) {
@@ -134,7 +194,7 @@ bool Point::isCollision( Point * sP) {
 	
 	//for obstacle do nothing
 	//printf("\n%d	%d\n", *(borders.x), *(borders.width));
-	printf("Point::isCollision() :: this: %p		sP: %p\n",this, sP);
+	//printf("1.Point::isCollision(Point* sP) :: this: %p		sP: %p\n",this, sP);
 	if ( 	(this != sP) &&
 			(
 			(
@@ -158,6 +218,7 @@ bool Point::isCollision( Point * sP) {
 			)
 			)
 		) {
+			//printf("2.Point::isCollision(Point* sP) :: this: %p		sP: %p\n",this, sP);
 			return true;
 		}	
 	return false;
@@ -169,10 +230,11 @@ bool Point::isCollision( Point_Container & pc ) {
 	
 	for ( int i = 0; i < numb; ++i ) {
 		if ( isCollision( pc.get_point_hero(i) ) ) {
-		
+			
 			return true;
 		}	
 	}
+	
 	return false;
 }
 
@@ -194,6 +256,8 @@ Point & Point::operator=( const Point & _p ) {
 	const_move_x = _p.const_move_x;
 	const_move_y = _p.const_move_y;
 	const_move_z = _p.const_move_z;
+	
+	pointCont = _p.pointCont;
 	
 	Position::operator =( _p );
 	Graph_prop::operator =( _p );

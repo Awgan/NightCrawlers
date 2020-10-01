@@ -11,11 +11,13 @@ struct Stru_graph_prop {
 	
 	std::string s_sprite;		//file name for taking pictures
 	
-	int i_num_sprite;			//number of picturess of the object. they are used for motion efect.
+	int i_num_sprite;			//number of pictures of the object. they are used for motion efect.
 	
-						//int *arr_sprite_dim[i_num_sprite];
+	//int *arr_sprite_dim[i_num_sprite];
 	int ** arr_sprite_dim;		//array for storing position and dimensions of pictures of an object
 								//it must be dynamic allocated as there can be objects which change their look
+	
+	int actual_sprite;			//actual image which is shown on the display
 	
 	int i_width;				//object dimensions on the screen
 	int i_hight;
@@ -48,10 +50,13 @@ class Graph_prop {
 		
 		const int & get_graph_width() 		{ return grap_prop.i_width; }
 		const int & get_graph_hight() 		{ return grap_prop.i_hight; }
-		int * get_graph_width_p()		{ return &grap_prop.i_width; }
-		int * get_graph_hight_p()		{ return &grap_prop.i_hight; }
+		int * get_graph_width_p()			{ return &grap_prop.i_width; }
+		int * get_graph_hight_p()			{ return &grap_prop.i_hight; }
 		
 		std::string get_graph_sprite() 		{return grap_prop.s_sprite; }
+		
+		void setActualSprite( int ac );
+		const int & getActualSprite( )		{ return grap_prop.actual_sprite; };
 		
 		void print() ;		
 };

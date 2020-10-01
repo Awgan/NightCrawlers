@@ -4,6 +4,11 @@
 #define WIN_WIDTH	640
 #define WIN_HIGHT	480
 
+#define HERO_WIDTH	50
+#define HERO_HIGHT	50
+
+#define HERO_SPRITES	8
+
 #include <string>
 
 enum Point_type { neutral = 0, hero = 1, bullet = 2, obstacle = 3 };
@@ -17,11 +22,15 @@ const std::string comm_arr_sprite_files[4] = { //TODO:: put real path to files
 	"../fig/xxx.bmp"				//obstacle
 };
 
-const int comm_arr_sprite_dimensions[4][4] = {
+const int comm_arr_sprite_dimensions[8][4] = {
 	{0,0,100,100}, //TODO:: put real x,y and width, height values
 	{100,0,100,100},
 	{200,0,100,100},
-	{300,0,100,100}	
+	{300,0,100,100},
+	{400,0,100,100},
+	{500,0,100,100},
+	{600,0,100,100},
+	{700,0,100,100}
 };
 
 #endif

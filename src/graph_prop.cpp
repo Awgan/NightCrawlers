@@ -12,6 +12,7 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 	s_sprite 		= "none";
 	i_num_sprite 	= 0;
 	arr_sprite_dim 	= NULL;
+	actual_sprite 	= 0;
 	i_width 		= 0;
 	i_hight 		= 0;
 	
@@ -29,7 +30,7 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 		
 		//HERO
 		case Point_type::hero:
-			i_num_sprite = 4;
+			i_num_sprite = HERO_SPRITES;
 			
 			arr_sprite_dim = new int * [i_num_sprite];
 			for ( int i = 0; i < i_num_sprite; i++ ) {
@@ -79,7 +80,7 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 
 void Stru_graph_prop::show() {
 	
-	std::cout << "\nGRAPH show() :: file: " << s_sprite << " num_sprite: " << i_num_sprite << " width: " << i_width << " hight: " << i_hight << std::endl;
+	std::cout << "\nGRAPH show() :: file: " << s_sprite << " sprite numbers: " << i_num_sprite <<  " actual sprite: " << actual_sprite << " width: " << i_width << " hight: " << i_hight << std::endl;
 	
 }
 
@@ -117,6 +118,8 @@ Stru_graph_prop & Stru_graph_prop::operator=(const Stru_graph_prop & _str_) {
 			
 		}
 	}
+	
+	actual_sprite = _str_.actual_sprite;
 	
 	i_width = _str_.i_width;
 	i_hight = _str_.i_hight;
@@ -163,6 +166,42 @@ Graph_prop::Graph_prop() {
 
 	grap_prop.init_arr( Point_type::neutral );
 
+}
+
+void Graph_prop::setActualSprite( int ac ) {
+	
+	int pointTypeRange;
+	
+	switch (p_type) {
+		
+		case Point_type::neutral:
+		pointTypeRange = 1;
+		break;
+		
+		case Point_type::hero:
+		pointTypeRange = HERO_SPRITES;
+		break;
+		
+		case Point_type::bullet:
+		pointTypeRange = 1;
+		break;
+		
+		case Point_type::obstacle:
+		pointTypeRange = 1;
+		break;
+		
+		default:
+		break;
+	}
+	
+	if ( ac >= 0 && ac < pointTypeRange	) {
+		
+		grap_prop.actual_sprite = ac;
+	}
+	else {
+		grap_prop.actual_sprite = 0;
+		printf("Graph_prop::setActualSprite >> Error: parameter is out of range, and set to 0\n");
+	}
 }
 
 void Graph_prop::print() {

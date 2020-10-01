@@ -52,13 +52,13 @@ Point_type p_type_conv( const std::string & _str ) {
 void gpp_transfer( GPP & _gpp, const std::string _arr [][17] ) {
 		
 	for ( int i = 0; i < _gpp.numb; ++i ) {
-		
+									//		x						y						z					direction
 		_gpp.array[i].start_coord = { std::stoi(_arr[i][0]), std::stoi(_arr[i][1]), std::stoi(_arr[i][2]), dir_conv( _arr[i][3] ) };
 		
 		_gpp.array[i].start_prop = { p_type_conv( _arr[i][4] ), std::stoi(_arr[i][5]), std::stoi(_arr[i][6]), std::stoi(_arr[i][7]), std::stoi(_arr[i][8]), std::stoi(_arr[i][9]), std::stoi(_arr[i][10]), std::stoi(_arr[i][11]) };
 		
 		_gpp.array[i].start_graph.init_arr(p_type_conv( _arr[i][4] ));
-		_gpp.array[i].start_graph = { _arr[i][12], std::stoi(_arr[i][13]), NULL, std::stoi(_arr[i][15]), std::stoi(_arr[i][16]) };
+		_gpp.array[i].start_graph = { _arr[i][12], std::stoi(_arr[i][13]), NULL, 0, std::stoi(_arr[i][15]), std::stoi(_arr[i][16]) };
 		
 	}
 	

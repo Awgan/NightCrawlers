@@ -29,12 +29,14 @@ class Point : public Position, public Property, public Graph_prop {
 		int const_move_y;
 		int const_move_z;
 		
-		point_borders borders;
+		point_borders borders;			//information about Point's graphic border
 		
-		Point_Container * pointCont;
+		Point_Container * pointCont;	//pointer to container where the Point is stored
+		
+		//Point * collisionWith;			//poiter to object with which is collison
 		
 	public:
-		Point ();
+		Point();
 		Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop _gprop );
 		Point( const Point & _p );
 		~Point() ;	

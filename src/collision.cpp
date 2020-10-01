@@ -35,7 +35,7 @@ void Collision::add( Point * _p ) {
 
 	add->co_di.x = add->point->get_coor_x_p();
 	add->co_di.y = add->point->get_coor_y_p();
-	add->co_di.w = add->point->get_graph_widht_p();
+	add->co_di.w = add->point->get_graph_width_p();
 	add->co_di.h = add->point->get_graph_hight_p();
 
 	if ( first == NULL ) {

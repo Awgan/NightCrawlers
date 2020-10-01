@@ -4,6 +4,8 @@
 #include "comm_const.h"
 #include "position.h"
 
+//Coordinate members definition
+
 void Coordinate::show() {
 	
 	std::cout << "COORDINATE show() > x: " << x << " y: " << y << " z: " << z << " dir: " << (int)dir << std::endl;
@@ -36,8 +38,11 @@ Coordinate::Direction dir_conv( const std::string & _str ) {
 	return Coordinate::Direction::right;
 }
 
+//Position members definition
 
 Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
+	
+	//50s are dimensions of displayed hero
 	
 	limits.min = { 0, 0, 0 };
 	limits.max = { WIN_WIDTH - 50, WIN_HIGHT - 50, 0 };
@@ -49,7 +54,7 @@ Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
 		if ( _x <= limits.min.x )
 			coor.x = limits.min.x;
 		if ( _x >= limits.max.x )
-			coor.x = limits.max.x;
+			coor.x = limits.max.x - 50;
 	}
 	
 	if ( _y >= limits.min.y && _y <= limits.max.y )
@@ -59,7 +64,7 @@ Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
 		if ( _y <= limits.min.y )
 			coor.y = limits.min.y;
 		if ( _y >= limits.max.y )
-			coor.y= limits.max.y;
+			coor.y= limits.max.y - 50;
 	}
 	
 	//
@@ -80,7 +85,7 @@ Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
 	
 	coor.dir = _dir;
 	
-	offset = 0;
+	offset = HERO_WIDTH;
 	
 }
 
@@ -96,7 +101,7 @@ Position::Position( Coordinate & _coord ) {
 		if ( _coord.x <= limits.min.x )
 			coor.x = limits.min.x;
 		if ( _coord.x >= limits.max.x )
-			coor.x = limits.max.x;
+			coor.x = limits.max.x - 50;
 	}
 	
 	if ( _coord.y >= limits.min.y && _coord.y <= limits.max.y )
@@ -106,7 +111,7 @@ Position::Position( Coordinate & _coord ) {
 		if ( _coord.y <= limits.min.y )
 			coor.y = limits.min.y;
 		if ( _coord.y >= limits.max.y )
-			coor.y= limits.max.y;
+			coor.y= limits.max.y - 50;
 	}
 	
 	//
@@ -127,32 +132,53 @@ Position::Position( Coordinate & _coord ) {
 	
 	coor.dir = _coord.dir;
 	
-	offset = 0;	
+	offset = HERO_WIDTH;	
 }
 
-bool Position::within_lim_min( const int & _lim_min, const int & xyz ) {
+bool Position::within_lim_min_x( const int & xyz ) {
 	
-	return ( xyz >= _lim_min );
+	return ( xyz >= limits.min.x );
 }
 
-bool Position::within_lim_max( const int & _lim_max, const int & xyz ) {
+bool Position::within_lim_max_x( const int & xyz ) {
 	
-	return ( xyz <= _lim_max - offset );
+	return ( xyz <= limits.max.x - HERO_WIDTH );
+}
+
+bool Position::within_lim_min_y( const int & xyz ) {
+	
+	return ( xyz >= limits.min.y );
+}
+
+bool Position::within_lim_max_y( const int & xyz ) {
+	
+	return ( xyz <= limits.max.y - HERO_WIDTH );
+}
+
+bool Position::within_lim_min_z( const int & xyz ) {
+	
+	return ( xyz >= limits.min.z );
+}
+
+bool Position::within_lim_max_z( const int & xyz ) {
+	
+	return ( xyz <= limits.max.z - HERO_WIDTH );
 }
 
 void Position::set_coor( int _x, int _y, int _z ) { 
 	
 	//checking limits
-	if ( within_lim_min( limits.min.x, _x ) && within_lim_min( limits.min.y, _y ) && within_lim_min( limits.min.z, _z )
-	&& within_lim_max( limits.max.x, _x ) && within_lim_max( limits.max.y, _y ) && within_lim_max( limits.max.z, _z ) ) {
+	if ( within_lim_min_x( _x ) && within_lim_min_y( _y ) && within_lim_min_z( _z )
+	&& within_lim_max_x( _x ) && within_lim_max_y( _y ) && within_lim_max_z( _z ) ) {
 		
 		coor = { _x, _y, _z }; 
 	}
 }
+
 void Position::set_coor_x( int _x )	{ 
 	
 	//checking limits
-	if ( within_lim_min( limits.min.x, _x ) && within_lim_max( limits.max.x, _x ) ) {
+	if ( within_lim_min_x( _x ) && within_lim_max_x( _x ) ) {
 		
 		coor.x = _x;
 	}
@@ -161,7 +187,7 @@ void Position::set_coor_x( int _x )	{
 void Position::set_coor_y( int _y )	{ 
 	
 	//checking limits
-	if ( within_lim_min( limits.min.y, _y ) && within_lim_max( limits.max.y, _y ) ) {
+	if ( within_lim_min_y( _y ) && within_lim_max_y( _y ) ) {
 		
 		coor.y = _y;
 	}
@@ -170,7 +196,7 @@ void Position::set_coor_y( int _y )	{
 void Position::set_coor_z( int _z )	{ 
 	
 	//checking limits
-	if ( within_lim_min( limits.min.z, _z ) && within_lim_max( limits.max.z, _z ) ) {
+	if ( within_lim_min_z( _z ) && within_lim_max_z( _z ) ) {
 		
 		coor.z = _z;
 	}
@@ -190,7 +216,6 @@ void Position::inc_coor_z( int _z ) {
 	
 	set_coor_z( coor.z + _z);
 }
-
 
 void Position::print() const {
 	

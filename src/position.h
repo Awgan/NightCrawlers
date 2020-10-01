@@ -7,7 +7,6 @@
 #include "comm_const.h"
 
 
-
 struct Coordinate {
 	
 	int x;
@@ -43,11 +42,15 @@ class Position {
 	private:
 		Coordinate coor;
 		Coord_Limits limits;
-		int offset;
+		int offset;				//distance from left to right side of the hero; width of the displayed hero;
 			
 	protected:
-		bool within_lim_min( const int & _lim_min, const int & xyz );		
-		bool within_lim_max( const int & _lim_max, const int & xyz );
+		bool within_lim_min_x( const int & xyz );		
+		bool within_lim_max_x( const int & xyz );
+		bool within_lim_min_y( const int & xyz );		
+		bool within_lim_max_y( const int & xyz );
+		bool within_lim_min_z( const int & xyz );		
+		bool within_lim_max_z( const int & xyz );
 		
 	public:
 		Position( int _x = 0, int _y = 0, int _z = 0, CoorDir _dir = Coordinate::up );
