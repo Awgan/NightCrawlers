@@ -24,6 +24,7 @@ class Point_Container {
 		int number_hero;
 		int number_bullet;	
 		int number_obstacle;
+		int number_all;
 
 		//3 diffrent subgroups for 3 diffrent point types
 		point_stru * hero_first;
@@ -56,6 +57,11 @@ class Point_Container {
 		
 		int get_active_hero_numb()		{ return hero_active_numb; }
 		int get_number_hero()			{ return number_hero;}
+
+		Point * get_point_obstacle( const int numb );
+		int get_number_obstacle()		{ return number_obstacle; }
+
+		int get_number_all()			{ return number_all; };
 
 		bool collision_hero_with_hero();
 		bool collision_hero_with_obstacle( Point * _p );

@@ -5,37 +5,41 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "all.h"
+#include "all_SDL.h"
 #include "comm_const.h"
+#include "cursor_picture.h"
 #include "graph_prop.h"
 #include "info_win.h"
-#include "move_function.h"
+#include "obstacle_box_win.h"
 #include "point.h"
 #include "point_container.h"
 #include "position.h"
 #include "property.h"
 #include "read_file.h"
-	
-
-void speed_changing ( SDL_Event & r_event, Uint32 & i_time , int & i_delay );
-
 
 
 int main( int argc, char * argv[] ) {
-	
+
 	SDL_Window * win;
 	SDL_Renderer * rend;
 	SDL_Event event;
-	SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
-		
+	SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);  //SDL_IGNORE;
+	
 	SDL_Init( SDL_INIT_EVERYTHING );
+	
 	win = SDL_CreateWindow("NightCrawlers", 0, 0, WIN_WIDTH, WIN_HIGHT, SDL_WINDOW_OPENGL);
+	
 	rend = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
 	
-//making point container
+
+//making points container
 	Point_Container point_box;
+	
 
 //GPP constain 3 structures for position, graph and property
 	GPP gpp_obj;
+	
 
 //reading data from hero configuration file, where are all information about hero		
 	read_conf_file( "../conf/start_objects.txt", &gpp_obj );
@@ -47,84 +51,40 @@ int main( int argc, char * argv[] ) {
 		Point Maciek ( gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph );
 
 		point_box.add( &Maciek );
-		printf("direction : %d\n", point_box.get_point_hero( i )->get_direction());
-	}
-	
-//example of SDL 
-	SDL_Surface * surf;
-	SDL_Texture *(*tex);
-	tex = new SDL_Texture* [ gpp_obj.numb ];
-	
-	for ( int i = 0; i < gpp_obj.numb; ++i ) {
-		
-		surf = SDL_LoadBMP( point_box.get_point_hero(i)->get_graph_sprite().c_str() );
-		if ( surf == NULL ) {
-			printf("Error: there is no surf object; surf == NULL\n");
-		}
-		//SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
-		
-		//SDL_Texture * tex;
-		*(tex+i) = SDL_CreateTextureFromSurface( rend, surf );
-		
-		SDL_FreeSurface( surf );
-	}
-
-	//Dimensions of the picture taken from sprite
-	SDL_Rect rect;
-
-	//dimensions of the displayed picture
-	SDL_Rect * rect_pos = new SDL_Rect [gpp_obj.numb];
-	
-	for ( int i = 0; i < gpp_obj.numb; ++i ) {
-		int dir; 
-		
-		//set object place on the field
-		rect_pos[i].x = point_box.get_point_hero(i)->get_coor_x();
-		rect_pos[i].y = point_box.get_point_hero(i)->get_coor_y();
-		rect_pos[i].w = point_box.get_point_hero(i)->get_graph_width();
-		rect_pos[i].h = point_box.get_point_hero(i)->get_graph_hight();
-		//TODO: check if there is free non-occupied place for next object
-		//		There shouldn't be situation when two or more objects occupied this same area
-		
-			
-		//seting start direction of the object; choosing suitable sprite
-		if ( point_box.get_point_hero(i)->get_direction() == Coordinate::Direction::right ) {
-			dir = 4;
-			point_box.get_point_hero(i)->setActualSprite( 4 );
-		}
-		else { //or point_box.get_point_hero(i)->get_direction() == Coordinate::Direction::left ) {
-			dir = 0;
-			point_box.get_point_hero(i)->setActualSprite( 0 );
-		}		
-		
-		//select sprite
-		rect.x = comm_arr_sprite_dimensions[dir][0];
-		rect.y = comm_arr_sprite_dimensions[dir][1];
-		rect.w = comm_arr_sprite_dimensions[dir][2];
-		rect.h = comm_arr_sprite_dimensions[dir][3];
-		
-		SDL_RenderCopy( rend, *(tex+i), &rect, (rect_pos + i) );
+		//printf("direction : %d\n", point_box.get_point_hero( i )->get_direction());
 	}
 
 
-	//game speed
+//loading TEXTURE, RECT_POSITION and doing RENDERING	
+	SDL_Texture **tex = nullptr;
+	SDL_Rect * rect_pos = nullptr;
+	
+	for ( int i = 0; i < point_box.get_number_all(); ++i ) {
+
+		all_SDL::texture_add( &tex, rend, point_box.get_point_hero(i) );
+
+		all_SDL::rect_position_add( &rect_pos, point_box.get_point_hero(i) );
+
+		all_SDL::render( rend, tex[i], &rect_pos[i], point_box.get_point_hero(i) );
+
+	}
+
+//game speed
 	int game_delay = 20;
 	
-	//time variables for making picture dynamic
-	time_t timer 	= 0;
-	time_t time_eye = 0;
-	time(&time_eye);
+//time variables for making picture dynamic
+
 	
 	Uint32 time_st 	= 0;
 	
-	//pointer for getting actual choosen object
+//pointer for getting actual choosen object
 	Point * active_hero = NULL;
 	active_hero = point_box.get_active_hero();
+
 	
-	int actSprite = 0;
-	
-	//Information windows of object property; right mouse click
+//Information windows of object property; right mouse click
 	Info_win infWin( &event, &point_box );
+	
 	
 //***********
 //MAIN LOOP//
@@ -133,82 +93,208 @@ int main( int argc, char * argv[] ) {
 	while( event.type != SDL_QUIT ) {
 		
 		SDL_PollEvent(&event);
-		
-		time(&timer);
 			
 		if ( event.type == SDL_QUIT )
 			break;
-			
+		
+		
+	//Main Rendering START
 		SDL_RenderClear(rend);
+
+	//updating hero position. Note: it is not move function which get inf from keyboard. It only updates
+		//active_hero->move();
 		
-		//updating hero position. Note: it is not move function which get inf from keyboard. It only updates
-		active_hero->move();
-		rect_pos[point_box.get_active_hero_numb()].x = active_hero->get_coor_x();
-		rect_pos[point_box.get_active_hero_numb()].y = active_hero->get_coor_y();
+	
+	for ( int i = 0; i < point_box.get_number_hero(); ++i ) {
 		
+		point_box.get_point_hero( i )->move();
+	}
+	for ( int i = 0; i < point_box.get_number_obstacle(); ++i ) {
 		
-		//rendering the frame
-		for ( int i = 0; i < gpp_obj.numb; ++i ) { 
+		if ( point_box.get_point_obstacle( i )->move() ) {
 			
-			actSprite = point_box.get_point_hero( i )->getActualSprite();
-			
-			//choosing sprite for hero eye movement. If time elapses than change next picture
-			if ( (timer - time_eye) >= 1.5) { 
-					
-				if (actSprite >= 0 && actSprite < 4) {
-					
-					++actSprite;
-					
-					if ( actSprite > 3 )
-						actSprite = 0;
-						
-					point_box.get_point_hero( i )->setActualSprite( actSprite );
-				}
-				else if ( actSprite >= 4 && actSprite < 8 ) {
-					
-					++actSprite;
-					
-					if ( actSprite > 7 )
-						actSprite = 4;
-						
-					point_box.get_point_hero( i )->setActualSprite( actSprite );
-				}				
-			}		
-			
-			rect.x = comm_arr_sprite_dimensions[actSprite][0];
-			rect.y = comm_arr_sprite_dimensions[actSprite][1];
-			rect.w = comm_arr_sprite_dimensions[actSprite][2];
-			rect.h = comm_arr_sprite_dimensions[actSprite][3];
-			
-			SDL_RenderCopy( rend, *(tex+i), &rect, (rect_pos + i) );			
+			rect_pos[ point_box.get_number_hero() + i ].x = point_box.get_point_obstacle( i )->get_coor_x();
+			rect_pos[ point_box.get_number_hero() + i ].y = point_box.get_point_obstacle( i )->get_coor_y();
+		
 		}
+	}
+	
+	rect_pos[point_box.get_active_hero_numb()].x = active_hero->get_coor_x();
+	rect_pos[point_box.get_active_hero_numb()].y = active_hero->get_coor_y();
+	
+	//TODO:: update collieded obstacle position
 		
-		if ( (timer - time_eye) >= 1) { 
-				time(&time_eye);
-			}
-		
+		all_SDL::render_all( rend, tex, rect_pos, &point_box );
+
 		SDL_RenderPresent(rend);
 		SDL_Delay( game_delay );
-	
+	//Main Rendering STOP
+		
 		switch (event.type) {
-			
+				
 			case SDL_KEYDOWN:
 			case SDL_KEYUP:
-			
-				//move function which use keybord entry			
-			move_control::move_keyboard( active_hero, &event );
-			
-			speed_changing ( event, time_st, game_delay );
-			break;
-			
-			case SDLK_f:
-			//TODO: fire event
-			break;
-			
-			case SDL_MOUSEBUTTONDOWN :
-						//object selecting function
+			{
+					//move entry	UP DOWN LEFT RIGHT
+				SDL_Keycode & key = event.key.keysym.sym;
+				if ( key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT ) {
+					
+					allFunction::move_keyboard( active_hero, &event );
+				}
+					
+					//game speed up / speed down
+				else
+					if ( key == SDLK_KP_PLUS || key == SDLK_KP_MINUS ) { 
+						
+						allFunction::speed_changing ( event, time_st, game_delay );
+					}		
 				
-				active_hero = point_box.select_hero( event );
+					//obstacle inventory box
+				else 
+					if ( key == SDLK_p && event.type == SDL_KEYDOWN ) {				
+					
+							//window for choosing obstacle to put on the map
+						ObstacleBoxWin<SDL_Rect, ObstacleWin> obw( &event, 3, comm_arr_sprite_files[1].c_str() );
+						obw.setVisibility( true );  
+						obw.show();
+						
+						Obstacle_type selection = none;
+						
+							//select obstacle from obstacle window
+						while( event.key.keysym.sym != SDLK_q && event.type != SDL_MOUSEBUTTONDOWN ) {
+							
+							SDL_PollEvent( &event );
+							
+							if ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+							
+								selection = allFunction::Obstacle_type_select(event.button.x, event.button.y);
+								std::cout << "sellection\n";								
+							}	
+						}	
+							
+							//clear Obstacle window
+						obw.hide();
+						obw.setVisibility(false);
+						
+							//show game board without obstacle box
+						SDL_RenderClear( rend );
+							all_SDL::render_all( rend, tex, rect_pos, &point_box );
+						SDL_RenderPresent( rend );
+						
+						SDL_PollEvent( &event );
+						
+						
+							//changing mouse cursor
+						if ( selection == none )
+							
+							std::cout << "none selection\n";
+						
+						else {
+							
+							SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
+							
+							SDL_Surface * surf_sour = SDL_LoadBMP( comm_arr_sprite_files[1].c_str() );
+							
+								//creating empty surface to use it for cursor
+							SDL_Surface * surf_dest = SDL_CreateRGBSurface (
+								surf_sour->flags, 
+								30, 30, 
+								surf_sour->format->BitsPerPixel, 
+								surf_sour->format->Rmask,
+								surf_sour->format->Gmask,
+								surf_sour->format->Bmask,
+								surf_sour->format->Amask );					
+							
+							SDL_Rect rect_dest = {0, 0, 30, 30};
+								
+							SDL_Rect rect_sour;
+							
+							switch(selection) { //TODO:: function <fromArrtoRect can be change so it take ENUM of obstacle
+								case box:
+								allFunction::fromArrtoRect( 0, comm_arr_sprite_obstacle, rect_sour );
+								break;
+								
+								case rock:
+								allFunction::fromArrtoRect( 1, comm_arr_sprite_obstacle, rect_sour );
+								break;
+								
+								case flower:
+								allFunction::fromArrtoRect( 2, comm_arr_sprite_obstacle, rect_sour);
+								break;
+								
+								default:
+								break;
+							}	
+							
+							SDL_BlitScaled( surf_sour, &rect_sour, surf_dest, &rect_dest );
+							
+							SDL_Cursor * curs = SDL_CreateColorCursor( surf_dest, 0, 0);
+							SDL_SetCursor( curs );
+							
+							while( event.key.keysym.sym != SDLK_q && event.type != SDL_MOUSEBUTTONDOWN) {
+
+								SDL_PollEvent( &event );								
+							}
+							
+							
+							/*
+							 * 01 add object to point_box
+							 * 02 add coordination
+							 * 
+							 * */
+							
+							Coordinate selected_coor;
+								selected_coor.x = event.button.x;
+								selected_coor.y = event.button.y;
+								selected_coor.z = 0; 
+								selected_coor.dir = Coordinate::Direction::up;
+							
+							Stru_property selected_prop;
+								selected_prop.type = Point_type::obstacle;
+								selected_prop.b_mobile = true;
+								selected_prop.b_visible = true;
+								selected_prop.i_health = 10;
+								selected_prop.i_speed = 2;
+								selected_prop.i_move_points = 5;
+								selected_prop.i_strenght = 50;
+								selected_prop.i_fire_accuracy = 0;
+							
+							Stru_graph_prop selected_graph;
+								selected_graph.init_arr( Point_type::obstacle );									
+								selected_graph.s_sprite = comm_arr_sprite_files[1];
+								selected_graph.i_num_sprite = 1;									
+								selected_graph.arr_sprite_dim[0][0] = comm_arr_sprite_obstacle[1][0];
+								selected_graph.arr_sprite_dim[0][1] = comm_arr_sprite_obstacle[1][1];
+								selected_graph.arr_sprite_dim[0][2] = comm_arr_sprite_obstacle[1][2];
+								selected_graph.arr_sprite_dim[0][3] = comm_arr_sprite_obstacle[1][3];
+								selected_graph.actual_sprite = (int)selection;
+								selected_graph.i_width = 50;
+								selected_graph.i_hight = 50;
+								
+							Point selected_obstacle ( selected_coor, selected_prop, selected_graph );
+							
+							point_box.add( &selected_obstacle );
+							
+							
+							all_SDL::texture_add( &tex, rend, &selected_obstacle );
+							
+							all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
+							
+							SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
+							
+							SDL_FreeCursor ( curs );	
+							
+						
+						}//end if		
+					}
+			break;
+			}
+				
+			case SDL_MOUSEBUTTONDOWN :
+						
+						//object selecting function				
+				if ( event.button.button == SDL_BUTTON_LEFT )
+					active_hero = point_box.select_hero( event );
 				
 						//showing window with properties; right click
 				if ( event.button.button == SDL_BUTTON_RIGHT ) {
@@ -219,6 +305,7 @@ int main( int argc, char * argv[] ) {
 						
 							//wait for realesing the right mouse butto; game pause
 						while ( event.type != SDL_MOUSEBUTTONUP ) {
+							
 							SDL_PollEvent( &event );
 						}				
 				
@@ -251,31 +338,4 @@ int main( int argc, char * argv[] ) {
 }
 
 
-//game speed changing
-void speed_changing ( SDL_Event & r_event, Uint32 & i_time , int & i_delay ) {
-			
-		if ( r_event.type ==  SDL_KEYDOWN || r_event.type == SDL_KEYUP ) {
-			
-			//changing game speed; FASTER
-			if ( r_event.key.timestamp - i_time > 300 && r_event.key.keysym.sym == SDLK_KP_MINUS)  {
-				if ( i_delay < 100 )
-					i_delay += 10;
-				i_time = r_event.key.timestamp;
-				//event.key.keysym.sym = SDLK_KP_MULTIPLY;
-				printf("%d >> %d\n", i_delay, r_event.key.timestamp);
-			}
-			
-			else 
-			//changing game speed; SLOWER
-			if ( r_event.key.timestamp - i_time > 300 && r_event.key.keysym.sym == SDLK_KP_PLUS )  {
-				if( i_delay > 0 ) {
-					i_delay -= 10;
-					if ( i_delay < 0 ) i_delay = 0;
-				}
-				i_time = r_event.key.timestamp;
-				//event.key.keysym.sym = SDLK_KP_MULTIPLY;
-				printf("%d >> %d\n", i_delay, r_event.key.timestamp);
-			}							
-		}		
-	}
-//END : game speed changing
+

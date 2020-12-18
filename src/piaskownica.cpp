@@ -1,32 +1,14 @@
 #include <stdio.h>
+#include <iostream>
 
-void pp( int * p ) {
-	
-	printf("%p\n", p );
-}
-void pp( int & p ) {
-	
-	printf("%p\n", &p );
-}
+#include "obstacle_box_win.h"
+#include "obstacle_win.h"
+#include "win_general.h"
 
 
 int main () {
-	
-	int b = 6;
-	int v = 90;
-	
-	int *pb = &b;
-	int *pv = &v;
-	
-	printf("pb:	%p\n", pb );
-	pp( pb );
-	pp( &b );
-	pp( b );
-	
-	printf("pv:	%p\n", pv );
-	pp( pv );
-	pp( &v );
-	pp( v );
-	
+		
+	ObstacleBoxWin obw();
+		
 	return 0;
 }

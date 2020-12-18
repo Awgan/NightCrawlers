@@ -3,6 +3,25 @@
 
 #include "property.h"
 
+Stru_property & Stru_property::operator=( const Stru_property & _sgp ) {
+	
+	if ( this == &_sgp )
+		return *this;
+		
+	type = _sgp.type;	
+	
+	b_mobile = _sgp.b_mobile;
+	b_visible = _sgp.b_visible;
+	
+	i_health = _sgp.i_health;			
+	i_speed = _sgp.i_speed;
+	i_move_points = _sgp.i_move_points;
+	i_strenght = _sgp.i_strenght;
+	i_fire_accuracy = _sgp.i_fire_accuracy;
+	
+	return *this;
+}
+
 void Stru_property::show() {
 	
 	std::cout << "PROPERTY show() > type: " << (int)type << " mobile: " << b_mobile << " visible: " << b_visible << " health: " << i_health << " speed: " << i_speed << " move_p: " << i_move_points << " strenght: " << i_strenght << " fire: " << i_fire_accuracy << std::endl;
@@ -129,10 +148,43 @@ void Property::change_fire_accuracy( int _dfa ) {
 	
 }
 
+Property & Property::operator=( const Property & _prop ) {
+	
+	if ( this == &_prop )
+		return *this;
+	
+	prop = _prop.prop;
+	
+	return *this;
+	
+}
 
-void Property::print() {
+
+void Property::print() const {
 	
 	printf("mobile: %d\nvisible: %d\nhealth: %d\nspeed: %d\nmove points: %d\nstenght: %d\nfire accuracy: %d\n",
 	prop.b_mobile, prop.b_visible, prop.i_health, prop.i_speed,	prop.i_move_points, prop.i_strenght, prop.i_fire_accuracy);
+	print_type();
+}
+
+void Property::print_type() const {
 	
+	std::cout << "type: ";
+	
+	switch(prop.type) {
+		case neutral:
+			std::cout << "neutral\n";
+		break;
+		case hero:
+			std::cout << "hero\n";
+		break;
+		case bullet:
+			std::cout << "bullet\n";
+		break;
+		case obstacle:
+			std::cout << "obstacle\n";
+		break;
+		default:
+		break;		
+	}
 }

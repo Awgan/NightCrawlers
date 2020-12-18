@@ -14,19 +14,29 @@
 
 
 struct GPP {
-	//structure for holding all properties
+	
+		//structure for holding all properties
 	struct in_GPP {
-		Coordinate start_coord;
-		Stru_property start_prop;
+		Coordinate 		start_coord;
+		Stru_property 	start_prop;
 		Stru_graph_prop start_graph;
 	};
+	
 	
 	in_GPP * array;
 	int numb;
 	
+	
+	~GPP() { delete [] array; std::cout << "GPP destructor\n";}
+	
+	
+		//copy information from <string_arr> to GPP struct
 	friend void gpp_transfer( GPP & _gpp, const std::string _arr [][17] );
 };
 
+
+
+	//getting enum result from string variable
 Point_type p_type_conv( const std::string & _str ) {
 	
 	//Point_type --> { neutral = 0, hero = 1, bullet = 2, obstacle = 3 };
@@ -49,6 +59,8 @@ Point_type p_type_conv( const std::string & _str ) {
 
 //TODO::change the '17' by const variable
 
+
+
 void gpp_transfer( GPP & _gpp, const std::string _arr [][17] ) {
 		
 	for ( int i = 0; i < _gpp.numb; ++i ) {
@@ -60,9 +72,10 @@ void gpp_transfer( GPP & _gpp, const std::string _arr [][17] ) {
 		_gpp.array[i].start_graph.init_arr(p_type_conv( _arr[i][4] ));
 		_gpp.array[i].start_graph = { _arr[i][12], std::stoi(_arr[i][13]), NULL, 0, std::stoi(_arr[i][15]), std::stoi(_arr[i][16]) };
 		
-	}
-	
+	}	
 }
+
+
 
 /******************************************************************/
 
@@ -126,7 +139,7 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 			
 			file_.close();
 			
-			//BEGIN : parsing data to structure
+		//BEGIN : parsing data to structure
 			std::string tmp_all_ = tmp_file_; //changing c-string to string
 			
 			int start_of_read_ = tmp_all_.find_last_of( '\n', tmp_all_.find(',') ) + 1;
@@ -149,12 +162,10 @@ void read_conf_file ( const char * _fname, GPP * _gpp ) {
 					++y;				
 				}				
 			}
-			//END : parsing data to structure
+		//END : parsing data to structure
 			
 			gpp_transfer( *_gpp, arr_pars_ );
-						
-			//
-			
+		
 		}
 		else {
 			std::cout << "there are not lines with data; _line_numb_ = " << line_numb_ << std::endl;

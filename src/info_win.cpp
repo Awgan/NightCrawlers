@@ -62,10 +62,25 @@ bool Info_win::isPointed() {
 	
 	for ( int i = 0; i < pointCont->get_number_hero(); ++i ) {
 		
-		if ( 	ms_x >= pointCont->get_point_hero( i )->get_coor_x() && ms_x <= pointCont->get_point_hero( i )->get_coor_x() + pointCont->get_point_hero( i )->get_graph_width() &&
-				ms_y >= pointCont->get_point_hero( i )->get_coor_y() && ms_y <= pointCont->get_point_hero( i )->get_coor_y() + pointCont->get_point_hero( i )->get_graph_hight()	) {
+		if ( 	ms_x >= pointCont->get_point_hero( i )->get_coor_x() && ms_x <= pointCont->get_point_hero( i )->get_coor_x() +
+				pointCont->	get_point_hero( i )->get_graph_width() &&
+				ms_y >= pointCont->get_point_hero( i )->get_coor_y() && ms_y <= pointCont->get_point_hero( i )->get_coor_y() +
+				pointCont->get_point_hero( i )->get_graph_hight()	) {
 			
 			actPoint = pointCont->get_point_hero( i );			
+			
+			return true;
+		}
+	}
+	
+	for ( int i = 0; i < pointCont->get_number_obstacle(); ++i ) {
+		
+		if ( 	ms_x >= pointCont->get_point_obstacle( i )->get_coor_x() && ms_x <= pointCont->get_point_obstacle( i )->get_coor_x() + 
+				pointCont->get_point_obstacle( i )->get_graph_width() &&
+				ms_y >= pointCont->get_point_obstacle( i )->get_coor_y() && ms_y <= pointCont->get_point_obstacle( i )->get_coor_y() +
+				pointCont->get_point_obstacle( i )->get_graph_hight()	) {
+			
+			actPoint = pointCont->get_point_obstacle( i );			
 			
 			return true;
 		}
@@ -77,67 +92,85 @@ bool Info_win::isPointed() {
 void Info_win::show() {
 	
 	if ( isPointed() ) {
+		int pty = (int)actPoint->get_type();
 		
-		win_posX = actPoint->get_coor_x() + actPoint->get_graph_width();
-		win_posY = actPoint->get_coor_y();	
-		
-		win = SDL_CreateWindow( "Property", win_posX, win_posY, win_width, win_hight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_HIDDEN );
-		if ( win == NULL )
-			printf("#Info_win::		no win:	%s\n", SDL_GetError() );
+		switch ( pty ) {
 			
-		rend = SDL_CreateRenderer( win, -1, SDL_RENDERER_ACCELERATED );
-		if (rend == NULL )
-			printf("#Info_win::		no rend:	%s\n", SDL_GetError() );
-		
-		SDL_SetRenderDrawColor( rend, 169, 122, 28, 255 );
+			case 0:
+			break;
 			
-		TTF_Init();
-	
-		font = TTF_OpenFont( "../conf/MicroFLF.ttf", font_size );
-		if ( font == NULL ) {
-			printf( "#TTF_OpenFont		%s\n", TTF_GetError() );
-		}
-			
-		SDL_RenderClear( rend );
-
-		std::string s_tmp; 				
-		int 		r_w, r_h;
-		SDL_Rect 	r_dim;
-		
-		SDL_ShowWindow( win );
-		
-		for ( int i = 0; i < lines; ++i ) {
-		
-			switch (i) {
-				case 0:
-				s_tmp = "x: " + std::to_string( actPoint->get_coor_x() );
-				break;
-				case 1:
-				s_tmp = "y: " + std::to_string( actPoint->get_coor_y() );
-				break;
-				case 2:
-				s_tmp = "health: " + std::to_string( actPoint->get_health() );
-				break;
-				case 3:
-				s_tmp = "speed: " + std::to_string( actPoint->get_speed() );
-				break;						
-			}
-		
-			surf = TTF_RenderText_Solid( font, s_tmp.c_str(), { 255, 255, 255 } );
-			if ( surf == NULL )
-				printf( "%s\n", TTF_GetError() );
+			case 1: {			
+				win_posX = actPoint->get_coor_x() + actPoint->get_graph_width();
+				win_posY = actPoint->get_coor_y();	
 				
-			tex = SDL_CreateTextureFromSurface( rend, surf );
+				win = SDL_CreateWindow( "Property", win_posX, win_posY, win_width, win_hight, SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS | SDL_WINDOW_HIDDEN );
+				if ( win == NULL )
+					printf("#Info_win::		no win:	%s\n", SDL_GetError() );
+					
+				rend = SDL_CreateRenderer( win, -1, SDL_RENDERER_ACCELERATED );
+				if (rend == NULL )
+					printf("#Info_win::		no rend:	%s\n", SDL_GetError() );
+				
+				SDL_SetRenderDrawColor( rend, 169, 122, 28, 255 );
+					
+				TTF_Init();
 			
-			SDL_FreeSurface( surf );
+				font = TTF_OpenFont( "../conf/MicroFLF.ttf", font_size );
+				if ( font == NULL ) {
+					printf( "#TTF_OpenFont		%s\n", TTF_GetError() );
+				}
+					
+				SDL_RenderClear( rend );
+
+				std::string s_tmp; 				
+				int 		r_w, r_h;
+				SDL_Rect 	r_dim;
+				
+				SDL_ShowWindow( win );
+				
+				for ( int i = 0; i < lines; ++i ) {
+				
+					switch (i) {
+						case 0:
+						s_tmp = "x: " + std::to_string( actPoint->get_coor_x() );
+						break;
+						case 1:
+						s_tmp = "y: " + std::to_string( actPoint->get_coor_y() );
+						break;
+						case 2:
+						s_tmp = "health: " + std::to_string( actPoint->get_health() );
+						break;
+						case 3:
+						s_tmp = "speed: " + std::to_string( actPoint->get_speed() );
+						break;						
+					}
+				
+					surf = TTF_RenderText_Solid( font, s_tmp.c_str(), { 255, 255, 255 } );
+					if ( surf == NULL )
+						printf( "%s\n", TTF_GetError() );
+						
+					tex = SDL_CreateTextureFromSurface( rend, surf );
+					
+					SDL_FreeSurface( surf );
+					
+					SDL_QueryTexture( tex, NULL, NULL, &r_w, &r_h );
+					
+					r_dim = { 0, (i*(font_size+2)), r_w, r_h };
+				
+					SDL_RenderCopy( rend, tex, NULL, &r_dim );				
+				}
+			}
+			break;
 			
-			SDL_QueryTexture( tex, NULL, NULL, &r_w, &r_h );
+			case 2:
+			break;
 			
-			r_dim = { 0, (i*(font_size+2)), r_w, r_h };
-		
-			SDL_RenderCopy( rend, tex, NULL, &r_dim );				
+			case 3:
+			break;
+			
+			default:
+			break;
 		}
-		
 		SDL_RenderPresent( rend );
 	}
 }

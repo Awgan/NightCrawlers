@@ -77,9 +77,8 @@ class Position {
 		void inc_coor_y( int _y );
 		void inc_coor_z( int _z );
 		
-		const CoorDir & get_direction() const 		{ return coor.dir; }
-		
-		void set_direction( const CoorDir & _dir ) 	{ coor.dir = _dir; }
+		const CoorDir & get_direction() const 					{ return coor.dir; }
+		void 			set_direction( const CoorDir & _dir ) 	{ coor.dir = _dir; }
 		
 		const Coord_Limits & get_lim()			{ return limits; }
 		

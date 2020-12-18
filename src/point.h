@@ -33,11 +33,11 @@ class Point : public Position, public Property, public Graph_prop {
 		
 		Point_Container * pointCont;	//pointer to container where the Point is stored
 		
-		//Point * collisionWith;			//poiter to object with which is collison
+		Point * collision_with;			//poiter to object with which is collison
 		
 	public:
 		Point();
-		Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop _gprop );
+		Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop & _gprop );
 		Point( const Point & _p );
 		~Point() ;	
 		
@@ -46,16 +46,26 @@ class Point : public Position, public Property, public Graph_prop {
 		void set_move_x( const int & _m) { const_move_x = _m; }
 		void set_move_y( const int & _m) { const_move_y = _m; }
 		void set_move_z( const int & _m) { const_move_z = _m; }
-		
+				
 		void move_dx( int _dx );
 		void move_dy( int _dy );
 		void move_dz( int _dz );
-				
+		
+		int get_move_x()	{ return const_move_x; }
+		int get_move_y()	{ return const_move_y; }
+		int get_move_z()	{ return const_move_z; }
+		
 		bool move();
+		
+		bool isMoving();
 		
 		//Function for checking if points collide
 		bool isCollision( Point * secPoint );
 		bool isCollision( Point_Container & pc );
+		
+		void set_collision_with( Point * cw )	{ collision_with = cw; }
+		void reset_collision_with()				{ collision_with = nullptr;; }
+		Point * get_collision_with()			{ return collision_with; }
 		
 		const Point_type & get_type() { return get_point_type(); }
 		

@@ -26,7 +26,7 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 			for ( int i = 0; i < i_num_sprite; i++ ) {
 				arr_sprite_dim[i] = new int[4];
 			}
-			break;
+		break;
 		
 		//HERO
 		case Point_type::hero:
@@ -36,7 +36,7 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 			for ( int i = 0; i < i_num_sprite; i++ ) {
 				arr_sprite_dim[i] = new int[4];
 			}
-			break;
+		break;
 		
 		//BULLET
 		case Point_type::bullet:
@@ -46,7 +46,7 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 			for ( int i = 0; i < i_num_sprite; i++ ) {
 				arr_sprite_dim[i] = new int[4];
 			}
-			break;
+		break;
 		
 		//OBSTACLE
 		case Point_type::obstacle:
@@ -56,11 +56,11 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 			for ( int i = 0; i < i_num_sprite; i++ ) {
 				arr_sprite_dim[i] = new int[4];
 			}
-			break;	
+		break;	
 			
 		//DEFAULT
 		default:
-			break;	
+		break;	
 	};
 	
 	//getting sprite DIMENSIONS of the object from "coom_const.h" file
@@ -80,7 +80,11 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 
 void Stru_graph_prop::show() {
 	
-	std::cout << "\nGRAPH show() :: file: " << s_sprite << " sprite numbers: " << i_num_sprite <<  " actual sprite: " << actual_sprite << " width: " << i_width << " hight: " << i_hight << std::endl;
+	std::cout << "\nGRAPH show() :: file: " << s_sprite << " sprite numbers: " << i_num_sprite <<  " actual sprite: " << actual_sprite << " width: " << i_width << " hight: " << i_hight << " sprite_dim: " << 
+	arr_sprite_dim[0][0] << " " <<
+	arr_sprite_dim[0][1] << " " <<
+	arr_sprite_dim[0][2] << " " <<
+	arr_sprite_dim[0][3] << " " << std::endl;
 	
 }
 
@@ -114,8 +118,7 @@ Stru_graph_prop & Stru_graph_prop::operator=(const Stru_graph_prop & _str_) {
 			for ( int j = 0; j < 4; ++j ) {
 				
 				arr_sprite_dim[i][j] = _str_.arr_sprite_dim[i][j];
-			}
-			
+			}			
 		}
 	}
 	
@@ -141,15 +144,16 @@ Graph_prop::Graph_prop( Point_type & _pt, std::string _str, int & _wid, int & _h
 
 Graph_prop::Graph_prop( Point_type & _pt, Stru_graph_prop & _gprop ) {
 	
-	p_type = _pt;
+	
 	grap_prop.init_arr(  );
+	p_type = _pt;
 	grap_prop = _gprop;
 	
 }
 
 Graph_prop::~Graph_prop() {
 	
-	printf( "\nGraph_prop DELETE\n" );
+	//printf( "\nGraph_prop DELETE\n" );
 	
 	if( grap_prop.i_num_sprite != 0 ) {
 		for ( int i = 0; i < grap_prop.i_num_sprite; i++ ) {
@@ -206,5 +210,7 @@ void Graph_prop::setActualSprite( int ac ) {
 
 void Graph_prop::print() {
 	
+	printf( "arr sprite dim: %d %d %d %d\n", grap_prop.arr_sprite_dim[0][0], grap_prop.arr_sprite_dim[0][1], grap_prop.arr_sprite_dim[0][2], grap_prop.arr_sprite_dim[0][3] );
+	grap_prop.Stru_graph_prop::show();
 	
 }

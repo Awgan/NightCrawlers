@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stdlib.h>
 
 #include "point_container.h"
@@ -7,6 +8,7 @@ Point_Container::Point_Container(){
 	number_hero		= 0;
 	number_bullet 	= 0;	
 	number_obstacle = 0;
+	number_all = 0;
 
 	hero_first 		= NULL;
 	hero_last 		= NULL;
@@ -33,12 +35,24 @@ Point_Container::~Point_Container(){
 		if ( hero_first == NULL ) break;
 		
 	}
+	number_hero = 0;
+	
+	for ( int i = 0; i < number_obstacle; i++ ) {
+		temp = obstacle_first;
+		obstacle_first = obstacle_first->next;
+		delete temp;
+		
+		if ( obstacle_first == NULL ) break;
+		
+	}
+	number_obstacle = 0;
 	
 	
+	number_all = 0;
 }
 
 bool Point_Container::add( Point * _p ){
-		
+	
 	switch ( _p->get_type() ) {
 		
 		case Point_type::neutral:
@@ -50,7 +64,7 @@ bool Point_Container::add( Point * _p ){
 			temp->next = new point_stru;
 			temp->prev = new point_stru;
 			temp->thing = new Point;
-						
+			
 			if ( hero_first == NULL ) {
 				
 				hero_first = temp;				
@@ -74,25 +88,63 @@ bool Point_Container::add( Point * _p ){
 			*(temp->thing) = *_p;
 			//temp->thing = _p;
 			
-			temp->thing->add_container( this );
+			temp->thing->add_container( this );			
 			
-			printf("\nbool Point_Container::add( Point * _p )");
-			temp->thing->print_borders();
+			//temp->thing->print_borders();
 			
 			number_hero++;
+			number_all++;
 
 			break;
 			}
 		case Point_type::bullet:
 		
 		
-		break;
+			break;
 		
-		case Point_type::obstacle:
-		break;
+		case Point_type::obstacle:	{
+			point_stru * temp = new point_stru;
+			temp->next = new point_stru;
+			temp->prev = new point_stru;
+			temp->thing = new Point;
+			
+			if ( obstacle_first == NULL ) {
+				
+				obstacle_first = temp;				
+				obstacle_last = obstacle_first;
+				
+				obstacle_first->next = NULL;
+				obstacle_first->prev = NULL;
+				
+				//hero_active = hero_first->thing; 	---> there is no similar variable for obstacle, but maybe should be
+				//hero_active_numb = 0;				---> there is no similar variable for obstacle, but maybe should be
+			} 
+			else
+			{
+				obstacle_last->next = temp;
+				temp->prev = obstacle_last;
+				obstacle_last = temp;
+				obstacle_last->next = NULL;
+				
+			}
+				
+			*(temp->thing) = *_p;
+			//temp->thing = _p;
+			
+			temp->thing->add_container( this );			
+			
+			//temp->thing->print_borders();
+			
+			number_obstacle++;
+			number_all++;
+			
+			std::cout << "adding obstacle; obstacle numebr: " << number_obstacle
+						<< "; all number: " << number_all << '\n'; 
 		
+			break;
+		}
 		default:
-		break;
+			break;
 		
 	}
 	return 0;
@@ -121,6 +173,7 @@ bool Point_Container::del( Point * _p ) {
 				
 				delete temp_del;
 				number_hero--;
+				number_all--;
 				
 				return true;
 			} else { //temp_stru == hero_first
@@ -131,6 +184,7 @@ bool Point_Container::del( Point * _p ) {
 				}
 				delete temp_del;
 				number_hero--;
+				number_all--;
 				
 				return true;
 			}
@@ -151,7 +205,7 @@ bool Point_Container::del( Point * _p ) {
 }
 
 Point * Point_Container::get_point_hero( const int numb ) { 
-	//not finish
+	//not finished
 	
 	if ( numb >= 0 && numb < number_hero ) {
 		
@@ -168,17 +222,54 @@ Point * Point_Container::get_point_hero( const int numb ) {
 return NULL;
 }
 
+Point * Point_Container::get_point_obstacle( const int numb ) {
+	
+	if ( numb >= 0 && numb < number_obstacle ) {
+		
+		point_stru	* temp = obstacle_first;
+		
+		for( int i = 0; i < numb; ++i ) {
+			
+			temp = temp->next;			
+		}			
+		if ( temp == nullptr ) {
+			std::cout << "error: no Point object\n";
+		}
+		return temp->thing;		
+	}
+
+return NULL;
+}
+
 bool Point_Container::collision_hero_with_hero() {
 		
 	for ( int i = 0; i < number_hero; ++i ) {
 		
-		if ( (hero_active != get_point_hero(i)) && hero_active->isCollision( get_point_hero(i) ) ) {
-			//printf("\nCollision!#	number: %d	hit number: %d \n", get_active_hero_numb(), i );
+		if ( (hero_active != get_point_hero(i)) && hero_active->isCollision( get_point_hero(i)) ) {
+			
 			return true;
 		}		
 	}
 	return false;
 }
+
+bool Point_Container::collision_hero_with_obstacle( Point * _p ) {
+
+	for ( int i = 0; i < number_obstacle; ++i ) {
+		
+		if ( hero_active->isCollision( get_point_obstacle(i)) ) {
+			
+			return true;
+		}		
+	}
+	return false;
+}
+
+
+/*
+bool collision_hero_with_bullet( Point * _p );
+bool collision_bullet_with_obstacle( Point * _p );
+*/
 
 Point * Point_Container::select_hero ( SDL_Event & r_event ) {
 		

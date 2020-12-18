@@ -23,6 +23,8 @@ struct Stru_property {
 	
 	//int ...
 	void show();
+	
+	Stru_property & operator=( const Stru_property & _sgp );
 };
 
 
@@ -76,13 +78,18 @@ class Property {
 		void change_fire_accuracy( int _dfa );
 		const int & get_fire_accuracy() const	{ return prop.i_fire_accuracy; }
 		
+		
+		Property & operator=( const Property & _prop );
+		
 		//metody typu get
 		
 		//metody typu set
 		
 		//metody typu  
 		
-		void print();
+		void print() const;
+		
+		void print_type() const ;
 		
 };
 

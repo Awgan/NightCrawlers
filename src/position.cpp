@@ -152,7 +152,7 @@ bool Position::within_lim_min_y( const int & xyz ) {
 
 bool Position::within_lim_max_y( const int & xyz ) {
 	
-	return ( xyz <= limits.max.y - HERO_WIDTH );
+	return ( xyz <= limits.max.y - HERO_HIGHT );
 }
 
 bool Position::within_lim_min_z( const int & xyz ) {
