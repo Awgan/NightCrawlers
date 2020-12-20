@@ -66,140 +66,152 @@ Point::~Point() {
 }
 
 void Point::move_dx( int _dx ) {
+	
+	if ( is_mobile() != true )
+		return;
+	
 	int temp = get_coor_x() + _dx * DEF_SPEED;
 	int before = get_coor_x();
 	
-	//checking limits
-	if ( within_lim_min_x( temp ) && within_lim_max_x( temp ) ) {
+	/* checking limits */
+	if (  within_lim_min_x( temp ) && within_lim_max_x( temp )  ) {
 		
-		set_coor_x( temp );
-			while ( isCollision( *pointCont ) == true && _dx != 0 ) 
-			{
-				_dx > 0 ? --_dx : ++_dx;
-				temp = before + _dx * DEF_SPEED;
-				set_coor_x ( temp );			
-			}
-		/*		
-		if ( isCollision( *pointCont ) == true) {
-			set_coor_x( before );
-		}
-		else {
-		*/			//changing direction
-			int actSpr = getActualSprite();
+		
+		/* changing direction and sprite (if it is possible for an object) */
+		int actSpr = getActualSprite();
+		
+		if ( _dx < 0 && get_direction() != CoorDir::left ) {
+			set_direction( CoorDir::left );
 			
-			if ( _dx < 0 && get_direction() != CoorDir::left ) {
-				set_direction( CoorDir::left );
+			switch ( actSpr ) {
 				
-				switch ( actSpr ) {
-					
-					case 4:
-					setActualSprite( 3 );
-					break;
-					case 5:
-					setActualSprite( 2 );
-					break;
-					case 6:
-					setActualSprite( 1 );
-					break;
-					case 7:
-					setActualSprite( 0 );
-					break;
-					
-					default:
-					break;
-				}				
-			}
-			else if ( _dx > 0 && get_direction() != CoorDir::right ) {
-				set_direction( CoorDir::right );
+				case 4:
+				setActualSprite( 3 );
+				break;
+				case 5:
+				setActualSprite( 2 );
+				break;
+				case 6:
+				setActualSprite( 1 );
+				break;
+				case 7:
+				setActualSprite( 0 );
+				break;
 				
-				switch ( actSpr ) {
-					
-					case 0:
-					setActualSprite( 7 );
-					break;
-					case 1:
-					setActualSprite( 6 );
-					break;
-					case 2:
-					setActualSprite( 5 );
-					break;
-					case 3:
-					setActualSprite( 4 );
-					break;
-					
-					default:
-					break;
-				}
+				default:
+				break;
+			}				
+		}
+		else if ( _dx > 0 && get_direction() != CoorDir::right ) {
+			set_direction( CoorDir::right );
+			
+			switch ( actSpr ) {
+				
+				case 0:
+				setActualSprite( 7 );
+				break;
+				case 1:
+				setActualSprite( 6 );
+				break;
+				case 2:
+				setActualSprite( 5 );
+				break;
+				case 3:
+				setActualSprite( 4 );
+				break;
+				
+				default:
+				break;
 			}
-		//}	
+		}
+		
+		
+		/* set new position and place object as close as it is possible to the collision object */
+		set_coor_x( temp );		
+		
+		while ( isCollision( *pointCont ) == true && _dx != 0 ) 
+		{
+			_dx > 0 ? --_dx : ++_dx;
+			temp = before + _dx * DEF_SPEED;
+			set_coor_x ( temp );			
+		}	
 	}
+	
+	
+	/* self moving counter */		
+		isSelfMoving();			
 }
 
 void Point::move_dy( int _dy )
 {
+	if ( is_mobile() != true )
+		return;
+	
 	int temp = get_coor_y() + _dy * DEF_SPEED;
 	int before = get_coor_y();
-		
-		//checking limits
-		if ( within_lim_min_y( temp ) && within_lim_max_y( temp ) )
+	
+		/* checking limits */
+		if (  within_lim_min_y( temp ) && within_lim_max_y( temp )  )
 		{
 			
+			
+			/* changing direction and sprite (if it is possible for an object) */
+			if ( _dy < 0 && get_direction() != CoorDir::up )
+			{
+				set_direction( CoorDir::up );
+			}
+			else if ( _dy > 0 && get_direction() != CoorDir::down )
+			{
+				set_direction( CoorDir::down );
+			}
+			
+			
+			/* set new position and place object as close as it is possible to the collision object */
 			set_coor_y( temp );
+			
 			while ( isCollision( *pointCont ) == true && _dy != 0 ) 
 			{
 				_dy > 0 ? --_dy : ++_dy;
 				temp = before + _dy * DEF_SPEED;
 				set_coor_y ( temp );				
-			}
-			
-			/*
-			if ( isCollision( *pointCont ) == true)
-			{
-				set_coor_y(before);
-			}
-			*/			
-			/*else
-			{*/
-						//changing direction
-				if ( _dy < 0 && get_direction() != CoorDir::up )
-				{
-					set_direction( CoorDir::up );
-				}
-				else if ( _dy > 0 && get_direction() != CoorDir::down )
-				{
-					set_direction( CoorDir::down );
-				}
-			//}	
-		}				
+			}	
+		}
+		
+	
+	/* self moving counter */		
+		isSelfMoving();		
 }
 
 void Point::move_dz( int _dz ) {
+	
+	if ( is_mobile() != true )
+		return;
+	
 	int temp = get_coor_z() + _dz * DEF_SPEED;
 	int before = get_coor_z();
 	
-	//checking limits
-	if ( within_lim_min_z( temp ) && within_lim_max_z( temp ) ) {
+	/* checking limits */
+	if (  within_lim_min_z( temp ) && within_lim_max_z( temp )  ) {
 		
-		set_coor_z( temp );
-			while ( isCollision( *pointCont ) == true ) 
-			{
-				_dz > 0 ? --_dz : ++_dz;
-				temp = before + _dz * DEF_SPEED;
-				set_coor_z ( temp );					
-			}
-		/*
-		if ( isCollision( *pointCont ) == true) {
-			set_coor_z(before);
+	
+		/* changing direction and sprite (if it is possible for an object) */
+		if ( _dz < 0 && get_direction() != CoorDir::deep ) {
+			set_direction( CoorDir::deep );
 		}
-		else {*/
-				//changing direction
-			if ( _dz < 0 && get_direction() != CoorDir::deep ) {
-				set_direction( CoorDir::deep );
-			}
-			else if ( _dz > 0 && get_direction() != CoorDir::shallow ) {
-				set_direction( CoorDir::shallow );
-			}
-		//}	
+		else if ( _dz > 0 && get_direction() != CoorDir::shallow ) {
+			set_direction( CoorDir::shallow );
+		}
+		
+		
+		/* set new position and place object as close as it is possible to the collision object */
+		set_coor_z( temp );
+		
+		while ( isCollision( *pointCont ) == true ) 
+		{
+			_dz > 0 ? --_dz : ++_dz;
+			temp = before + _dz * DEF_SPEED;
+			set_coor_z ( temp );					
+		}			
 	}
 }
 
@@ -229,6 +241,39 @@ bool Point::isMoving() {
 	}
 	
 return false;	
+}
+
+bool Point::isSelfMoving() {
+	
+	int moveDistance = get_move_distance();
+	
+	/* '-1' value means that object can't be pushed */
+	if ( moveDistance == -1 )
+		return false;
+	
+	
+	/* self moving counter for pushed object */
+	int maxDistance = get_speed() * get_move_points();
+	
+	if ( moveDistance < maxDistance && get_move_distance() >= 0 ) {
+		
+		change_move_distance( get_speed() );		
+		return true;
+		
+	} else {
+	
+		/* stopping self move object */
+		set_move_distance( 0 );
+		
+		set_move_x( 0 );
+		set_move_y( 0 );
+		set_move_z( 0 );
+		
+		return false;
+	}
+
+
+return false;
 }
 
 bool Point::isCollision( Point * sP) {
@@ -268,7 +313,7 @@ bool Point::isCollision( Point * sP) {
 			)
 		) {
 			collision_with = sP;
-			
+			std::cout << "collision\n";
 			return true;
 		}	
 
@@ -277,21 +322,24 @@ bool Point::isCollision( Point * sP) {
 
 bool Point::isCollision( Point_Container & pc ) {
 	
+	/* checking if there is collision with another hero */
 	int numb = pc.get_number_hero();
-	
+		
 	for ( int i = 0; i < numb; ++i ) {
 		if ( isCollision( pc.get_point_hero(i) ) ) {
 			
+			/* return; no more action */
 			return true;
 		}	
 	}
 	
+	/* checking if there is collision with obstacle */
 	numb = pc.get_number_obstacle();
 	
 	for ( int i = 0; i < numb; ++i ) {
+		
 		if ( isCollision( pc.get_point_obstacle(i) ) ) {
-			
-			//TODO::make obstacle move
+			std::cout << "i : " << i << '\n';
 			if ( pc.get_point_obstacle(i)->is_mobile() ) {
 				
 				CoorDir cd = this->get_direction();
@@ -300,29 +348,34 @@ bool Point::isCollision( Point_Container & pc ) {
 					case CoorDir::left:
 					case CoorDir::right:
 						pc.get_point_obstacle(i)->set_move_y( 0 );
+						pc.get_point_obstacle(i)->set_move_z( 0 );
+						
 						pc.get_point_obstacle(i)->set_move_x( pc.get_point_obstacle(i)->get_speed() * (cd == CoorDir::left ? -1 : 1) );
-						std::cout << "box is moving X\n";
+						pc.get_point_obstacle(i)->set_move_distance( 0 );
+						std::cout << "obstacle is moving X : " << const_move_x << '\n';
 					break;
 					
 					case CoorDir::up:
 					case CoorDir::down:
 						pc.get_point_obstacle(i)->set_move_x( 0 );
+						pc.get_point_obstacle(i)->set_move_z( 0 );
+						
 						pc.get_point_obstacle(i)->set_move_y( pc.get_point_obstacle(i)->get_speed() * (cd == CoorDir::up ? -1 : 1) );
-						std::cout << "box is moving Y\n";
+						pc.get_point_obstacle(i)->set_move_distance( 0 );
+						std::cout << "obstacle is moving Y : " << const_move_y << '\n';
 					break;
 					
 					default:
 					break;
 				}
-				
-				
-				
 			}
 			
 			return true;
+		
 		}	
 	}
 	
+	collision_with = nullptr;
 	return false;
 }
 

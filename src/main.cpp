@@ -47,7 +47,7 @@ int main( int argc, char * argv[] ) {
 
 //creating heroes	
 	for ( int i = 0; i < gpp_obj.numb; ++i ) {
-		
+
 		Point Maciek ( gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph );
 
 		point_box.add( &Maciek );
@@ -58,7 +58,7 @@ int main( int argc, char * argv[] ) {
 //loading TEXTURE, RECT_POSITION and doing RENDERING	
 	SDL_Texture **tex = nullptr;
 	SDL_Rect * rect_pos = nullptr;
-	
+
 	for ( int i = 0; i < point_box.get_number_all(); ++i ) {
 
 		all_SDL::texture_add( &tex, rend, point_box.get_point_hero(i) );
@@ -68,7 +68,7 @@ int main( int argc, char * argv[] ) {
 		all_SDL::render( rend, tex[i], &rect_pos[i], point_box.get_point_hero(i) );
 
 	}
-
+;
 //game speed
 	int game_delay = 20;
 	
@@ -92,6 +92,7 @@ int main( int argc, char * argv[] ) {
 		
 	while( event.type != SDL_QUIT ) {
 		
+		//TODO:: flush event; there is issue with KEYUP and arrows; code constatly execute move function
 		SDL_PollEvent(&event);
 			
 		if ( event.type == SDL_QUIT )
@@ -138,7 +139,8 @@ int main( int argc, char * argv[] ) {
 					//move entry	UP DOWN LEFT RIGHT
 				SDL_Keycode & key = event.key.keysym.sym;
 				if ( key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT ) {
-					
+					//TODO:: flush event; SDL remamber last event; when it is KEYUP and one of the arrows, code comes here constatly
+					//std::cout << "moving... \n";
 					allFunction::move_keyboard( active_hero, &event );
 				}
 					
@@ -255,7 +257,7 @@ int main( int argc, char * argv[] ) {
 								selected_prop.b_visible = true;
 								selected_prop.i_health = 10;
 								selected_prop.i_speed = 2;
-								selected_prop.i_move_points = 5;
+								selected_prop.i_move_points = 15;
 								selected_prop.i_strenght = 50;
 								selected_prop.i_fire_accuracy = 0;
 							

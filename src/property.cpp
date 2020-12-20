@@ -16,6 +16,7 @@ Stru_property & Stru_property::operator=( const Stru_property & _sgp ) {
 	i_health = _sgp.i_health;			
 	i_speed = _sgp.i_speed;
 	i_move_points = _sgp.i_move_points;
+	i_move_distance	= _sgp.i_move_distance;
 	i_strenght = _sgp.i_strenght;
 	i_fire_accuracy = _sgp.i_fire_accuracy;
 	
@@ -38,10 +39,12 @@ Property::Property() {
 	prop.i_health 			= 100;
 	prop.i_speed 			= 15;
 	prop.i_move_points 		= 45;
+	prop.i_move_distance	= 0;
 	prop.i_strenght 		= 60;
 	prop.i_fire_accuracy 	= 46;
 	
 }
+
 
 Property::Property( Stru_property & _prop ) {
 
@@ -50,13 +53,16 @@ Property::Property( Stru_property & _prop ) {
 		prop.b_mobile 			= _prop.b_mobile;
 		prop.b_visible 			= _prop.b_visible;
 		
-//TODO:: add condistion for eliminate values out of range
+//TODO:: add condition for eliminate values out of range
 		prop.i_health 			= _prop.i_health;
 		prop.i_speed 			= _prop.i_speed;
 		prop.i_move_points 		= _prop.i_move_points;
+		prop.i_move_distance	= _prop.i_move_distance;
 		prop.i_strenght 		= _prop.i_strenght;
 		prop.i_fire_accuracy 	= _prop.i_fire_accuracy;
 }
+
+
 Property::~Property() {
 	
 	
@@ -112,6 +118,22 @@ void Property::change_move_points( int _dm ) {
 		prop.i_move_points = 0;
 
 	
+}
+
+
+//move distance
+void Property::set_move_distance( int _md ) {
+	
+	prop.i_move_distance = _md;
+	if ( prop.i_move_distance < 0 )
+		prop.i_move_distance = 0;
+}
+
+void Property::change_move_distance( int _d_md ) {
+	
+	prop.i_move_distance += _d_md;
+	if ( prop.i_move_distance < 0 )
+		prop.i_move_distance = 0;
 }
 
 

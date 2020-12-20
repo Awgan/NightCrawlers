@@ -18,6 +18,7 @@ struct Stru_property {
 	int 	i_health;			
 	int 	i_speed;
 	int 	i_move_points;
+	int		i_move_distance;	// indicates distance which an object can move after pushing; '-1' value means that an object can't be pushed
 	int 	i_strenght;
 	int 	i_fire_accuracy;
 	
@@ -67,6 +68,11 @@ class Property {
 		void set_move_points( int _mp );
 		void change_move_points( int _dm );
 		const int & get_move_points() const		{ return prop.i_move_points; }
+		
+		//move distance
+		void set_move_distance( int _md );
+		void change_move_distance( int _d_md );
+		const int & get_move_distance() const	{ return prop.i_move_distance; }
 		
 		//strenght
 		void set_strenght( int _s );

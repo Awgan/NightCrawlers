@@ -19,7 +19,7 @@ bool all_SDL::texture_add ( SDL_Texture *** _tex , SDL_Renderer * _rend, Point *
 	static int mem_all = 0; //possible slots for texture objects;
 	static int mem_cur = 0; //current occupied slots for texture objects;
 
-	
+
 // increasing memory for texture objects
 	if ( mem_cur >= mem_all ) {
 		
@@ -47,7 +47,7 @@ bool all_SDL::texture_add ( SDL_Texture *** _tex , SDL_Renderer * _rend, Point *
 		}
 		
 	}
-	
+
 	SDL_Surface * surf;
 			
 	surf = SDL_LoadBMP( _poi->get_graph_sprite().c_str() );
@@ -74,7 +74,7 @@ bool all_SDL::texture_add ( SDL_Texture *** _tex , SDL_Renderer * _rend, Point *
 	
 	mem_cur++;
 	SDL_FreeSurface( surf );
-	
+
 return true;
 }
 

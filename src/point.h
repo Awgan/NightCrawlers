@@ -1,6 +1,7 @@
 #ifndef POINT_H_
 #define POINT_H_
 
+#include <iostream>
 #include <string>
 
 #include "graph_prop.h"
@@ -13,6 +14,7 @@ class Point : public Position, public Property, public Graph_prop {
 	
 	protected:
 		
+		/* struct for calculating an object edges */
 		struct point_borders {
 			
 			int * x;
@@ -24,7 +26,8 @@ class Point : public Position, public Property, public Graph_prop {
 		};
 	
 	private:
-		//variable for setting constant move of the object; idea is to make one key pressing to run and one key releasing to stop
+		
+		/* variable for setting constant move of the object; idea is to make one key pressing to run and one key releasing to stop */
 		int const_move_x;
 		int const_move_y;
 		int const_move_z;
@@ -33,7 +36,7 @@ class Point : public Position, public Property, public Graph_prop {
 		
 		Point_Container * pointCont;	//pointer to container where the Point is stored
 		
-		Point * collision_with;			//poiter to object with which is collison
+		Point * collision_with;			//pointer to object which is collison with
 		
 	public:
 		Point();
@@ -57,9 +60,11 @@ class Point : public Position, public Property, public Graph_prop {
 		
 		bool move();
 		
-		bool isMoving();
+		bool isMoving();		//checking if an object has no zero const_move values
 		
-		//Function for checking if points collide
+		bool isSelfMoving();	//checking if an object can move itself
+		
+		/* Functions for checking if points collide */
 		bool isCollision( Point * secPoint );
 		bool isCollision( Point_Container & pc );
 		
