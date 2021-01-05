@@ -1,6 +1,8 @@
 #ifndef COMM_CONST_H_
 #define COMM_CONST_H_
 
+#include <SDL2/SDL.h>
+
 #define WIN_WIDTH	800
 #define WIN_HIGHT	600
 
@@ -10,6 +12,12 @@
 #define HERO_SPRITES	8
 
 #define BACKGROUND 0
+
+#define OBSTACLE_PLACE	SDLK_p
+#define GAME_SPEED_UP	SDLK_KP_PLUS
+#define GAME_SPEED_DOWN	SDLK_KP_MINUS
+#define BULLET_FIRE		SDLK_p
+
 
 #include <string>
 

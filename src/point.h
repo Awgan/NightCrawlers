@@ -22,7 +22,7 @@ class Point : public Position, public Property, public Graph_prop {
 			int * z;
 			
 			int * width;
-			int * hight;		
+			int * hight;
 		};
 	
 	private:
@@ -42,7 +42,9 @@ class Point : public Position, public Property, public Graph_prop {
 		Point();
 		Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop & _gprop );
 		Point( const Point & _p );
-		~Point() ;	
+		~Point() ;
+		
+		Point ( Point && _p );
 		
 		void add_container( Point_Container * pc )	{ pointCont = pc; }
 		
@@ -81,7 +83,11 @@ class Point : public Position, public Property, public Graph_prop {
 		void print_borders();
 		
 		Point & operator=( const Point & _p );
+		
+		Point & operator=( Point && _p ); //under construction
 	
 };
+
+#include "point_container.h"
 
 #endif

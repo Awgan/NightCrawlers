@@ -3,10 +3,11 @@
 
 #include "point_container.h"
 
+
 Point_Container::Point_Container(){
 	
 	number_hero		= 0;
-	number_bullet 	= 0;	
+	number_bullet 	= 0;
 	number_obstacle = 0;
 	number_all = 0;
 
@@ -52,8 +53,106 @@ Point_Container::~Point_Container(){
 }
 
 bool Point_Container::add( Point * _p ){
-	
+
 	switch ( _p->get_type() ) {
+		
+		case Point_type::neutral:
+		break;
+		/**/
+		case Point_type::hero: {
+			
+			point_stru * temp = new point_stru;
+			temp->next = new point_stru;
+			temp->prev = new point_stru;
+			temp->thing = new Point;
+			
+			if ( hero_first == NULL ) {
+				
+				hero_first = temp;
+				hero_last = hero_first;
+				
+				hero_first->next = NULL;
+				hero_first->prev = NULL;
+				
+				hero_active = hero_first->thing;
+				hero_active_numb = 0;
+			} 
+			else
+			{
+				hero_last->next = temp;
+				temp->prev = hero_last;
+				hero_last = temp;
+				hero_last->next = NULL;
+				
+			}
+				
+			*(temp->thing) = *_p;
+			//temp->thing = _p;
+			
+			temp->thing->add_container( this );	
+			
+			//temp->thing->print_borders();
+			
+			number_hero++;
+			number_all++;
+
+			break;
+		}
+		case Point_type::bullet:
+		
+		
+			break;
+		
+		case Point_type::obstacle:	{
+			point_stru * temp = new point_stru;
+			temp->next = new point_stru;
+			temp->prev = new point_stru;
+			temp->thing = new Point;
+			
+			if ( obstacle_first == NULL ) {
+				
+				obstacle_first = temp;
+				obstacle_last = obstacle_first;
+				
+				obstacle_first->next = NULL;
+				obstacle_first->prev = NULL;
+				
+				//hero_active = hero_first->thing; 	---> there is no similar variable for obstacle, but maybe should be
+				//hero_active_numb = 0;				---> there is no similar variable for obstacle, but maybe should be
+			} 
+			else
+			{
+				obstacle_last->next = temp;
+				temp->prev = obstacle_last;
+				obstacle_last = temp;
+				obstacle_last->next = NULL;
+				
+			}
+				
+			*(temp->thing) = *_p;
+			//temp->thing = _p;
+			
+			temp->thing->add_container( this );
+			
+			//temp->thing->print_borders();
+			
+			number_obstacle++;
+			number_all++;
+
+			break;
+		}
+		default:
+			break;
+		
+	}
+
+	return 0;
+}
+
+
+bool Point_Container::add( Point && _p ){
+	
+	switch ( _p.get_type() ) {
 		
 		case Point_type::neutral:
 		break;
@@ -85,7 +184,7 @@ bool Point_Container::add( Point * _p ){
 				
 			}
 				
-			*(temp->thing) = *_p;
+			*(temp->thing) = _p;
 			//temp->thing = _p;
 			
 			temp->thing->add_container( this );			
@@ -94,9 +193,9 @@ bool Point_Container::add( Point * _p ){
 			
 			number_hero++;
 			number_all++;
-
+			std::cout << "hero/all number in point container: " << number_hero << '/' << number_all << '\n';
 			break;
-			}
+		}
 		case Point_type::bullet:
 		
 		
@@ -128,7 +227,7 @@ bool Point_Container::add( Point * _p ){
 				
 			}
 				
-			*(temp->thing) = *_p;
+			*(temp->thing) = _p;
 			//temp->thing = _p;
 			
 			temp->thing->add_container( this );			
@@ -137,18 +236,17 @@ bool Point_Container::add( Point * _p ){
 			
 			number_obstacle++;
 			number_all++;
-			
-			std::cout << "adding obstacle; obstacle numebr: " << number_obstacle
-						<< "; all number: " << number_all << '\n'; 
-		
+
 			break;
 		}
 		default:
 			break;
 		
 	}
+
 	return 0;
 }
+
 
 bool Point_Container::del( Point * _p ) {
 	
@@ -206,36 +304,53 @@ bool Point_Container::del( Point * _p ) {
 
 Point * Point_Container::get_point_hero( const int numb ) { 
 	//not finished
-	
+
 	if ( numb >= 0 && numb < number_hero ) {
 		
 		point_stru	* temp = hero_first;
 		
 		for( int i = 0; i < numb; ++i ) {
 			
-			temp = temp->next;			
-		}			
+			temp = temp->next;
+		}
 		
-		return temp->thing;		
+		return temp->thing;
+	}
+	
+return NULL;
+}
+
+Point * Point_Container::get_point_bullet( const int numb ) {
+
+	if ( numb >= 0 && numb < number_bullet ) {
+		
+		point_stru	* temp = bullet_first;
+		
+		for( int i = 0; i < numb; ++i ) {
+			
+			temp = temp->next;
+		}
+		
+		return temp->thing;
 	}
 	
 return NULL;
 }
 
 Point * Point_Container::get_point_obstacle( const int numb ) {
-	
+
 	if ( numb >= 0 && numb < number_obstacle ) {
 		
 		point_stru	* temp = obstacle_first;
 		
 		for( int i = 0; i < numb; ++i ) {
 			
-			temp = temp->next;			
-		}			
+			temp = temp->next;
+		}
 		if ( temp == nullptr ) {
 			std::cout << "error: no Point object\n";
 		}
-		return temp->thing;		
+		return temp->thing;
 	}
 
 return NULL;

@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "point.h"
-#include "point_container.h"
+
 
 Point::Point() {
 
@@ -58,6 +58,12 @@ Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _
 	pointCont = _p.pointCont;
 	
 	collision_with = _p.collision_with;
+	
+}
+
+Point::Point ( Point && _p ) {
+	
+	std::cout << "r-value reference ctor\n";
 	
 }
 
@@ -409,6 +415,12 @@ Point & Point::operator=( const Point & _p ) {
 	Graph_prop::operator =( _p );
 	Property::operator =( _p );
 		
+	return *this;
+}
+
+Point & Point::operator=( Point && _p ) {
+	
+	std::cout << "r_value assigment operator\n";
 	return *this;
 }
 

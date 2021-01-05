@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <iostream>
 
-#include "comm_const.h"
 #include "position.h"
 
 //Coordinate members definition

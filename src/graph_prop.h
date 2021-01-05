@@ -33,7 +33,7 @@ struct Stru_graph_prop {
 
 class Graph_prop {
 
-	private:		
+	private:
 		Stru_graph_prop	grap_prop;
 		Point_type p_type;
 		
@@ -43,22 +43,22 @@ class Graph_prop {
 		Graph_prop();
 		
 		Graph_prop( Point_type & _pt, std::string _str, int & _wid, int & _hig );
-				
+		
 		Graph_prop( Point_type & _pt, Stru_graph_prop & _gprop );
 		
-		~Graph_prop();		
+		~Graph_prop();
 		
 		const int & get_graph_width() 		{ return grap_prop.i_width; }
 		const int & get_graph_hight() 		{ return grap_prop.i_hight; }
 		int * get_graph_width_p()			{ return &grap_prop.i_width; }
 		int * get_graph_hight_p()			{ return &grap_prop.i_hight; }
 		
-		std::string get_graph_sprite() 		{return grap_prop.s_sprite; }
+		std::string get_graph_sprite() const	{return grap_prop.s_sprite; }
 		
 		void setActualSprite( int ac );
 		const int & getActualSprite( )		{ return grap_prop.actual_sprite; };
 		
-		void print() ;		
+		void print() ;
 };
 
 #endif

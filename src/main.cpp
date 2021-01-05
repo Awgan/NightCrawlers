@@ -17,6 +17,7 @@
 #include "position.h"
 #include "property.h"
 #include "read_file.h"
+#include "texture_cont.h"
 
 
 int main( int argc, char * argv[] ) {
@@ -45,12 +46,18 @@ int main( int argc, char * argv[] ) {
 	read_conf_file( "../conf/start_objects.txt", &gpp_obj );
 
 
-//creating heroes	
+//creating heroes
 	for ( int i = 0; i < gpp_obj.numb; ++i ) {
-
+		
+		/*
 		Point Maciek ( gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph );
-
 		point_box.add( &Maciek );
+		*/
+		
+		/* using movment ctor */
+		point_box.add( (Point(gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph)) );
+		
+		
 		//printf("direction : %d\n", point_box.get_point_hero( i )->get_direction());
 	}
 
@@ -59,22 +66,25 @@ int main( int argc, char * argv[] ) {
 	SDL_Texture **tex = nullptr;
 	SDL_Rect * rect_pos = nullptr;
 
+	Text_Cont< Text_Objt > tex_container( rend );
+
 	for ( int i = 0; i < point_box.get_number_all(); ++i ) {
 
+		//TODO:: delete texture_add() when Text_Cont object takes all work
 		all_SDL::texture_add( &tex, rend, point_box.get_point_hero(i) );
+		tex_container.add( point_box.get_point_hero( i ) );
 
 		all_SDL::rect_position_add( &rect_pos, point_box.get_point_hero(i) );
-
-		all_SDL::render( rend, tex[i], &rect_pos[i], point_box.get_point_hero(i) );
-
-	}
-;
+ 
+		all_SDL::render( rend, tex_container.get_texture_hero( i ), &rect_pos[i], point_box.get_point_hero(i) );
+		//OUT::all_SDL::render( rend, tex[i], &rect_pos[i], point_box.get_point_hero(i) );
+ 
+	};
+ 
 //game speed
-	int game_delay = 20;
+	int game_delay = 10;
 	
-//time variables for making picture dynamic
-
-	
+//time variables for making picture dynamic	
 	Uint32 time_st 	= 0;
 	
 //pointer for getting actual choosen object
@@ -126,7 +136,8 @@ int main( int argc, char * argv[] ) {
 	//TODO:: update collieded obstacle position
 		
 		all_SDL::render_all( rend, tex, rect_pos, &point_box );
-
+		//all_SDL::render_all( rend, &tex_container, rect_pos, &point_box );
+		
 		SDL_RenderPresent(rend);
 		SDL_Delay( game_delay );
 	//Main Rendering STOP
@@ -146,14 +157,14 @@ int main( int argc, char * argv[] ) {
 					
 					//game speed up / speed down
 				else
-					if ( key == SDLK_KP_PLUS || key == SDLK_KP_MINUS ) { 
+					if ( key == GAME_SPEED_UP || key == GAME_SPEED_DOWN ) { 
 						
 						allFunction::speed_changing ( event, time_st, game_delay );
 					}		
 				
 					//obstacle inventory box
 				else 
-					if ( key == SDLK_p && event.type == SDL_KEYDOWN ) {				
+					if ( key == OBSTACLE_PLACE && event.type == SDL_KEYDOWN ) {				
 					
 							//window for choosing obstacle to put on the map
 						ObstacleBoxWin<SDL_Rect, ObstacleWin> obw( &event, 3, comm_arr_sprite_files[1].c_str() );
@@ -187,10 +198,10 @@ int main( int argc, char * argv[] ) {
 						
 						
 							//changing mouse cursor
-						if ( selection == none )
+						if ( selection == none ) {
 							
 							std::cout << "none selection\n";
-						
+						}
 						else {
 							
 							SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
@@ -257,14 +268,14 @@ int main( int argc, char * argv[] ) {
 								selected_prop.b_visible = true;
 								selected_prop.i_health = 10;
 								selected_prop.i_speed = 2;
-								selected_prop.i_move_points = 15;
+								selected_prop.i_move_points = 3;
 								selected_prop.i_strenght = 50;
 								selected_prop.i_fire_accuracy = 0;
 							
 							Stru_graph_prop selected_graph;
-								selected_graph.init_arr( Point_type::obstacle );									
+								selected_graph.init_arr( Point_type::obstacle );
 								selected_graph.s_sprite = comm_arr_sprite_files[1];
-								selected_graph.i_num_sprite = 1;									
+								selected_graph.i_num_sprite = 1;
 								selected_graph.arr_sprite_dim[0][0] = comm_arr_sprite_obstacle[1][0];
 								selected_graph.arr_sprite_dim[0][1] = comm_arr_sprite_obstacle[1][1];
 								selected_graph.arr_sprite_dim[0][2] = comm_arr_sprite_obstacle[1][2];
@@ -289,11 +300,18 @@ int main( int argc, char * argv[] ) {
 						
 						}//end if		
 					}
-			break;
+				else
+					if ( key == BULLET_FIRE ) {
+						
+						// TODO:: bullet firing
+						
+					}
 			}
+			break;
+			
 				
 			case SDL_MOUSEBUTTONDOWN :
-						
+			{			
 						//object selecting function				
 				if ( event.button.button == SDL_BUTTON_LEFT )
 					active_hero = point_box.select_hero( event );
@@ -314,7 +332,7 @@ int main( int argc, char * argv[] ) {
 						infWin.hide();
 					}
 				}
-					
+			}	
 			break;
 			
 			default :

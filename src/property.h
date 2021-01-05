@@ -44,7 +44,7 @@ class Property {
 
 		//point type
 		void set_point_type( const Point_type & _pt ) 	{ prop.type = _pt; };
-		const Point_type & get_point_type() 			{ return prop.type; };
+		const Point_type & get_point_type() const		{ return prop.type; };
 		
 		//mobile
 		bool is_mobile() const					{ return prop.b_mobile; }

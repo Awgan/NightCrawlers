@@ -4,8 +4,6 @@
 #include <SDL2/SDL.h>
 
 #include "all_SDL.h"
-#include "comm_const.h"
-
 
 
 bool all_SDL::texture_add ( SDL_Texture *** _tex , SDL_Renderer * _rend, Point * _poi ) {
@@ -53,7 +51,7 @@ bool all_SDL::texture_add ( SDL_Texture *** _tex , SDL_Renderer * _rend, Point *
 	surf = SDL_LoadBMP( _poi->get_graph_sprite().c_str() );
 	
 	if ( surf == nullptr ) {
-			printf("Error: there is no surf object; surf == NULL. . Function 'all_SDL::texture_add' terminated\n");
+			printf("Error: there is no surf object; surf == NULL. Function 'all_SDL::texture_add' terminated\n");
 			return false;
 		}
 		
@@ -198,24 +196,54 @@ bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, SDL_Rect * _rect
 	return true;
 }
 
+
+/*It can only work when there are no bullets;
+ * When there will be bullets, it goes wrong;
+ */
 bool all_SDL::render_all( SDL_Renderer * _rend, SDL_Texture ** _tex, SDL_Rect * _rect, Point_Container * _poi ) {
 	
 	//rendering the frame
 		for ( int i = 0; i < _poi->get_number_hero(); ++i ) {
-		
+
 			all_SDL::render( _rend, _tex[i], &_rect[i], _poi->get_point_hero(i) );
 		}
-		
-		for ( int i = 0; i < _poi->get_number_obstacle(); ++i ) {
-			
-			render( _rend, _tex[ _poi->get_number_hero() + i ], &_rect[ _poi->get_number_hero() + i ], _poi->get_point_obstacle(i) );
 
-//TODO:: separate tex array between hero, obstacle, and bullet
+		for ( int i = 0; i < _poi->get_number_bullet(); ++i ) {
+
+			all_SDL::render( _rend, _tex[ _poi->get_number_hero() + i ], &_rect[ _poi->get_number_hero() + i ], _poi->get_point_bullet(i) );
+		}
+
+
+		for ( int i = 0; i < _poi->get_number_obstacle(); ++i ) {
+
+			all_SDL::render( _rend, _tex[ _poi->get_number_hero() + _poi->get_number_bullet() + i ], &_rect[ _poi->get_number_hero() + _poi->get_number_bullet() + i ], _poi->get_point_obstacle(i) );
+
 		}
 	
 	return true;
 }
 
+bool all_SDL::render_all( SDL_Renderer * _rend, Text_Cont< Text_Objt >  * _tex, SDL_Rect * _rect, Point_Container * _poi ) {
+
+	for ( int i = 0; i < _poi->get_number_hero(); ++i ) {
+
+		all_SDL::render( _rend, _tex->get_texture( i ), &_rect[i], _poi->get_point_hero(i) );
+	}
+
+	for ( int i = 0; i < _poi->get_number_bullet(); ++i ) {
+
+		all_SDL::render( _rend, _tex->get_texture( _poi->get_number_hero() + i ), &_rect[ _poi->get_number_hero() + i ], _poi->get_point_bullet(i) );
+	}
+
+
+	for ( int i = 0; i < _poi->get_number_obstacle(); ++i ) {
+
+		all_SDL::render( _rend, _tex->get_texture( _poi->get_number_hero() + _poi->get_number_bullet() + i ), &_rect[ _poi->get_number_hero() + _poi->get_number_bullet() + i ], _poi->get_point_obstacle(i) );
+
+	}
+
+	return true;
+}
 
 
 

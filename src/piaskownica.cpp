@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <iostream>
 
-#include "obstacle_box_win.h"
-#include "obstacle_win.h"
-#include "win_general.h"
+#include <SDL2/SDL.h>
+
+#include "texture_cont.h"
 
 
 int main () {
 		
-	ObstacleBoxWin obw();
-		
+	Text_Cont<Text_Objt> test01;
+
+	test01.test();
+	
 	return 0;
 }
