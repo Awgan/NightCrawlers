@@ -132,7 +132,49 @@ bool all_SDL::rect_position_add ( SDL_Rect ** _rect, Point * _poi ) {
 return true;
 }
 
-bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, SDL_Rect * _rect, Point * _poi ) {
+bool all_SDL::rect_position_add ( std::vector< SDL_Rect > (& _rect)[3], Point * _poi ) {
+
+	if ( _poi == nullptr )
+	{
+		std::cout << "Point object 'nullptr'. Function 'all_SDL::rect_position_add' terminated\n";
+		return false;
+	}
+
+	//set object place on the boardgame
+
+	SDL_Rect rect_temp;
+
+	rect_temp.x = _poi->get_coor_x();
+	rect_temp.y = _poi->get_coor_y();
+	rect_temp.w = _poi->get_graph_width();
+	rect_temp.h = _poi->get_graph_hight();
+
+	switch ( _poi->get_point_type() )
+	{
+		break;
+		
+		case hero:
+			_rect[0].push_back( rect_temp );
+			std::cout << "h added\n";
+		break;
+
+		case bullet:
+			_rect[1].push_back( rect_temp );
+		break;
+
+		case obstacle:
+			_rect[2].push_back( rect_temp );
+		break;
+
+		default:
+			return false;
+		break;
+	}
+
+	return true;
+}
+
+bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect * _rect, Point * _poi ) {
 
 	static time_t timer 	= 0;
 	static time_t time_eye  = 0;
@@ -170,7 +212,7 @@ bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, SDL_Rect * _rect
 	
 	
 	//Dimensions of the picture from sprite
-		SDL_Rect rect_sprite;	
+		SDL_Rect rect_sprite;
 	
 	if ( _poi->get_type() == Point_type::hero ) {
 	//select sprite
@@ -223,27 +265,26 @@ bool all_SDL::render_all( SDL_Renderer * _rend, SDL_Texture ** _tex, SDL_Rect * 
 	return true;
 }
 
-bool all_SDL::render_all( SDL_Renderer * _rend, Text_Cont< Text_Objt >  * _tex, SDL_Rect * _rect, Point_Container * _poi ) {
+bool all_SDL::render_all( SDL_Renderer * _rend, Text_Cont< Text_Objt >  * _tex, const std::vector< SDL_Rect > (& _rect)[3], Point_Container * _poi ) {
 
 	for ( int i = 0; i < _poi->get_number_hero(); ++i ) {
 
-		all_SDL::render( _rend, _tex->get_texture( i ), &_rect[i], _poi->get_point_hero(i) );
+		all_SDL::render( _rend, _tex->get_texture_hero( i ), &_rect[0][i], _poi->get_point_hero(i) );
+
 	}
 
 	for ( int i = 0; i < _poi->get_number_bullet(); ++i ) {
 
-		all_SDL::render( _rend, _tex->get_texture( _poi->get_number_hero() + i ), &_rect[ _poi->get_number_hero() + i ], _poi->get_point_bullet(i) );
+		all_SDL::render( _rend, _tex->get_texture_bullet( i ), &_rect[1][i], _poi->get_point_bullet(i) );
+
 	}
 
 
 	for ( int i = 0; i < _poi->get_number_obstacle(); ++i ) {
 
-		all_SDL::render( _rend, _tex->get_texture( _poi->get_number_hero() + _poi->get_number_bullet() + i ), &_rect[ _poi->get_number_hero() + _poi->get_number_bullet() + i ], _poi->get_point_obstacle(i) );
+		all_SDL::render( _rend, _tex->get_texture_obstacle( i ), &_rect[2][i], _poi->get_point_obstacle(i) );
 
 	}
 
 	return true;
 }
-
-
-

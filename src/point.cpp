@@ -283,7 +283,7 @@ return false;
 }
 
 bool Point::isCollision( Point * sP) {
-	
+
 	//switch (point type)
 	
 	//for hero check obstacle and bullet
@@ -327,7 +327,7 @@ bool Point::isCollision( Point * sP) {
 }
 
 bool Point::isCollision( Point_Container & pc ) {
-	
+
 	/* checking if there is collision with another hero */
 	int numb = pc.get_number_hero();
 		

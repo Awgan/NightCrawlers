@@ -187,13 +187,13 @@ bool Point_Container::add( Point && _p ){
 			*(temp->thing) = _p;
 			//temp->thing = _p;
 			
-			temp->thing->add_container( this );			
+			temp->thing->add_container( this );
 			
 			//temp->thing->print_borders();
 			
 			number_hero++;
 			number_all++;
-			std::cout << "hero/all number in point container: " << number_hero << '/' << number_all << '\n';
+
 			break;
 		}
 		case Point_type::bullet:
@@ -313,7 +313,7 @@ Point * Point_Container::get_point_hero( const int numb ) {
 			
 			temp = temp->next;
 		}
-		
+
 		return temp->thing;
 	}
 	

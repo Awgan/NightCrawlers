@@ -11,7 +11,7 @@ struct point_stru {
 	point_stru * prev;
 	
 	Point * thing;
-	SDL_Texture * texture;		//pointer for Point texture
+	//OUT::SDL_Texture * texture;		//pointer for Point texture
 	
 };
 
@@ -23,25 +23,25 @@ class Point_Container {
 		//friend bool Point::check_collision();
 	
 	private:
-		int number_hero;
-		int number_bullet;	
-		int number_obstacle;
+
 		int number_all;
 
 		//3 diffrent subgroups for 3 diffrent point types
 		point_stru * hero_first;
 		point_stru * hero_last;
+		int number_hero;
 		
 		Point * hero_active;
 		int 	hero_active_numb;
 		
 		point_stru * bullet_first;
 		point_stru * bullet_last;
+		int number_bullet;
 		
 		point_stru * obstacle_first;
 		point_stru * obstacle_last;
-		
-		
+		int number_obstacle;
+
 	protected:
 
 	public:
@@ -62,18 +62,18 @@ class Point_Container {
 		Point * get_active_hero()		{ return hero_active; }
 		
 		int get_active_hero_numb()		{ return hero_active_numb; }
-		int get_number_hero()			{ return number_hero;}
+		int get_number_hero() const		{ return number_hero;}
 		
 		
 		Point * get_point_bullet( const int numb );
-		int get_number_bullet()			{ return number_bullet; }
+		int get_number_bullet() const	{ return number_bullet; }
 		
 		
 		Point * get_point_obstacle( const int numb );
-		int get_number_obstacle()		{ return number_obstacle; }
+		int get_number_obstacle() const	{ return number_obstacle; }
 
 
-		int get_number_all()			{ return number_all; };
+		int get_number_all() const		{ return number_all; };
 
 
 		bool collision_hero_with_hero();
@@ -82,7 +82,7 @@ class Point_Container {
 		bool collision_bullet_with_obstacle( Point * _p );
 		
 		
-		void status_test();		
+		void status_test();
 		
 		
 		//friend bool Point::isCollision( Point_Container & pc ) ;

@@ -21,9 +21,6 @@ position.o: position.cpp position.h comm_const.h
 property.o: property.cpp property.h comm_const.h
 	g++ -c -o $@ property.cpp -I.
 
-#collision.o: collision.cpp collision.h point.h
-#	g++ -c -o collision.o collision.cpp -I. -I/usr/local/lib/ -I/usr/local/inlude/SDL2/ -I. -I/usr/include/ -I/usr/local/include/ -I/usr/local/lib/
-
 info_win.o: info_win.cpp info_win.h point.o point_container.o
 	g++ -c -o $@ info_win.cpp -I.
 
@@ -39,11 +36,11 @@ all.o: all.cpp all.h comm_const.h point.o
 cursor_picture.o: cursor_picture.cpp cursor_picture.h comm_const.h win_general.o
 	g++ -c -o $@ cursor_picture.cpp -I.
 
-all_SDL.o: all_SDL.cpp all_SDL.h comm_const.h texture_cont.o texture_cont_templ.cpp
+all_SDL.o: all_SDL.cpp all_SDL.h comm_const.h texture_cont.o
 	g++ -c -o $@ all_SDL.cpp -I.
 
 texture_cont.o: texture_cont.cpp texture_cont.h comm_const.h point.o
-	g++ -c -o $@ texture_cont.cpp point.o -I.
+	g++ -c -o $@ texture_cont.cpp -I.
 
 piaskownica: texture_cont.h all_SDL.o cursor_picture.o obstacle_box_win.h all.o info_win.o point_container.o collision.o position.o point.o collision.o graph_prop.o main.cpp property.o comm_const.h read_file.h
 	g++ -O0 -o piaskownica piaskownica.cpp all_SDL.o cursor_picture.o all.o info_win.o graph_prop.o point.o point_container.o position.o property.o win_general.o obstacle_win.o `sdl2-config --cflags --libs` -lSDL2_ttf -lSDL2  -L/usr/local/lib

@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <vector>
 
 #include "all.h"
 #include "all_SDL.h"
@@ -35,7 +36,7 @@ int main( int argc, char * argv[] ) {
 	
 
 //making points container
-	Point_Container point_box;
+	Point_Container point_container;
 	
 
 //GPP constain 3 structures for position, graph and property
@@ -51,36 +52,42 @@ int main( int argc, char * argv[] ) {
 		
 		/*
 		Point Maciek ( gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph );
-		point_box.add( &Maciek );
+		point_container.add( &Maciek );
 		*/
 		
 		/* using movment ctor */
-		point_box.add( (Point(gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph)) );
+		point_container.add( (Point(gpp_obj.array[i].start_coord, gpp_obj.array[i].start_prop, gpp_obj.array[i].start_graph)) );
 		
 		
-		//printf("direction : %d\n", point_box.get_point_hero( i )->get_direction());
+		//printf("direction : %d\n", point_container.get_point_hero( i )->get_direction());
 	}
 
 
-//loading TEXTURE, RECT_POSITION and doing RENDERING	
-	SDL_Texture **tex = nullptr;
-	SDL_Rect * rect_pos = nullptr;
+//loading TEXTURE, RECT_POSITION and doing RENDERING
+	//SDL_Texture **tex = nullptr;
+	//SDL_Rect * rect_pos = nullptr;
 
 	Text_Cont< Text_Objt > tex_container( rend );
 
-	for ( int i = 0; i < point_box.get_number_all(); ++i ) {
+	std::vector< SDL_Rect > rect_container[ 3 ];
+
+
+	for ( int i = 0; i < point_container.get_number_all(); ++i ) {
 
 		//TODO:: delete texture_add() when Text_Cont object takes all work
-		all_SDL::texture_add( &tex, rend, point_box.get_point_hero(i) );
-		tex_container.add( point_box.get_point_hero( i ) );
+		//all_SDL::texture_add( &tex, rend, point_container.get_point_hero(i) );
+		tex_container.add( point_container.get_point_hero( i ) );
 
-		all_SDL::rect_position_add( &rect_pos, point_box.get_point_hero(i) );
- 
-		all_SDL::render( rend, tex_container.get_texture_hero( i ), &rect_pos[i], point_box.get_point_hero(i) );
-		//OUT::all_SDL::render( rend, tex[i], &rect_pos[i], point_box.get_point_hero(i) );
- 
-	};
- 
+		//all_SDL::rect_position_add( &rect_pos, point_container.get_point_hero(i) );
+		all_SDL::rect_position_add( rect_container, point_container.get_point_hero(i) );
+
+		//all_SDL::render( rend, tex_container.get_texture_hero( i ), rect_container, point_container.get_point_hero(i) );
+		//OUT::all_SDL::render( rend, tex[i], &rect_pos[i], point_container.get_point_hero(i) );
+	}
+
+		all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
+
+
 //game speed
 	int game_delay = 10;
 	
@@ -89,11 +96,11 @@ int main( int argc, char * argv[] ) {
 	
 //pointer for getting actual choosen object
 	Point * active_hero = NULL;
-	active_hero = point_box.get_active_hero();
+	active_hero = point_container.get_active_hero();
 
 	
 //Information windows of object property; right mouse click
-	Info_win infWin( &event, &point_box );
+	Info_win infWin( &event, &point_container );
 	
 	
 //***********
@@ -115,33 +122,39 @@ int main( int argc, char * argv[] ) {
 	//updating hero position. Note: it is not move function which get inf from keyboard. It only updates
 		//active_hero->move();
 		
-	
-	for ( int i = 0; i < point_box.get_number_hero(); ++i ) {
-		
-		point_box.get_point_hero( i )->move();
+//std::cout << "updating position before: " << point_container.get_number_hero() << "\n";
+	//updating hero position
+	for ( int i = 0; i < point_container.get_number_hero(); ++i ) {
+
+		point_container.get_point_hero( i )->move();
+
 	}
-	for ( int i = 0; i < point_box.get_number_obstacle(); ++i ) {
+//std::cout << "updating position AFTER: "<< point_container.get_number_hero() << "\n\n";
+	//updating obstacle position
+	for ( int i = 0; i < point_container.get_number_obstacle(); ++i ) {
 		
-		if ( point_box.get_point_obstacle( i )->move() ) {
-			
-			rect_pos[ point_box.get_number_hero() + i ].x = point_box.get_point_obstacle( i )->get_coor_x();
-			rect_pos[ point_box.get_number_hero() + i ].y = point_box.get_point_obstacle( i )->get_coor_y();
+		if ( point_container.get_point_obstacle( i )->move() ) {
+
+			//rect_pos[ point_container.get_number_hero() + i ].x = point_container.get_point_obstacle( i )->get_coor_x();
+			//rect_pos[ point_container.get_number_hero() + i ].y = point_container.get_point_obstacle( i )->get_coor_y();
+			rect_container[2][i].x = point_container.get_point_obstacle( i )->get_coor_x();
+			rect_container[2][i].y = point_container.get_point_obstacle( i )->get_coor_y();
 		
 		}
 	}
-	
-	rect_pos[point_box.get_active_hero_numb()].x = active_hero->get_coor_x();
-	rect_pos[point_box.get_active_hero_numb()].y = active_hero->get_coor_y();
-	
+
+	rect_container[0][point_container.get_active_hero_numb()].x = active_hero->get_coor_x();
+	rect_container[0][point_container.get_active_hero_numb()].y = active_hero->get_coor_y();
+
 	//TODO:: update collieded obstacle position
-		
-		all_SDL::render_all( rend, tex, rect_pos, &point_box );
-		//all_SDL::render_all( rend, &tex_container, rect_pos, &point_box );
-		
+
+		//all_SDL::render_all( rend, tex, rect_pos, &point_container );
+		all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
+
 		SDL_RenderPresent(rend);
 		SDL_Delay( game_delay );
 	//Main Rendering STOP
-		
+
 		switch (event.type) {
 				
 			case SDL_KEYDOWN:
@@ -151,7 +164,7 @@ int main( int argc, char * argv[] ) {
 				SDL_Keycode & key = event.key.keysym.sym;
 				if ( key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT ) {
 					//TODO:: flush event; SDL remamber last event; when it is KEYUP and one of the arrows, code comes here constatly
-					//std::cout << "moving... \n";
+					std::cout << "moving... \n";
 					allFunction::move_keyboard( active_hero, &event );
 				}
 					
@@ -181,17 +194,19 @@ int main( int argc, char * argv[] ) {
 							if ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 							
 								selection = allFunction::Obstacle_type_select(event.button.x, event.button.y);
-								std::cout << "sellection\n";								
-							}	
-						}	
-							
+								std::cout << "sellection\n";
+							}
+						}
+						
 							//clear Obstacle window
 						obw.hide();
 						obw.setVisibility(false);
 						
 							//show game board without obstacle box
 						SDL_RenderClear( rend );
-							all_SDL::render_all( rend, tex, rect_pos, &point_box );
+							//all_SDL::render_all( rend, tex, rect_pos, &point_container );
+							//all_SDL::render_all( rend, &tex_container, rect_pos, &point_container );
+							all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
 						SDL_RenderPresent( rend );
 						
 						SDL_PollEvent( &event );
@@ -216,7 +231,7 @@ int main( int argc, char * argv[] ) {
 								surf_sour->format->Rmask,
 								surf_sour->format->Gmask,
 								surf_sour->format->Bmask,
-								surf_sour->format->Amask );					
+								surf_sour->format->Amask );
 							
 							SDL_Rect rect_dest = {0, 0, 30, 30};
 								
@@ -246,12 +261,12 @@ int main( int argc, char * argv[] ) {
 							
 							while( event.key.keysym.sym != SDLK_q && event.type != SDL_MOUSEBUTTONDOWN) {
 
-								SDL_PollEvent( &event );								
+								SDL_PollEvent( &event );
 							}
 							
 							
 							/*
-							 * 01 add object to point_box
+							 * 01 add object to point_container
 							 * 02 add coordination
 							 * 
 							 * */
@@ -286,19 +301,21 @@ int main( int argc, char * argv[] ) {
 								
 							Point selected_obstacle ( selected_coor, selected_prop, selected_graph );
 							
-							point_box.add( &selected_obstacle );
+							point_container.add( &selected_obstacle );
 							
 							
-							all_SDL::texture_add( &tex, rend, &selected_obstacle );
+							//all_SDL::texture_add( &tex, rend, &selected_obstacle );
+							tex_container.add( &selected_obstacle );
 							
-							all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
+							//all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
+							all_SDL::rect_position_add( rect_container, &selected_obstacle );
 							
 							SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
 							
-							SDL_FreeCursor ( curs );	
+							SDL_FreeCursor ( curs );
 							
 						
-						}//end if		
+						}//end if
 					}
 				else
 					if ( key == BULLET_FIRE ) {
@@ -311,10 +328,10 @@ int main( int argc, char * argv[] ) {
 			
 				
 			case SDL_MOUSEBUTTONDOWN :
-			{			
-						//object selecting function				
+			{
+						//object selecting function
 				if ( event.button.button == SDL_BUTTON_LEFT )
-					active_hero = point_box.select_hero( event );
+					active_hero = point_container.select_hero( event );
 				
 						//showing window with properties; right click
 				if ( event.button.button == SDL_BUTTON_RIGHT ) {
@@ -327,28 +344,29 @@ int main( int argc, char * argv[] ) {
 						while ( event.type != SDL_MOUSEBUTTONUP ) {
 							
 							SDL_PollEvent( &event );
-						}				
+						}
 				
 						infWin.hide();
 					}
 				}
-			}	
+			}
 			break;
 			
 			default :
-			break;			
+			break;
 		}
+std::cout << "MAIN LOOP end\n";
 	}
 //end main loop
 	
-	delete [] tex;
-	delete [] rect_pos;
-	
-	
+	//delete [] tex;
+	//delete [] rect_pos;
+
+
 	for ( int i = 0; i < gpp_obj.numb; ++i ) {
-		
-		point_box.del( point_box.get_point_hero(i) );
-	}	
+
+		point_container.del( point_container.get_point_hero(i) );
+	}
 	
 	SDL_DestroyWindow(win);
 	SDL_DestroyRenderer(rend);

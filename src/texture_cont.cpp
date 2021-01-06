@@ -37,8 +37,7 @@ Text_Objt & Text_Objt::operator=( Text_Objt && _to )
 }
 
 SDL_Texture * Text_Objt::operator[]( int i )
-{std::cout << "Text_Objt::operator[]\n";
-
+{
 	Text_Objt * p = this;
 
 	for ( int r = 0; p != nullptr && r < i; r++ )
@@ -49,7 +48,6 @@ SDL_Texture * Text_Objt::operator[]( int i )
 	SDL_Texture * temp = p->sdl_tex;
 
 	return temp;
-
 }
 
 void Text_Objt::print()

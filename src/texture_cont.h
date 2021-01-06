@@ -19,13 +19,26 @@ struct Text_Objt
 	Point_type p_type;
 
 	Text_Objt & operator=( const Text_Objt & _to );
-	
+
 	Text_Objt & operator=( Text_Objt && _to );
 
 	SDL_Texture * operator[]( int i );
 
 	void print();
 };
+
+//DRAFT
+struct Rect_Objt
+{
+	Rect_Objt * next;
+	Rect_Objt * prev;
+
+	SDL_Rect * sdl_rect;
+
+	Point_type p_type;
+
+};
+//
 
 
 
@@ -49,7 +62,6 @@ class Text_Cont
 		T * obstacle_tail;
 		int obstacle_count;
 
-		
 
 	protected:
 
