@@ -30,7 +30,7 @@ class Point : public Position, public Property, public Graph_prop {
 		/* variable for setting constant move of the object; idea is to make one key pressing to run and one key releasing to stop */
 		int const_move_x;
 		int const_move_y;
-		int const_move_z;
+		int const_move_z;		//parameter for 3D moving ;)
 		
 		point_borders borders;			//information about Point's graphic border
 		
@@ -61,7 +61,9 @@ class Point : public Position, public Property, public Graph_prop {
 		int get_move_z()	{ return const_move_z; }
 		
 		bool move();
-		
+
+		void push( Point * _p );//pushing object when there is collision
+
 		bool isMoving();		//checking if an object has no zero const_move values
 		
 		bool isSelfMoving();	//checking if an object can move itself
