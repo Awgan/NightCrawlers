@@ -54,6 +54,9 @@ Point_Container::~Point_Container(){
 
 bool Point_Container::add( Point * _p ){
 
+	if ( _p->isCollision( *this ) )
+		return false;
+	
 	switch ( _p->get_type() ) {
 		
 		case Point_type::neutral:
@@ -138,7 +141,8 @@ bool Point_Container::add( Point * _p ){
 			
 			number_obstacle++;
 			number_all++;
-
+			std::cout << "Point_Container::add( Point * _p )\n" << "address: " << obstacle_last->thing <<
+			"\tobstacle numebr/all: " << number_obstacle << '/' << number_all << '\n';
 			break;
 		}
 		default:
@@ -146,7 +150,7 @@ bool Point_Container::add( Point * _p ){
 		
 	}
 
-	return 0;
+	return true;
 }
 
 

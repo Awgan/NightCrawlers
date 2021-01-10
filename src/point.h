@@ -18,7 +18,7 @@ class Point : public Position, public Property, public Graph_prop {
 		struct point_borders {
 			
 			int * x;
-			int * y;
+			double * y;
 			int * z;
 			
 			int * width;
@@ -28,15 +28,17 @@ class Point : public Position, public Property, public Graph_prop {
 	private:
 		
 		/* variable for setting constant move of the object; idea is to make one key pressing to run and one key releasing to stop */
-		int const_move_x;
-		int const_move_y;
-		int const_move_z;		//parameter for 3D moving ;)
+		double const_move_x;
+		double const_move_y;
+		double const_move_z;		//parameter for 3D moving ;)
 		
 		point_borders borders;			//information about Point's graphic border
 		
 		Point_Container * pointCont;	//pointer to container where the Point is stored
 		
 		Point * collision_with;			//pointer to object which is collison with
+
+		bool standing;					//information if the object is standing on something
 		
 	public:
 		Point();
@@ -49,15 +51,15 @@ class Point : public Position, public Property, public Graph_prop {
 		void add_container( Point_Container * pc )	{ pointCont = pc; }
 		
 		void set_move_x( const int & _m) { const_move_x = _m; }
-		void set_move_y( const int & _m) { const_move_y = _m; }
+		void set_move_y( const double & _m) { const_move_y = _m; }
 		void set_move_z( const int & _m) { const_move_z = _m; }
 				
 		void move_dx( int _dx );
-		void move_dy( int _dy );
+		void move_dy( double _dy );
 		void move_dz( int _dz );
 		
 		int get_move_x()	{ return const_move_x; }
-		int get_move_y()	{ return const_move_y; }
+		double get_move_y()	{ return const_move_y; }
 		int get_move_z()	{ return const_move_z; }
 		
 		bool move();
@@ -67,6 +69,10 @@ class Point : public Position, public Property, public Graph_prop {
 		bool isMoving();		//checking if an object has no zero const_move values
 		
 		bool isSelfMoving();	//checking if an object can move itself
+
+		bool isStanding() { return standing; }
+
+		void checkStanding();
 		
 		/* Functions for checking if points collide */
 		bool isCollision( Point * secPoint );

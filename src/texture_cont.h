@@ -371,7 +371,7 @@ bool Text_Cont< T >::add( const Point * _pt )
 
 			}
 			hero_count++;
-			std::cout << "heros's texture: " << hero_count << '\n';
+
 		}
 		
 		break;

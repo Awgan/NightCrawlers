@@ -6,12 +6,17 @@
 #define WIN_WIDTH	800
 #define WIN_HIGHT	600
 
-#define HERO_WIDTH	50
-#define HERO_HIGHT	50
+#define HERO_WIDTH	35
+#define HERO_HIGHT	35
 
 #define HERO_SPRITES	8
 
-#define BACKGROUND 0
+#define BACKGROUND 1
+
+#define GAME_DELAY	20
+
+#define GRAVITY_SPEED 0.5
+#define GRAVITY_SPEED_MAX 8
 
 #define OBSTACLE_PLACE	SDLK_p
 #define GAME_SPEED_UP	SDLK_KP_PLUS

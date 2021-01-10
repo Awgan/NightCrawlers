@@ -144,11 +144,12 @@ Graph_prop::Graph_prop( Point_type & _pt, std::string _str, int & _wid, int & _h
 
 Graph_prop::Graph_prop( Point_type & _pt, Stru_graph_prop & _gprop ) {
 	
-	
 	grap_prop.init_arr(  );
 	p_type = _pt;
 	grap_prop = _gprop;
-	
+	grap_prop.i_hight = HERO_HIGHT;
+	grap_prop.i_width = HERO_WIDTH;
+
 }
 
 Graph_prop::~Graph_prop() {

@@ -21,6 +21,8 @@ Point::Point() {
 
 	collision_with = nullptr;
 
+	standing = false;
+
 }
 
 Point::Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop &_gprop ) : Position( _cord ), Property( _prop ), Graph_prop( _prop.type, _gprop ) {
@@ -40,6 +42,8 @@ Point::Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop &_gprop ) :
 
 	collision_with = nullptr;
 
+	standing = false;
+
 }
 
 Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _p ) {
@@ -58,6 +62,8 @@ Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _
 	pointCont = _p.pointCont;
 
 	collision_with = _p.collision_with;
+
+	standing = false;
 
 }
 
@@ -79,55 +85,61 @@ void Point::move_dx( int _dx ) {
 	int temp = get_coor_x() + _dx * DEF_SPEED;
 	int before = get_coor_x();
 
-	/* checking limits */
-	if (  within_lim_min_x( temp ) && within_lim_max_x( temp )  ) {
 
+	/* checking limits */
+	if (  standing == true  ) {
 
 		/* changing direction and sprite (if it is possible for an object) */
 		int actSpr = getActualSprite();
 
-		if ( _dx < 0 && get_direction() != CoorDir::left ) {
+		if ( _dx < 0 /*&& get_direction() != CoorDir::left*/ ) {
 			set_direction( CoorDir::left );
 
-			switch ( actSpr ) {
+			if ( this->get_point_type() == Point_type::hero )
+			{
+				switch ( actSpr ) {
 
-				case 4:
-				setActualSprite( 3 );
-				break;
-				case 5:
-				setActualSprite( 2 );
-				break;
-				case 6:
-				setActualSprite( 1 );
-				break;
-				case 7:
-				setActualSprite( 0 );
-				break;
+					case 4:
+					setActualSprite( 3 );
+					break;
+					case 5:
+					setActualSprite( 2 );
+					break;
+					case 6:
+					setActualSprite( 1 );
+					break;
+					case 7:
+					setActualSprite( 0 );
+					break;
 
-				default:
-				break;
+					default:
+					break;
+				}
 			}
 		}
-		else if ( _dx > 0 && get_direction() != CoorDir::right ) {
+		else if ( _dx > 0 /*&& get_direction() != CoorDir::right*/ ) {
 			set_direction( CoorDir::right );
 
-			switch ( actSpr ) {
+			if ( this->get_point_type() == Point_type::hero )
+			{
+				switch ( actSpr ) {
 
-				case 0:
-				setActualSprite( 7 );
-				break;
-				case 1:
-				setActualSprite( 6 );
-				break;
-				case 2:
-				setActualSprite( 5 );
-				break;
-				case 3:
-				setActualSprite( 4 );
-				break;
+					case 0:
+					setActualSprite( 7 );
+					break;
+					case 1:
+					setActualSprite( 6 );
+					break;
+					case 2:
+					setActualSprite( 5 );
+					break;
+					case 3:
+					setActualSprite( 4 );
+					break;
 
-				default:
-				break;
+					default:
+					break;
+				}
 			}
 		}
 
@@ -146,6 +158,24 @@ void Point::move_dx( int _dx ) {
 				push( collision_with );
 			}
 		}
+	} else if ( standing == false && const_move_x != 0 )
+	{
+
+		/* set new position and place object as close as it is possible to the collision object */
+		set_coor_x( temp );
+
+		while ( isCollision( *pointCont ) == true && _dx != 0 )
+		{
+			_dx > 0 ? --_dx : ++_dx;		//reducing distance
+			temp = before + _dx * DEF_SPEED;
+			set_coor_x ( temp );
+
+			if ( collision_with->get_point_type() == Point_type::obstacle )
+			{
+				push( collision_with );
+			}
+		}
+
 	}
 
 
@@ -153,45 +183,46 @@ void Point::move_dx( int _dx ) {
 		isSelfMoving();
 }
 
-void Point::move_dy( int _dy )
+void Point::move_dy( double _dy )
 {
 	if ( is_mobile() != true )
 		return;
 
-	int temp = get_coor_y() + _dy * DEF_SPEED;
-	int before = get_coor_y();
+	double temp = get_coor_y() + _dy * DEF_SPEED;
+	double before = get_coor_y();
 
-		/* checking limits */
-		if (  within_lim_min_y( temp ) && within_lim_max_y( temp )  )
+
+	/* changing direction and sprite (if it is possible for an object) */
+	if ( _dy < 0 && get_direction() != CoorDir::up )
+	{
+		set_direction( CoorDir::up );
+	}
+	else if ( _dy > 0 && get_direction() != CoorDir::down )
+	{
+		set_direction( CoorDir::down );
+	}
+
+
+	/* set new position and place object as close as it is possible to the collision object */
+	set_coor_y( temp );
+
+	while ( isCollision( *pointCont ) == true && _dy != 0 )
+	{
+		_dy > 0 ? --_dy : ++_dy;		//reducing distance
+		temp = before + _dy * DEF_SPEED;
+		set_coor_y ( temp );
+
+		if ( collision_with->get_point_type() == Point_type::obstacle )
 		{
-
-
-			/* changing direction and sprite (if it is possible for an object) */
-			if ( _dy < 0 && get_direction() != CoorDir::up )
-			{
-				set_direction( CoorDir::up );
-			}
-			else if ( _dy > 0 && get_direction() != CoorDir::down )
-			{
-				set_direction( CoorDir::down );
-			}
-
-
-			/* set new position and place object as close as it is possible to the collision object */
-			set_coor_y( temp );
-
-			while ( isCollision( *pointCont ) == true && _dy != 0 )
-			{
-				_dy > 0 ? --_dy : ++_dy;		//reducing distance
-				temp = before + _dy * DEF_SPEED;
-				set_coor_y ( temp );
-
-				if ( collision_with->get_point_type() == Point_type::obstacle )
-				{
-					push( collision_with );
-				}
-			}
+			push( collision_with );
 		}
+
+		if ( standing == false && _dy > 0 )
+		{
+			std::cout << "Point::move_dy( int _dy ) :: setting standing parameter\n";
+			standing = true;
+		}
+	}
 
 
 	/* self moving counter */
@@ -207,8 +238,6 @@ void Point::move_dz( int _dz ) {
 	int before = get_coor_z();
 
 	/* checking limits */
-	if (  within_lim_min_z( temp ) && within_lim_max_z( temp )  ) {
-
 
 		/* changing direction and sprite (if it is possible for an object) */
 		if ( _dz < 0 && get_direction() != CoorDir::deep ) {
@@ -233,26 +262,29 @@ void Point::move_dz( int _dz ) {
 				push( collision_with );
 			}
 		}
-	}
 }
 
 bool Point::move() {
 
+	bool flag = false;
+
+	checkStanding();
+
 	if ( const_move_x != 0 ) {
 		move_dx( const_move_x );
-		return true;
+		flag |= true;
 	}
 	if ( const_move_y != 0  ) {
 		move_dy( const_move_y );
-		return true;
+		flag |= true;
 	}
 	if ( const_move_z != 0 ) {
 
 		move_dz( const_move_z );
-		return true;
+		flag |= true;
 	}
 
-return false;
+return flag;
 }
 
 void Point::push( Point * _p )
@@ -309,9 +341,9 @@ bool Point::isSelfMoving() {
 	/* self moving counter for pushed object */
 	int maxDistance = get_speed() * get_move_points();
 
-	if ( moveDistance < maxDistance && get_move_distance() >= 0 ) {
-
-		change_move_distance( get_speed() );
+	if ( moveDistance < maxDistance && moveDistance >= 0 ) {
+		std::cout << "Point::isSelfMoving() :: is self moving: " << this << '\n';
+		change_move_distance( get_speed() );		//variable is increasing and when overflow max posible distance then object is stopped
 		return true;
 
 	} else {
@@ -320,13 +352,41 @@ bool Point::isSelfMoving() {
 		set_move_distance( 0 );
 
 		set_move_x( 0 );
-		set_move_y( 0 );
+		if ( standing == true )
+			set_move_y( 0 );
 		set_move_z( 0 );
 
 		return false;
 	}
 
 return false;
+}
+
+void Point::checkStanding() {
+
+	double temp = get_coor_y() + 1 * DEF_SPEED;
+	double before = get_coor_y();				//saving variable data
+
+	Point * collWith = collision_with;		//saving variable data
+
+	set_coor_y ( temp );
+
+	//if object does not touch game borders or does not collide than standing is set to false;
+	if (  /*within_lim_min_y( temp ) &&*/ within_lim_max_y( temp ) && isCollision( *pointCont ) == false )
+	{
+		std::cout << "Point::checkStanding() :: "; print_type(); std::cout << " lost ground\n";
+		//set_move_x( 0 );
+		//set_move_y( 0 );
+		standing = false;
+		collision_with = collWith;	//returning to previous state
+		set_coor_y( before );
+		return;
+	}
+
+	collision_with = collWith;	//returning to previous state
+	set_coor_y( before );
+	standing = true;
+
 }
 
 bool Point::isCollision( Point * sP) {
@@ -344,29 +404,29 @@ bool Point::isCollision( Point * sP) {
 
 	if ( 	(this != sP) &&
 			(
-			(
 				(
-					((*borders.x + *borders.width) >= *sP->borders.x) && ((*borders.x + *borders.width) <= (*sP->borders.x + *sP->borders.width))
+					(
+						((*borders.x + *borders.width) >= *sP->borders.x) && ((*borders.x + *borders.width) <= (*sP->borders.x + *sP->borders.width))
+					)
+					&&
+					(
+						((*borders.y + *borders.hight) >= *sP->borders.y) && (*borders.y <= (*sP->borders.y + *sP->borders.hight))
+					)
 				)
-				&&
+					||
 				(
-					((*borders.y + *borders.hight) >= *sP->borders.y) && (*borders.y <= (*sP->borders.y + *sP->borders.hight))
+					(
+						(*borders.x <= (*sP->borders.x + *sP->borders.width)) && (*borders.x >= *sP->borders.x)
+					)
+					&&
+					(
+						((*borders.y + *borders.hight) >= *sP->borders.y) && (*borders.y <= (*sP->borders.y + *sP->borders.hight))
+					)
 				)
-			)
-				||
-			(
-				(
-					(*borders.x <= (*sP->borders.x + *sP->borders.width)) && (*borders.x >= *sP->borders.x)
-				)
-				&&
-				(
-					((*borders.y + *borders.hight) >= *sP->borders.y) && (*borders.y <= (*sP->borders.y + *sP->borders.hight))
-				)
-			)
 			)
 		) {
 			collision_with = sP;
-			std::cout << "collision\n";
+			//std::cout << "collision\n";
 			return true;
 		}
 
@@ -429,6 +489,8 @@ Point & Point::operator=( const Point & _p ) {
 
 	collision_with = _p.collision_with;
 
+	standing = _p.standing;
+
 	Position::operator =( _p );
 	Graph_prop::operator =( _p );
 	Property::operator =( _p );
@@ -438,6 +500,7 @@ Point & Point::operator=( const Point & _p ) {
 
 Point & Point::operator=( Point && _p ) {
 
+	//TODO:: project
 	std::cout << "r_value assigment operator\n";
 	return *this;
 }
@@ -446,8 +509,8 @@ void Point::print_status() {
 
 	Position::print();
 
-	printf( "Health: %d, speed: %d, is_visible: %d, is_mobile: %d, sprite: %s, width: %d, hight: %d\n",
-			get_health(), get_speed(), is_visible(), is_mobile(), get_graph_sprite().c_str(), get_graph_width(), get_graph_hight() );
+	printf( "Health: %d, speed: %d, is_visible: %d, is_mobile: %d, sprite: %s, width: %d, hight: %d, standing: %d\n",
+			get_health(), get_speed(), is_visible(), is_mobile(), get_graph_sprite().c_str(), get_graph_width(), get_graph_hight(), isStanding() );
 
 }
 
@@ -465,6 +528,6 @@ const std::string Point::print_info() {
 void Point::print_borders() {
 
 	printf("po:	 	%p	 %p	 %p\n", borders.x, borders.y, borders.z);
-	printf("po:	 	%d	 %d	 %d\n", *borders.x, *borders.y, *borders.z);
+	printf("po:	 	%d	 %f	 %d\n", *borders.x, *borders.y, *borders.z);
 
 }

@@ -155,7 +155,6 @@ bool all_SDL::rect_position_add ( std::vector< SDL_Rect > (& _rect)[3], Point * 
 		
 		case hero:
 			_rect[0].push_back( rect_temp );
-			std::cout << "h added\n";
 		break;
 
 		case bullet:
@@ -185,10 +184,10 @@ bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect *
 		time(&time_eye);
 	
 
-	//int actSprite = (int)_poi->getActualSprite();
+	int actSprite = (int)_poi->getActualSprite();
 
 	//choosing sprite for hero eye movement. If time elapses than change next picture
-	/*if ( (timer - time_eye) >= 1.5) { 
+	if ( (timer - time_eye) >= 1.5) { 
 			
 		if (actSprite >= 0 && actSprite < 4) {
 			
@@ -208,7 +207,7 @@ bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect *
 				
 			_poi->setActualSprite( actSprite );
 		}				
-	}*/		
+	}		
 	
 	
 	//Dimensions of the picture from sprite
