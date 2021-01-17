@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 
+#include "all.h"
 #include "comm_const.h"
 #include "point_container.h"
 #include "texture_cont.h"
@@ -22,6 +23,8 @@ namespace all_SDL {
 	bool render_all( SDL_Renderer * _rend, SDL_Texture ** _tex, SDL_Rect * _rect, Point_Container * _poi );
 
 	bool render_all( SDL_Renderer * _rend, Text_Cont<Text_Objt> * _tex, const std::vector< SDL_Rect > (& _rect)[3], Point_Container * _poi );
+
+	bool cursor_change( const std::string * pic, SDL_Cursor * cur );
 }
 
 #endif

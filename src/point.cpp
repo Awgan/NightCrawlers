@@ -67,9 +67,26 @@ Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _
 
 }
 
-Point::Point ( Point && _p ) {
+Point::Point ( Point && _p ) : Position( _p ), Property( _p ), Graph_prop( _p ) {
 
-	std::cout << "r-value reference ctor\n";
+	std::cout << "Point ( Point && _p ): r-value reference ctor\n";
+
+	const_move_x = _p.const_move_x;
+	const_move_y = _p.const_move_y;
+	const_move_z = _p.const_move_z;
+
+	borders.x = get_coor_x_p();
+	borders.y = get_coor_y_p();
+	borders.z = get_coor_z_p();
+
+	borders.width = get_graph_width_p();
+	borders.hight = get_graph_hight_p();
+
+	pointCont = _p.pointCont;
+
+	collision_with = _p.collision_with;
+
+	standing = false;
 
 }
 
@@ -363,6 +380,9 @@ return false;
 }
 
 void Point::checkStanding() {
+
+	if ( !is_mobile() )
+		return;
 
 	double temp = get_coor_y() + 1 * DEF_SPEED;
 	double before = get_coor_y();				//saving variable data

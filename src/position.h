@@ -19,6 +19,8 @@ struct Coordinate {
 
 	void show();
 
+	Coordinate & operator=(const Coordinate & _coor );
+	
 	//for convert directiona as a string to enum Direction, and return enum value
 	friend Direction dir_conv( const std::string & _str );
 
@@ -55,7 +57,7 @@ class Position {
 	public:
 		Position( int _x = 0, int _y = 0, int _z = 0, CoorDir _dir = Coordinate::up );
 		Position( Coordinate & _coord );
-		Position( const Position & _p ) {printf("Position DEF\n");}
+		Position( const Position & _p );
 		~Position() {};
 
 		const Coordinate & get_coor() const		{ return coor; }

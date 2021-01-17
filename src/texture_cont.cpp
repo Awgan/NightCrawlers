@@ -12,9 +12,9 @@ Text_Objt & Text_Objt::operator=( const Text_Objt & _to )
 		return *this;
 
 	sdl_tex = _to.sdl_tex;
-	
+
 	p_type = _to.p_type;
-	
+
 	return *this;
 }
 
@@ -32,7 +32,7 @@ Text_Objt & Text_Objt::operator=( Text_Objt && _to )
 	_to.sdl_tex = nullptr;
 
 	p_type = _to.p_type;
-	
+
 	return *this;
 }
 
@@ -52,7 +52,7 @@ SDL_Texture * Text_Objt::operator[]( int i )
 
 void Text_Objt::print()
 {
-	
+
 	std::cout << "\nprev: " << prev << "\tthis: " << this << "\tnext: " << next;
 	std::cout << "\ntexture: " << sdl_tex << "\tpoint type: " << p_type << '\n';
 }
@@ -64,11 +64,11 @@ bool Text_Cont<Text_Objt>::test()
 	SDL_Renderer * rend;
 	SDL_Event event;
 	SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);  //SDL_IGNORE;
-	
+
 	SDL_Init( SDL_INIT_EVERYTHING );
-	
+
 	win = SDL_CreateWindow("Test: texture_cont.h", 0, 0, WIN_WIDTH, WIN_HIGHT, SDL_WINDOW_OPENGL);
-	
+
 	rend = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
 
 
@@ -94,7 +94,7 @@ bool Text_Cont<Text_Objt>::test()
 Coordinate selected_coor;
 	selected_coor.x = event.button.x;
 	selected_coor.y = event.button.y;
-	selected_coor.z = 0; 
+	selected_coor.z = 0;
 	selected_coor.dir = Coordinate::Direction::up;
 
 Stru_property selected_prop;
@@ -109,16 +109,16 @@ Stru_property selected_prop;
 
 Stru_graph_prop selected_graph;
 	selected_graph.init_arr( Point_type::obstacle );
-	selected_graph.s_sprite = comm_arr_sprite_files[1];
+	selected_graph.s_sprite = arr_sprite_files[1];
 	selected_graph.i_num_sprite = 1;
-	selected_graph.arr_sprite_dim[0][0] = comm_arr_sprite_obstacle[1][0];
-	selected_graph.arr_sprite_dim[0][1] = comm_arr_sprite_obstacle[1][1];
-	selected_graph.arr_sprite_dim[0][2] = comm_arr_sprite_obstacle[1][2];
-	selected_graph.arr_sprite_dim[0][3] = comm_arr_sprite_obstacle[1][3];
+	selected_graph.arr_sprite_dim[0][0] = arr_sprite_obstacle[1][0];
+	selected_graph.arr_sprite_dim[0][1] = arr_sprite_obstacle[1][1];
+	selected_graph.arr_sprite_dim[0][2] = arr_sprite_obstacle[1][2];
+	selected_graph.arr_sprite_dim[0][3] = arr_sprite_obstacle[1][3];
 	selected_graph.actual_sprite = (int)Obstacle_type::box;
 	selected_graph.i_width = 50;
 	selected_graph.i_hight = 50;
-	
+
 
 
 //
@@ -129,7 +129,7 @@ Stru_graph_prop selected_graph;
 
 	test01.print();
 
-	
+
 	test01.add( Point ( selected_coor, selected_prop, selected_graph ) );
 	test01.add( Point ( selected_coor, selected_prop, selected_graph ) );
 	test01.add( Point ( selected_coor, selected_prop, selected_graph ) );
@@ -163,12 +163,12 @@ Stru_graph_prop selected_graph;
 	(test01.obstacle_tail) = (test02.obstacle_head);
 
 	std::cout << "tail->prev after operator=: " << test01.obstacle_tail->prev  << "\ttail: " << test01.obstacle_tail << "\ttail->next after operator=: " << test01.obstacle_tail->next << '\n';
-	
+
 	for ( Text_Objt * p = test01.obstacle_head; p != test01.obstacle_tail->next; p = p->next )
 	{
 		p->print();
 	}
-	
+
 	return true;
 }
 

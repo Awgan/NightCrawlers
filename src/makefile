@@ -36,7 +36,7 @@ all.o: all.cpp all.h comm_const.h point.o
 cursor_picture.o: cursor_picture.cpp cursor_picture.h comm_const.h win_general.o
 	g++ -c -o $@ cursor_picture.cpp -I.
 
-all_SDL.o: all_SDL.cpp all_SDL.h comm_const.h texture_cont.o
+all_SDL.o: all_SDL.cpp all_SDL.h comm_const.h texture_cont.o all.o
 	g++ -c -o $@ all_SDL.cpp -I.
 
 texture_cont.o: texture_cont.cpp texture_cont.h comm_const.h point.o

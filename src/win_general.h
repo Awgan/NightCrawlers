@@ -1,3 +1,8 @@
+/*
+ * General Class for creating pop-up windows during program runnig
+ *
+ */
+
 #ifndef WIN_GENERAL_H_
 #define WIN_GENERAL_H_
 

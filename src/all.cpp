@@ -10,7 +10,7 @@ bool allFunction::move_keyboard( Point * _point, SDL_Event * _event) {
 				switch ( _event->key.keysym.sym ) {
 
 					case SDLK_UP:
-						_point->set_move_y( -5 );
+						_point->set_move_y( -15 );
 						break;
 
 					case SDLK_DOWN:
@@ -138,7 +138,7 @@ void allFunction::gravity_move( Point_Container & _pc ) {
 	{
 		object = _pc.get_point_obstacle( i );
 
-		if ( object->isStanding() == false )
+		if ( object->isStanding() == false && object->is_mobile())
 		{
 			std::cout << "gravity_move( Point_Container & _pc ) :: gravity works! for obstacle " << i << '\n';
 			//object->set_move_x( object->get_move_x() / 2 );
@@ -148,4 +148,36 @@ void allFunction::gravity_move( Point_Container & _pc ) {
 	}
 }
 
+Point allFunction::create_wall( const SDL_Event * eve )
+{
+	Coordinate selected_coor;
+		selected_coor.x = eve->button.x;
+		selected_coor.y = eve->button.y;
+		selected_coor.z = 0;
+		selected_coor.dir = Coordinate::Direction::up;
 
+	Stru_property selected_prop;
+		selected_prop.type = Point_type::obstacle;
+		selected_prop.b_mobile = false;
+		selected_prop.b_visible = true;
+		selected_prop.i_health = 100;
+		selected_prop.i_speed = 0;
+		selected_prop.i_move_points = 0;
+		selected_prop.i_move_distance = 0;
+		selected_prop.i_strenght = 100;
+		selected_prop.i_fire_accuracy = 0;
+
+	Stru_graph_prop selected_graph;
+		selected_graph.init_arr( Point_type::obstacle );
+		selected_graph.s_sprite = arr_sprite_files[5];
+		selected_graph.i_num_sprite = 1;
+		selected_graph.arr_sprite_dim[0][0] = arr_sprite_obstacle[3][0];
+		selected_graph.arr_sprite_dim[0][1] = arr_sprite_obstacle[3][1];
+		selected_graph.arr_sprite_dim[0][2] = arr_sprite_obstacle[3][2];
+		selected_graph.arr_sprite_dim[0][3] = arr_sprite_obstacle[3][3];
+		selected_graph.actual_sprite = 3;
+		selected_graph.i_width = PLATFORM_W;
+		selected_graph.i_hight = PLATFORM_H;
+
+	return Point( selected_coor, selected_prop, selected_graph );
+}

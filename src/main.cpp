@@ -104,7 +104,7 @@ int main( int argc, char * argv[] ) {
 //MAIN LOOP//
 //***********
 
-	while( event.type != SDL_QUIT ) {
+	while( event.type != SDL_QUIT && event.key.keysym.sym != SDLK_q ) {
 
 		//TODO:: flush event; there is issue with KEYUP and arrows; code constatly execute move function
 		SDL_PollEvent(&event);
@@ -165,7 +165,7 @@ int main( int argc, char * argv[] ) {
 			{
 					//move entry	UP DOWN LEFT RIGHT
 				SDL_Keycode & key = event.key.keysym.sym;
-				
+
 				if ( (key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT) && active_hero->isStanding() ) {
 
 					//TODO:: flush event; SDL remamber last event; when it is KEYUP and one of the arrows, code comes here constatly
@@ -178,25 +178,26 @@ int main( int argc, char * argv[] ) {
 					allFunction::move_keyboard( active_hero, &event );
 				}
 
-					//game speed up / speed down
+					//Speed up / down game
 				else
 					if ( key == GAME_SPEED_UP || key == GAME_SPEED_DOWN ) {
 
 						allFunction::speed_changing ( event, time_st, game_delay );
 					}
 
-					//obstacle inventory box
 				else
 					if ( key == OBSTACLE_PLACE && event.type == SDL_KEYDOWN ) {
 
-							//window for choosing obstacle to put on the map
-						ObstacleBoxWin<SDL_Rect, ObstacleWin> obw( &event, 3, comm_arr_sprite_files[1].c_str() );
+					//Show window for choosing obstacle
+						ObstacleBoxWin<SDL_Rect, ObstacleWin> obw( &event, 3, arr_sprite_files[1].c_str() );
 						obw.setVisibility( true );
 						obw.show();
 
 						Obstacle_type selection = none;
 
-							//select obstacle from obstacle window
+
+
+					//Select obstacle from obstacle window
 						while( event.key.keysym.sym != SDLK_q && event.type != SDL_MOUSEBUTTONDOWN ) {
 
 							SDL_PollEvent( &event );
@@ -208,11 +209,15 @@ int main( int argc, char * argv[] ) {
 							}
 						}
 
-							//clear Obstacle window
+
+
+					//Hide obstacle window
 						obw.hide();
 						obw.setVisibility(false);
 
-							//show game board without obstacle box
+
+
+					//Show game board without obstacle box
 						SDL_RenderClear( rend );
 							all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
 						SDL_RenderPresent( rend );
@@ -220,18 +225,18 @@ int main( int argc, char * argv[] ) {
 						SDL_PollEvent( &event );
 
 
-							//changing mouse cursor
+
+					//Change mouse cursor
 						if ( selection == none ) {
 
 							std::cout << "none selection\n";
 						}
 						else {
 
-							SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
+							//OUT -> SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
+						//Change mouse cursor: creat empty surface to use it for cursor
+							SDL_Surface * surf_sour = SDL_LoadBMP( arr_sprite_files[1].c_str() );
 
-							SDL_Surface * surf_sour = SDL_LoadBMP( comm_arr_sprite_files[1].c_str() );
-
-								//creating empty surface to use it for cursor
 							SDL_Surface * surf_dest = SDL_CreateRGBSurface (
 								surf_sour->flags,
 								30, 30,
@@ -245,17 +250,18 @@ int main( int argc, char * argv[] ) {
 
 							SDL_Rect rect_sour;
 
+					//Change mouse cursor: select new picture for cursor
 							switch(selection) { //TODO:: function <fromArrtoRect can be change so it take ENUM of obstacle
 								case box:
-								allFunction::fromArrtoRect( 0, comm_arr_sprite_obstacle, rect_sour );
+								allFunction::fromArrtoRect( 0, arr_sprite_obstacle, rect_sour );
 								break;
 
 								case rock:
-								allFunction::fromArrtoRect( 1, comm_arr_sprite_obstacle, rect_sour );
+								allFunction::fromArrtoRect( 1, arr_sprite_obstacle, rect_sour );
 								break;
 
 								case flower:
-								allFunction::fromArrtoRect( 2, comm_arr_sprite_obstacle, rect_sour);
+								allFunction::fromArrtoRect( 2, arr_sprite_obstacle, rect_sour);
 								break;
 
 								default:
@@ -269,30 +275,25 @@ int main( int argc, char * argv[] ) {
 
 							while ( event.key.keysym.sym != SDLK_q )
 							{
-
+					//Change mouse cursor: flush mouse button events; one mouse click generates many mouse button events
 								while ( event.type == SDL_MOUSEBUTTONDOWN )
 								{
 									SDL_PollEvent( &event );
 									std::cout << "Mouse flush \n";
 								}
 
-								std::cout << "outside\n";
-
+					//Change mouse cursor: wait for mouse button down
 								while( event.key.keysym.sym != SDLK_q && event.type != SDL_MOUSEBUTTONDOWN ) {
 
 									SDL_PollEvent( &event );
 
 								}
 
+					//Change mouse cursor: break loop when 'q' key pressed or 'right' mouse button pressed
 								if ( event.key.keysym.sym == SDLK_q || event.button.button == SDL_BUTTON_RIGHT )
 									break;
 
-								/*
-								 * 01 add object to point_container
-								 * 02 add coordination
-								 *
-								 * */
-
+					//Change mouse cursor: create new object at board game
 								Coordinate selected_coor;
 									selected_coor.x = event.button.x;
 									selected_coor.y = event.button.y;
@@ -312,15 +313,15 @@ int main( int argc, char * argv[] ) {
 
 								Stru_graph_prop selected_graph;
 									selected_graph.init_arr( Point_type::obstacle );
-									selected_graph.s_sprite = comm_arr_sprite_files[1];
+									selected_graph.s_sprite = arr_sprite_files[1];
 									selected_graph.i_num_sprite = 1;
-									selected_graph.arr_sprite_dim[0][0] = comm_arr_sprite_obstacle[1][0];
-									selected_graph.arr_sprite_dim[0][1] = comm_arr_sprite_obstacle[1][1];
-									selected_graph.arr_sprite_dim[0][2] = comm_arr_sprite_obstacle[1][2];
-									selected_graph.arr_sprite_dim[0][3] = comm_arr_sprite_obstacle[1][3];
+									selected_graph.arr_sprite_dim[0][0] = arr_sprite_obstacle[1][0];
+									selected_graph.arr_sprite_dim[0][1] = arr_sprite_obstacle[1][1];
+									selected_graph.arr_sprite_dim[0][2] = arr_sprite_obstacle[1][2];
+									selected_graph.arr_sprite_dim[0][3] = arr_sprite_obstacle[1][3];
 									selected_graph.actual_sprite = (int)selection;
-									selected_graph.i_width = 50;
-									selected_graph.i_hight = 50;
+									selected_graph.i_width = HERO_WIDTH;
+									selected_graph.i_hight = HERO_HIGHT;
 
 								Point selected_obstacle ( selected_coor, selected_prop, selected_graph );
 
@@ -333,14 +334,15 @@ int main( int argc, char * argv[] ) {
 									all_SDL::rect_position_add( rect_container, &selected_obstacle );
 								}
 
-		SDL_RenderClear(rend);
+								SDL_RenderClear(rend);
 
-		all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
+								all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
 
-		SDL_RenderPresent(rend);
+								SDL_RenderPresent(rend);
 
-								SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
+								//OUT -> SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
 							}
+
 							SDL_FreeCursor ( curs );
 
 
@@ -352,24 +354,73 @@ int main( int argc, char * argv[] ) {
 						// TODO:: bullet firing
 
 					}
+				else
+					if ( key == PLATFORM_PLACE and event.type == SDL_KEYDOWN ) {
+
+					//Place platform for walking
+
+						SDL_Cursor * curs = nullptr;
+
+						try
+						{
+							all_SDL::cursor_change( &arr_sprite_files[ 5 ], curs );
+						}
+						catch(std::string ssttrr)
+						{ std::cout << ssttrr << std::endl; }
+
+						//SDL_SetCursor( curs );
+
+						while( event.key.keysym.sym != SDLK_q && event.type != SDL_MOUSEBUTTONDOWN ) {
+
+							SDL_PollEvent( &event );
+
+						}
+
+Point wall_temp = allFunction::create_wall( & event );
+
+if ( wall_temp == true )
+{
+point_container.add( &wall_temp );
+
+//all_SDL::texture_add( &tex, rend, &selected_obstacle );
+tex_container.add( &wall_temp );
+
+//all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
+all_SDL::rect_position_add( rect_container, &wall_temp );
+
+}
+
+SDL_RenderClear(rend);
+
+all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
+
+SDL_RenderPresent(rend);
+
+
+
+
+
+						SDL_FreeCursor( curs );
+						SDL_SetCursor( SDL_GetDefaultCursor() );
+					}
 			}
 			break;
 
 
 			case SDL_MOUSEBUTTONDOWN :
 			{
-						//object selecting function
+			//Select object; left click
 				if ( event.button.button == SDL_BUTTON_LEFT )
 					active_hero = point_container.select_hero( event );
 
-						//showing window with properties; right click
-				if ( event.button.button == SDL_BUTTON_RIGHT ) {
+			//Show window with properties; right click
+				else if ( event.button.button == SDL_BUTTON_RIGHT ) {
 
 					if ( infWin.isPointed() ) {
 
 						infWin.show();
 
-							//wait for realesing the right mouse butto; game pause
+			//Show window with properties: Wait for realesing the right mouse butto; game pause
 						while ( event.type != SDL_MOUSEBUTTONUP ) {
 
 							SDL_PollEvent( &event );
@@ -392,6 +443,7 @@ int main( int argc, char * argv[] ) {
 	//delete [] rect_pos;
 
 
+//Clear all
 	for ( int i = 0; i < gpp_obj.numb; ++i ) {
 
 		point_container.del( point_container.get_point_hero(i) );

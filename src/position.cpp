@@ -11,6 +11,16 @@ void Coordinate::show() {
 
 }
 
+Coordinate & Coordinate::operator=(const Coordinate & _coor ) {
+
+	x = _coor.x;
+	y = _coor.y;
+	z = _coor.z;
+	dir = _coor.dir;
+
+	return *this;
+}
+
 Coordinate::Direction dir_conv( const std::string & _str ) {
 
 	//Direction -->{ right, up, left, down, deep, shallow }
@@ -132,6 +142,14 @@ Position::Position( Coordinate & _coord ) {
 	coor.dir = _coord.dir;
 
 	offset = HERO_WIDTH;
+}
+
+Position::Position( const Position & _p ) {
+std::cout << "perfect11\n";
+	coor = _p.coor;std::cout << "perfect22\n";
+	limits = _p.limits;std::cout << "perfect33\n";
+	offset = _p.offset;
+std::cout << "perfect44\n";
 }
 
 bool Position::within_lim_min_x( const int & xyz ) {

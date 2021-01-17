@@ -17,6 +17,8 @@ namespace allFunction {
 	void 			fromArrtoRect( const int n, const int arr[][4], SDL_Rect & rect );	//passing data from array to SDL_Rect struct
 
 	void			gravity_move( Point_Container & _pc );		//doing move when object is not standing
+
+	Point 			create_wall( const SDL_Event * eve );
 }
 
 
