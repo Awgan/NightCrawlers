@@ -195,9 +195,15 @@ void Position::set_coor( int _x, double _y, int _z ) {
 void Position::set_coor_x( int _x )	{
 
 	//checking limits
-	while ( (within_lim_min_x( _x ) && within_lim_max_x( _x )) == false ) {
-
-		--_x;
+	if ( !within_lim_min_x( _x ) )
+	{
+		coor.x = limits.min.x;
+		return;
+	}
+	else if ( !within_lim_max_x( _x ) )
+	{
+		coor.x = limits.max.x-HERO_WIDTH;
+		return;
 	}
 
 	coor.x = _x;
@@ -206,9 +212,15 @@ void Position::set_coor_x( int _x )	{
 void Position::set_coor_y( double _y )	{
 
 	//checking limits
-	while ( (within_lim_min_y( _y ) && within_lim_max_y( _y )) == false ) {
-
-		--_y;
+	if ( !within_lim_min_y( _y ) )
+	{
+		coor.y = limits.min.y;
+		return;
+	}
+	else if ( !within_lim_max_y( _y ) )
+	{
+		coor.y = limits.max.y - HERO_HIGHT;
+		return;
 	}
 
 	coor.y = _y;
@@ -217,9 +229,15 @@ void Position::set_coor_y( double _y )	{
 void Position::set_coor_z( int _z )	{
 
 	//checking limits
-	while ( (within_lim_min_z( _z ) && within_lim_max_z( _z )) == false ) {
-
+	if ( !within_lim_min_z( _z ) )
+	{
+		++_z;
+		return;
+	}
+	else if ( !within_lim_max_z( _z ) )
+	{
 		--_z;
+		return;
 	}
 
 	coor.z = _z;
