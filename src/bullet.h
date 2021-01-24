@@ -5,13 +5,34 @@
 #include "comm_const.h"
 
 
-class Bullet : public Point {
 
-private:
+class Bullet : public Point
+{
 
 protected:
 
+	struct Bulletproperty
+	{
+		int damage;
+	};
+
+private:
+
+	Bulletproperty property;
+
+protected:
+
+	Bullet( const Bullet & __bullet ){}
+	Bullet(){};
+
 public:
+
+	Bullet( const Point * __point );
+	~Bullet();
+
+	Bullet & operator=(const Bullet & __bullet);
+
+	void disapear();
 
 };
 

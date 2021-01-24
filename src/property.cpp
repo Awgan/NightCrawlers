@@ -15,7 +15,7 @@ Stru_property & Stru_property::operator=( const Stru_property & _sgp ) {
 	i_health = _sgp.i_health;
 	i_speed = _sgp.i_speed;
 	i_move_points = _sgp.i_move_points;
-	i_move_distance	= _sgp.i_move_distance;
+	i_self_move_distance	= _sgp.i_self_move_distance;
 	i_strenght = _sgp.i_strenght;
 	i_fire_accuracy = _sgp.i_fire_accuracy;
 
@@ -38,7 +38,7 @@ Property::Property() {
 	prop.i_health 			= 100;
 	prop.i_speed 			= 15;
 	prop.i_move_points 		= 45;
-	prop.i_move_distance	= 0;
+	prop.i_self_move_distance	= 0;
 	prop.i_strenght 		= 60;
 	prop.i_fire_accuracy 	= 46;
 
@@ -56,7 +56,7 @@ Property::Property( Stru_property & _prop ) {
 		prop.i_health 			= _prop.i_health;
 		prop.i_speed 			= _prop.i_speed;
 		prop.i_move_points 		= _prop.i_move_points;
-		prop.i_move_distance	= _prop.i_move_distance;
+		prop.i_self_move_distance	= _prop.i_self_move_distance;
 		prop.i_strenght 		= _prop.i_strenght;
 		prop.i_fire_accuracy 	= _prop.i_fire_accuracy;
 }
@@ -69,7 +69,7 @@ Property::~Property() {
 
 
 //health
-void Property::set_healt( int _h ) {
+void Property::set_health( int _h ) {
 
 	//TODO:: create MAX values for all property in "comm_const.h" file
 	prop.i_health = _h;
@@ -121,18 +121,20 @@ void Property::change_move_points( int _dm ) {
 
 
 //move distance
-void Property::set_move_distance( int _md ) {
+void Property::set_self_move_distance( int _md ) {
 
-	prop.i_move_distance = _md;
-	if ( prop.i_move_distance < 0 )
-		prop.i_move_distance = 0;
+	prop.i_self_move_distance = _md;
+
+	/*if ( prop.i_self_move_distance < 0 )
+		prop.i_self_move_distance = 0;*/
 }
 
-void Property::change_move_distance( int _d_md ) {
+void Property::increas_self_move_distance( int _d_md ) {
 
-	prop.i_move_distance += _d_md;
-	if ( prop.i_move_distance < 0 )
-		prop.i_move_distance = 0;
+	prop.i_self_move_distance += _d_md;
+
+	/*if ( prop.i_self_move_distance < 0 )
+		prop.i_self_move_distance = 0;*/
 }
 
 

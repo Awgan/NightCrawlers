@@ -12,37 +12,37 @@
 
 
 class Info_win {
-	
+
 	public:
 
-	
+
 	private:
 		SDL_Event * event;
 		Point_Container * pointCont;
-		
+
 		Point * actPoint;
-		
+
 		SDL_Window * win;
 		SDL_Renderer * rend;
 		SDL_Surface * surf;
 		SDL_Texture * tex;
-		
+
 		TTF_Font * font;
-		
+
 		int font_size;
 		int lines;
-		
+
 		int win_posX;
 		int win_posY;
 		int win_width;
-		int win_hight;
-		
+		int win_height;
+
 	public:
-		
+
 		Info_win();
 		~Info_win();
 		Info_win( SDL_Event * _event, Point_Container * _pCont );
-		
+
 		void show();
 		void hide();
 		bool isPointed();

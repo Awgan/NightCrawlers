@@ -67,7 +67,7 @@ bool Text_Cont<Text_Objt>::test()
 
 	SDL_Init( SDL_INIT_EVERYTHING );
 
-	win = SDL_CreateWindow("Test: texture_cont.h", 0, 0, WIN_WIDTH, WIN_HIGHT, SDL_WINDOW_OPENGL);
+	win = SDL_CreateWindow("Test: texture_cont.h", 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_OPENGL);
 
 	rend = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
 
@@ -109,7 +109,7 @@ Stru_property selected_prop;
 
 Stru_graph_prop selected_graph;
 	selected_graph.init_arr( Point_type::obstacle );
-	selected_graph.s_sprite = arr_sprite_files[1];
+	selected_graph.s_sprite = sprites_files[1];
 	selected_graph.i_num_sprite = 1;
 	selected_graph.arr_sprite_dim[0][0] = arr_sprite_obstacle[1][0];
 	selected_graph.arr_sprite_dim[0][1] = arr_sprite_obstacle[1][1];
@@ -117,7 +117,7 @@ Stru_graph_prop selected_graph;
 	selected_graph.arr_sprite_dim[0][3] = arr_sprite_obstacle[1][3];
 	selected_graph.actual_sprite = (int)Obstacle_type::box;
 	selected_graph.i_width = 50;
-	selected_graph.i_hight = 50;
+	selected_graph.i_height = 50;
 
 
 

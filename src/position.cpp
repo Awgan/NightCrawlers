@@ -54,102 +54,98 @@ Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
 	//50s are dimensions of displayed hero
 
 	limits.min = { 0, 0, 0 };
-	limits.max = { WIN_WIDTH - HERO_WIDTH, WIN_HIGHT - HERO_HIGHT, 0 };
+	limits.max = { WIN_WIDTH, WIN_HEIGHT, 0 };
 
 	if ( _x >= limits.min.x && _x <= limits.max.x )
-		coor.x = _x;
+		coord.x = _x;
 	else {
 
 		if ( _x <= limits.min.x )
-			coor.x = limits.min.x;
+			coord.x = limits.min.x;
 		if ( _x >= limits.max.x )
-			coor.x = limits.max.x - HERO_WIDTH;
+			coord.x = limits.max.x;// - HERO_WIDTH;
 	}
 
 	if ( _y >= limits.min.y && _y <= limits.max.y )
-		coor.y = _y;
+		coord.y = _y;
 	else {
 
 		if ( _y <= limits.min.y )
-			coor.y = limits.min.y;
+			coord.y = limits.min.y;
 		if ( _y >= limits.max.y )
-			coor.y= limits.max.y - HERO_HIGHT;
+			coord.y= limits.max.y;// - HERO_HEIGHT;
 	}
 
 	//
 	//it can be use for 3D, if at all it happens
 	/*
 	if ( _z >= limits.min.z && _x <= limits.max.z )
-		coor.z = _z;
+		coord.z = _z;
 	else {
 
 		if ( _z <= limits.min.z )
-			coor.z = limits.min.z;
+			coord.z = limits.min.z;
 		if ( _z >= limits.max.z )
-			coor.z = limits.max.z;
+			coord.z = limits.max.z;
 	}
 	*/
-	coor.z = 0;
+	coord.z = 0;
 
 
-	coor.dir = _dir;
+	coord.dir = _dir;
 
-	offset = HERO_WIDTH;
 
 }
 
 Position::Position( Coordinate & _coord ) {
 
 	limits.min = { 0, 0, 0 };
-	limits.max = { WIN_WIDTH, WIN_HIGHT, 0 };
+	limits.max = { WIN_WIDTH, WIN_HEIGHT, 0 };
 
 	if ( _coord.x >= limits.min.x && _coord.x <= limits.max.x )
-		coor.x = _coord.x;
+		coord.x = _coord.x;
 	else {
 
 		if ( _coord.x <= limits.min.x )
-			coor.x = limits.min.x;
+			coord.x = limits.min.x;
 		if ( _coord.x >= limits.max.x )
-			coor.x = limits.max.x - HERO_WIDTH;
+			coord.x = limits.max.x - HERO_WIDTH;
 	}
 
 	if ( _coord.y >= limits.min.y && _coord.y <= limits.max.y )
-		coor.y = _coord.y;
+		coord.y = _coord.y;
 	else {
 
 		if ( _coord.y <= limits.min.y )
-			coor.y = limits.min.y;
+			coord.y = limits.min.y;
 		if ( _coord.y >= limits.max.y )
-			coor.y= limits.max.y - HERO_HIGHT;
+			coord.y= limits.max.y - HERO_HEIGHT;
 	}
 
 	//
 	//it can be use for 3D, if at all it happens
 	/*
 	if ( _coord.z >= limits.min.z && _coord.x <= limits.max.z )
-		coor.z = _coord.z;
+		coord.z = _coord.z;
 	else {
 
 		if ( _coord.z <= limits.min.z )
-			coor.z = limits.min.z;
+			coord.z = limits.min.z;
 		if ( _coord.z >= limits.max.z )
-			coor.z = limits.max.z;
+			coord.z = limits.max.z;
 	}
 	*/
-	coor.z = 0;
+	coord.z = 0;
 
 
-	coor.dir = _coord.dir;
+	coord.dir = _coord.dir;
 
-	offset = HERO_WIDTH;
 }
 
 Position::Position( const Position & _p ) {
-std::cout << "perfect11\n";
-	coor = _p.coor;std::cout << "perfect22\n";
-	limits = _p.limits;std::cout << "perfect33\n";
-	offset = _p.offset;
-std::cout << "perfect44\n";
+
+	coord = _p.coord;
+	limits = _p.limits;
 }
 
 bool Position::within_lim_min_x( const int & xyz ) {
@@ -159,7 +155,7 @@ bool Position::within_lim_min_x( const int & xyz ) {
 
 bool Position::within_lim_max_x( const int & xyz ) {
 
-	return ( xyz <= limits.max.x - HERO_WIDTH );
+	return ( xyz <= limits.max.x - 1);// - HERO_WIDTH );
 }
 
 bool Position::within_lim_min_y( const double & xyz ) {
@@ -169,7 +165,7 @@ bool Position::within_lim_min_y( const double & xyz ) {
 
 bool Position::within_lim_max_y( const double & xyz ) {
 
-	return ( xyz <= limits.max.y - HERO_HIGHT );
+	return ( xyz <= limits.max.y - PLATFORM_H );
 }
 
 bool Position::within_lim_min_z( const int & xyz ) {
@@ -188,78 +184,68 @@ void Position::set_coor( int _x, double _y, int _z ) {
 	if ( within_lim_min_x( _x ) && within_lim_min_y( _y ) && within_lim_min_z( _z )
 	&& within_lim_max_x( _x ) && within_lim_max_y( _y ) && within_lim_max_z( _z ) ) {
 
-		coor = { _x, _y, _z };
+		coord = { _x, _y, _z };
 	}
 }
 
-void Position::set_coor_x( int _x )	{
+bool Position::set_coor_x( int _x )	{
 
 	//checking limits
 	if ( !within_lim_min_x( _x ) )
 	{
-		coor.x = limits.min.x;
-		return;
+		coord.x = limits.min.x;
+		return false;
 	}
 	else if ( !within_lim_max_x( _x ) )
 	{
-		coor.x = limits.max.x-HERO_WIDTH;
-		return;
+		coord.x = limits.max.x - 1;// -HERO_WIDTH;
+		return false;
 	}
 
-	coor.x = _x;
+	coord.x = _x;
+	return true;
 }
 
-void Position::set_coor_y( double _y )	{
+bool Position::set_coor_y( double _y )	{
 
 	//checking limits
 	if ( !within_lim_min_y( _y ) )
 	{
-		coor.y = limits.min.y;
-		return;
+		coord.y = limits.min.y;
+		return false;
 	}
 	else if ( !within_lim_max_y( _y ) )
 	{
-		coor.y = limits.max.y - HERO_HIGHT;
-		return;
+		coord.y = limits.max.y - PLATFORM_H;
+		return false;
 	}
 
-	coor.y = _y;
+	coord.y = _y;
+	return true;
 }
 
-void Position::set_coor_z( int _z )	{
+bool Position::set_coor_z( int _z )	{
 
-	//checking limits
-	if ( !within_lim_min_z( _z ) )
-	{
-		++_z;
-		return;
-	}
-	else if ( !within_lim_max_z( _z ) )
-	{
-		--_z;
-		return;
-	}
-
-	coor.z = _z;
+	return false;
 }
 
 void Position::inc_coor_x( int _x ) {
 
-	set_coor_x( coor.x + _x);
+	set_coor_x( coord.x + _x);
 }
 
 void Position::inc_coor_y( double _y ) {
 
-	set_coor_y( coor.y + _y);
+	set_coor_y( coord.y + _y);
 }
 
 void Position::inc_coor_z( int _z ) {
 
-	set_coor_z( coor.z + _z);
+	set_coor_z( coord.z + _z);
 }
 
 void Position::print() const {
 
-	printf( "Coordinates: x: %d, y: %f, z: %d\n", coor.x, coor.y, coor.z );
+	printf( "Coordinates: x: %d, y: %f, z: %d\n", coord.x, coord.y, coord.z );
 
 }

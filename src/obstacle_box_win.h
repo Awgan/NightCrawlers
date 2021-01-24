@@ -119,7 +119,7 @@ bool ObstacleBoxWin<T,U>::show() {
 			return false;
 		}
 
-		//TODO::establishe width and hight of obstacle windows
+		//TODO::establishe width and height of obstacle windows
 		setWidthAndHight(150, 100);
 
 		int mx, my;

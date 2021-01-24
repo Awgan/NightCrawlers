@@ -14,7 +14,7 @@ namespace all_SDL {
 
 	bool texture_add ( SDL_Texture ***_tex, SDL_Renderer * _rend, Point * _poi );
 
-	bool rect_position_add ( SDL_Rect ** _rect, Point * _poi );
+	/*bool rect_position_add ( SDL_Rect ** _rect, Point * _poi );*/
 
 	bool rect_position_add ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point * _poi );
 

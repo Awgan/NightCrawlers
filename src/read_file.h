@@ -70,7 +70,7 @@ void gpp_transfer( GPP & _gpp, const std::string _arr [][17] ) {
 		_gpp.array[i].start_prop = { p_type_conv( _arr[i][4] ), std::stoi(_arr[i][5]), std::stoi(_arr[i][6]), std::stoi(_arr[i][7]), std::stoi(_arr[i][8]), std::stoi(_arr[i][9]), -1, std::stoi(_arr[i][10]), std::stoi(_arr[i][11]) };
 
 		_gpp.array[i].start_graph.init_arr(p_type_conv( _arr[i][4] ));
-		_gpp.array[i].start_graph = { _arr[i][12], std::stoi(_arr[i][13]), NULL, 0, HERO_WIDTH, HERO_HIGHT/*std::stoi(_arr[i][15]), std::stoi(_arr[i][16])*/ };
+		_gpp.array[i].start_graph = { _arr[i][12], std::stoi(_arr[i][13]), NULL, 0, HERO_WIDTH, HERO_HEIGHT/*std::stoi(_arr[i][15]), std::stoi(_arr[i][16])*/ };
 
 	}
 }

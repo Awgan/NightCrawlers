@@ -8,6 +8,7 @@
 
 #include "all.h"
 #include "all_SDL.h"
+#include "bullet.h"
 #include "comm_const.h"
 #include "cursor_picture.h"
 #include "graph_prop.h"
@@ -30,7 +31,7 @@ int main( int argc, char * argv[] ) {
 
 	SDL_Init( SDL_INIT_EVERYTHING );
 
-	win = SDL_CreateWindow("NightCrawlers", 0, 0, WIN_WIDTH, WIN_HIGHT, SDL_WINDOW_OPENGL);
+	win = SDL_CreateWindow("NightCrawlers", 0, 0, WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_OPENGL);
 
 	rend = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
 
@@ -107,49 +108,57 @@ int main( int argc, char * argv[] ) {
 	while( event.type != SDL_QUIT && event.key.keysym.sym != SDLK_q ) {
 
 		//TODO:: flush event; there is issue with KEYUP and arrows; code constatly execute move function
-		SDL_PollEvent(&event);
+		if ( !SDL_PollEvent(&event) )
+			event.type = 0;
 
 		if ( event.type == SDL_QUIT )
 			break;
 
-			//Main Rendering START
-		SDL_RenderClear(rend);
+
+		/* Check gravity */
+		allFunction::gravity_move( point_container );
 
 
-	//updating hero position. Note: it is not move function which get inf from keyboard. It only updates
-		//active_hero->move();
+		/* Update obstacle position */
+		for ( int i = 0; i < point_container.get_number_obstacle(); ++i ) {
 
-	for ( int i = 0; i < point_container.get_number_hero(); ++i ) {
+			if ( point_container.get_point_obstacle( i )->move() ) {
 
-		point_container.get_point_hero( i )->move();
-
-	}
-
-	allFunction::gravity_move( point_container );
-
-	for ( int i = 0; i < point_container.get_number_obstacle(); ++i ) {
-
-		if ( point_container.get_point_obstacle( i )->move() ) {
-
-			rect_container[2][i].x = point_container.get_point_obstacle( i )->get_coor_x();
-			rect_container[2][i].y = point_container.get_point_obstacle( i )->get_coor_y();
-
+				rect_container[2][i].x = point_container.get_point_obstacle( i )->get_coor_x();
+				rect_container[2][i].y = point_container.get_point_obstacle( i )->get_coor_y();
+			}
 		}
-	}
 
-	for ( int i = 0; i < point_container.get_number_hero(); ++i ) {
+		/* Update bullet postion */
+		allFunction::bullet_move( point_container );
+
+		for ( int i = 0; i < point_container.get_number_bullet(); ++i ) {
+
+			if ( point_container.get_point_bullet( i )->move() ) {
+
+				rect_container[1][i].x = point_container.get_point_bullet( i )->get_coor_x();
+				rect_container[1][i].y = point_container.get_point_bullet( i )->get_coor_y();
+
+			}
+		}
+
+		/* check healt after bullets move */
+		allFunction::check_health( point_container );
 
 
-		rect_container[0][i].x = point_container.get_point_hero( i )->get_coor_x();
-		rect_container[0][i].y = point_container.get_point_hero( i )->get_coor_y();
+		/* Update hero position */
+		for ( int i = 0; i < point_container.get_number_hero(); ++i ) {
 
-	}
+			if ( point_container.get_point_hero( i )->move() )
+			{
+				rect_container[0][i].x = point_container.get_point_hero( i )->get_coor_x();
+				rect_container[0][i].y = point_container.get_point_hero( i )->get_coor_y();
+			}
+		}
 
-	//rect_container[0][point_container.get_active_hero_numb()].x = active_hero->get_coor_x();
-	//rect_container[0][point_container.get_active_hero_numb()].y = active_hero->get_coor_y();
-	//TODO:: update collieded obstacle position
 
-
+	//Main Rendering START
+		SDL_RenderClear(rend);
 
 		all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
 
@@ -158,25 +167,30 @@ int main( int argc, char * argv[] ) {
 		SDL_Delay( game_delay );
 	//Main Rendering STOP
 
+
+		/* Handle events */
 		switch (event.type) {
 
 			case SDL_KEYDOWN:
 			case SDL_KEYUP:
 			{
-					//move entry	UP DOWN LEFT RIGHT
+					//move 		UP DOWN LEFT RIGHT
 				SDL_Keycode & key = event.key.keysym.sym;
 
-				if ( (key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT) && active_hero->isStanding() ) {
+
+
+				if ( (key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT) /*&& active_hero->isStanding()*/ ) {
 
 					//TODO:: flush event; SDL remamber last event; when it is KEYUP and one of the arrows, code comes here constatly
 					//TODO:: BUG: when moving key is pressed and you change selected hero then new hero move normaly but old one is
 					//		moving without stop until edge of the display; And sprite is not updated
 
-
 					//std::cout << "moving... \n";
 
 					allFunction::move_keyboard( active_hero, &event );
 				}
+
+
 
 					//Speed up / down game
 				else
@@ -189,7 +203,7 @@ int main( int argc, char * argv[] ) {
 					if ( key == OBSTACLE_PLACE && event.type == SDL_KEYDOWN ) {
 
 					//Show window for choosing obstacle
-						ObstacleBoxWin<SDL_Rect, ObstacleWin> obw( &event, 3, arr_sprite_files[1].c_str() );
+						ObstacleBoxWin<SDL_Rect, ObstacleWin> obw( &event, 3, sprites_files[1].c_str() );
 						obw.setVisibility( true );
 						obw.show();
 
@@ -235,7 +249,7 @@ int main( int argc, char * argv[] ) {
 
 							//OUT -> SDL_EventState( SDL_MOUSEMOTION, SDL_IGNORE);
 						//Change mouse cursor: creat empty surface to use it for cursor
-							SDL_Surface * surf_sour = SDL_LoadBMP( arr_sprite_files[1].c_str() );
+							SDL_Surface * surf_sour = SDL_LoadBMP( sprites_files[1].c_str() );
 
 							SDL_Surface * surf_dest = SDL_CreateRGBSurface (
 								surf_sour->flags,
@@ -307,13 +321,13 @@ int main( int argc, char * argv[] ) {
 									selected_prop.i_health = 10;
 									selected_prop.i_speed = 3;
 									selected_prop.i_move_points = 5;
-									selected_prop.i_move_distance = 0;
+									selected_prop.i_self_move_distance = 0;
 									selected_prop.i_strenght = 50;
 									selected_prop.i_fire_accuracy = 0;
 
 								Stru_graph_prop selected_graph;
 									selected_graph.init_arr( Point_type::obstacle );
-									selected_graph.s_sprite = arr_sprite_files[1];
+									selected_graph.s_sprite = sprites_files[1];
 									selected_graph.i_num_sprite = 1;
 									selected_graph.arr_sprite_dim[0][0] = arr_sprite_obstacle[1][0];
 									selected_graph.arr_sprite_dim[0][1] = arr_sprite_obstacle[1][1];
@@ -321,7 +335,7 @@ int main( int argc, char * argv[] ) {
 									selected_graph.arr_sprite_dim[0][3] = arr_sprite_obstacle[1][3];
 									selected_graph.actual_sprite = (int)selection;
 									selected_graph.i_width = HERO_WIDTH;
-									selected_graph.i_hight = HERO_HIGHT;
+									selected_graph.i_height = HERO_HEIGHT;
 
 								Point selected_obstacle ( selected_coor, selected_prop, selected_graph );
 
@@ -353,6 +367,16 @@ int main( int argc, char * argv[] ) {
 
 						// TODO:: bullet firing
 
+						Bullet bullet( active_hero );
+
+						if ( point_container.add( &bullet ) == true )
+						{
+							tex_container.add( &bullet );
+
+							all_SDL::rect_position_add( rect_container, &bullet );
+						}
+
+
 					}
 				else
 					if ( key == PLATFORM_PLACE and event.type == SDL_KEYDOWN ) {
@@ -363,7 +387,7 @@ int main( int argc, char * argv[] ) {
 
 						try
 						{
-							all_SDL::cursor_change( &arr_sprite_files[ 5 ], curs );
+							all_SDL::cursor_change( &sprites_files[ 5 ], curs );
 						}
 						catch(std::string ssttrr)
 						{ std::cout << ssttrr << std::endl; }
@@ -376,25 +400,25 @@ int main( int argc, char * argv[] ) {
 
 						}
 
-Point wall_temp = allFunction::create_wall( & event );
+						Point wall_temp = allFunction::create_wall( & event );
 
-if ( wall_temp == true )
-{
-point_container.add( &wall_temp );
+						if ( wall_temp == true )
+						{
+						point_container.add( &wall_temp );
 
-//all_SDL::texture_add( &tex, rend, &selected_obstacle );
-tex_container.add( &wall_temp );
+						//all_SDL::texture_add( &tex, rend, &selected_obstacle );
+						tex_container.add( &wall_temp );
 
-//all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
-all_SDL::rect_position_add( rect_container, &wall_temp );
+						//all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
+						all_SDL::rect_position_add( rect_container, &wall_temp );
 
-}
+						}
 
-SDL_RenderClear(rend);
+						SDL_RenderClear(rend);
 
-all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
+						all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
 
-SDL_RenderPresent(rend);
+						SDL_RenderPresent(rend);
 
 
 

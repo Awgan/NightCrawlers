@@ -76,7 +76,7 @@ bool all_SDL::texture_add ( SDL_Texture *** _tex , SDL_Renderer * _rend, Point *
 return true;
 }
 
-bool all_SDL::rect_position_add ( SDL_Rect ** _rect, Point * _poi ) {
+/*bool all_SDL::rect_position_add ( SDL_Rect ** _rect, Point * _poi ) {
 
 	if ( _poi == nullptr) {
 		std::cout << "Point object 'nullptr'. Function 'all_SDL::rect_position_add' terminated\n";
@@ -108,7 +108,7 @@ bool all_SDL::rect_position_add ( SDL_Rect ** _rect, Point * _poi ) {
 		(*_rect)[mem_cur].x = _poi->get_coor_x();
 		(*_rect)[mem_cur].y = _poi->get_coor_y();
 		(*_rect)[mem_cur].w = _poi->get_graph_width();
-		(*_rect)[mem_cur].h = _poi->get_graph_hight();
+		(*_rect)[mem_cur].h = _poi->get_graph_height();
 		//TODO: check if there is free non-occupied place for next object
 		//		There shouldn't be situation when two or more objects occupied this same area
 
@@ -131,6 +131,7 @@ bool all_SDL::rect_position_add ( SDL_Rect ** _rect, Point * _poi ) {
 
 return true;
 }
+*/
 
 bool all_SDL::rect_position_add ( std::vector< SDL_Rect > (& _rect)[3], Point * _poi ) {
 
@@ -147,7 +148,7 @@ bool all_SDL::rect_position_add ( std::vector< SDL_Rect > (& _rect)[3], Point * 
 	rect_temp.x = _poi->get_coor_x();
 	rect_temp.y = _poi->get_coor_y();
 	rect_temp.w = _poi->get_graph_width();
-	rect_temp.h = _poi->get_graph_hight();
+	rect_temp.h = _poi->get_graph_height();
 
 	switch ( _poi->get_point_type() )
 	{
@@ -221,12 +222,20 @@ bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect *
 		rect_sprite.h = arr_sprite_dimensions[ (int)_poi->getActualSprite() ][3];
 
 	}
-	else {
+	else
+	if ( _poi->get_type() == Point_type::obstacle ) {
 		rect_sprite.x = arr_sprite_obstacle[ (int)_poi->getActualSprite() ][0];
 		rect_sprite.y = arr_sprite_obstacle[ (int)_poi->getActualSprite() ][1];
 		rect_sprite.w = arr_sprite_obstacle[ (int)_poi->getActualSprite() ][2];
 		rect_sprite.h = arr_sprite_obstacle[ (int)_poi->getActualSprite() ][3];
 
+	}
+	else
+	if ( _poi->get_type() == Point_type::bullet ) {
+		rect_sprite.x = arr_sprite_bullet[ (int)_poi->getActualSprite() ][0];
+		rect_sprite.y = arr_sprite_bullet[ (int)_poi->getActualSprite() ][1];
+		rect_sprite.w = arr_sprite_bullet[ (int)_poi->getActualSprite() ][2];
+		rect_sprite.h = arr_sprite_bullet[ (int)_poi->getActualSprite() ][3];
 	}
 		SDL_RenderCopy( _rend, _tex, &rect_sprite, _rect );
 
@@ -242,7 +251,7 @@ bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect *
  * It can only work when there are no bullets;
  * When there will be bullets, it goes wrong;
  */
-bool all_SDL::render_all( SDL_Renderer * _rend, SDL_Texture ** _tex, SDL_Rect * _rect, Point_Container * _poi ) {
+/*bool all_SDL::render_all( SDL_Renderer * _rend, SDL_Texture ** _tex, SDL_Rect * _rect, Point_Container * _poi ) {
 
 	//rendering the frame
 		for ( int i = 0; i < _poi->get_number_hero(); ++i ) {
@@ -263,7 +272,7 @@ bool all_SDL::render_all( SDL_Renderer * _rend, SDL_Texture ** _tex, SDL_Rect * 
 		}
 
 	return true;
-}
+}*/
 
 bool all_SDL::render_all( SDL_Renderer * _rend, Text_Cont< Text_Objt >  * _tex, const std::vector< SDL_Rect > (& _rect)[3], Point_Container * _poi ) {
 

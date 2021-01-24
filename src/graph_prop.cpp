@@ -14,7 +14,7 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 	arr_sprite_dim 	= NULL;
 	actual_sprite 	= 0;
 	i_width 		= 0;
-	i_hight 		= 0;
+	i_height 		= 0;
 
 	switch (_pt) {
 
@@ -80,7 +80,7 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 
 void Stru_graph_prop::show() {
 
-	std::cout << "\nGRAPH show() :: file: " << s_sprite << " sprite numbers: " << i_num_sprite <<  " actual sprite: " << actual_sprite << " width: " << i_width << " hight: " << i_hight << " sprite_dim: " <<
+	std::cout << "\nGRAPH show() :: file: " << s_sprite << " sprite numbers: " << i_num_sprite <<  " actual sprite: " << actual_sprite << " width: " << i_width << " height: " << i_height << " sprite_dim: " <<
 	arr_sprite_dim[0][0] << " " <<
 	arr_sprite_dim[0][1] << " " <<
 	arr_sprite_dim[0][2] << " " <<
@@ -125,7 +125,7 @@ Stru_graph_prop & Stru_graph_prop::operator=(const Stru_graph_prop & _str_) {
 	actual_sprite = _str_.actual_sprite;
 
 	i_width = _str_.i_width;
-	i_hight = _str_.i_hight;
+	i_height = _str_.i_height;
 
 
 	return *this;
@@ -139,7 +139,7 @@ Graph_prop::Graph_prop( Point_type & _pt, std::string _str, int & _wid, int & _h
 
 	grap_prop.s_sprite 	= _str;
 	grap_prop.i_width 	= _wid;
-	grap_prop.i_hight 	= _hig;
+	grap_prop.i_height 	= _hig;
 }
 
 Graph_prop::Graph_prop( Point_type & _pt, Stru_graph_prop & _gprop ) {
@@ -147,10 +147,10 @@ Graph_prop::Graph_prop( Point_type & _pt, Stru_graph_prop & _gprop ) {
 	grap_prop.init_arr(  );
 	p_type = _pt;
 	grap_prop = _gprop;
-	grap_prop.i_hight = _gprop.i_hight;
+	grap_prop.i_height = _gprop.i_height;
 	grap_prop.i_width = _gprop.i_width;
 
-std::cout << "hight:"<<grap_prop.i_hight<<" width: "<<grap_prop.i_width<<std::endl;
+std::cout << "height:"<<grap_prop.i_height<<" width: "<<grap_prop.i_width<<std::endl;
 
 }
 
@@ -169,9 +169,9 @@ Graph_prop::~Graph_prop() {
 
 }
 
-Graph_prop::Graph_prop() {
+Graph_prop::Graph_prop( const Point_type & _pt ) {
 
-	grap_prop.init_arr( Point_type::neutral );
+	grap_prop.init_arr( _pt );
 
 }
 
@@ -190,7 +190,7 @@ void Graph_prop::setActualSprite( int ac ) {
 		break;
 
 		case Point_type::bullet:
-		pointTypeRange = 1;
+		pointTypeRange = 4;
 		break;
 
 		case Point_type::obstacle:

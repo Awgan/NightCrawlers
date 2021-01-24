@@ -18,9 +18,9 @@ struct Stru_property {
 	bool 	b_visible;
 
 	int 	i_health;
-	int 	i_speed;
-	int 	i_move_points;
-	int		i_move_distance;	// indicates distance which an object can move after pushing; '-1' value means that an object can't be pushed
+	int 	i_speed;				// distance which object goes during one 'move point'
+	int 	i_move_points;			// use for calculate max possible distance
+	int		i_self_move_distance;	// ability to be pushed; less than zero means that an object can't be pushed; indicates distance which an object can move after pushing;
 	int 	i_strenght;
 	int 	i_fire_accuracy;
 
@@ -57,7 +57,7 @@ class Property {
 		void set_visible( bool _b )				{ prop.b_visible = _b; }
 
 		//health
-		void set_healt( int _h );
+		void set_health( int _h );
 		void change_health( int _dh );
 		const int & get_health() const			{ return prop.i_health; }
 
@@ -72,9 +72,9 @@ class Property {
 		const int & get_move_points() const		{ return prop.i_move_points; }
 
 		//move distance
-		void set_move_distance( int _md );
-		void change_move_distance( int _d_md );
-		const int & get_move_distance() const	{ return prop.i_move_distance; }
+		void set_self_move_distance( int _md );
+		void increas_self_move_distance( int _d_md );
+		const int & get_self_move_distance() const	{ return prop.i_self_move_distance; }
 
 		//strenght
 		void set_strenght( int _s );

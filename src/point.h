@@ -22,7 +22,7 @@ class Point : public Position, public Property, public Graph_prop {
 			int * z;
 
 			int * width;
-			int * hight;
+			int * height;
 		};
 
 	private:
@@ -41,7 +41,7 @@ class Point : public Position, public Property, public Graph_prop {
 		bool standing;					//information if the object is standing on something
 
 	public:
-		Point();
+		Point( const Point_type & _pt = neutral );
 		Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop & _gprop );
 		Point( const Point & _p );
 		~Point() ;
@@ -49,6 +49,8 @@ class Point : public Position, public Property, public Graph_prop {
 		Point ( Point && _p );
 
 		void add_container( Point_Container * pc )	{ pointCont = pc; }
+
+		void init_borders();
 
 		void set_move_x( const int & _m) { const_move_x = _m; }
 		void set_move_y( const double & _m) { const_move_y = _m; }
@@ -74,12 +76,14 @@ class Point : public Position, public Property, public Graph_prop {
 
 		void checkStanding();
 
+		void setStanding( const bool & b ) { standing = b; }
+
 		/* Functions for checking if points collide */
 		bool isCollision( Point * secPoint );
 		bool isCollision( Point_Container & pc );
 
 		void set_collision_with( Point * cw )	{ collision_with = cw; }
-		void reset_collision_with()				{ collision_with = nullptr;; }
+		void reset_collision_with()				{ collision_with = nullptr; }
 		Point * get_collision_with()			{ return collision_with; }
 
 		const Point_type & get_type() { return get_point_type(); }
@@ -94,7 +98,7 @@ class Point : public Position, public Property, public Graph_prop {
 
 		Point & operator=( Point && _p ); //under construction
 
-		bool operator == (const bool & b) {return true;}
+		bool operator == (const bool & b) { return true; }
 
 };
 

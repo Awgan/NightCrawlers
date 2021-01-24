@@ -4,25 +4,35 @@
 #include "all.h"
 
 bool allFunction::move_keyboard( Point * _point, SDL_Event * _event) {
-
+std::cout << "bool allFunction::move_keyboard\n";
+	if ( _point->is_mobile() )
+	{
 		switch ( _event->type ) {
 			case SDL_KEYDOWN:
 				switch ( _event->key.keysym.sym ) {
 
 					case SDLK_UP:
-						_point->set_move_y( -15 );
+						if ( _point->isStanding() )
+							_point->set_move_y( -15 );
 						break;
 
 					case SDLK_DOWN:
-						_point->set_move_y( 5 );
+						if ( _point->isStanding() )
+							_point->set_move_y( 5 );
 						break;
 
 					case SDLK_LEFT:
-						_point->set_move_x( -5 );
+						if ( _point->isStanding() )		//Object is moving slover when it is not standing
+							_point->set_move_x( -5 );
+						else
+							_point->set_move_x( -2 );
 						break;
 
 					case SDLK_RIGHT:
-						_point->set_move_x( 5 );
+						if ( _point->isStanding() )
+							_point->set_move_x( 5 );
+						else
+							_point->set_move_x( 2 );
 						break;
 
 					default:
@@ -57,8 +67,9 @@ bool allFunction::move_keyboard( Point * _point, SDL_Event * _event) {
 				}
 				return true;
 		}
-	return false;
 	}
+	return false;
+}
 
 
 //game speed changing
@@ -91,6 +102,7 @@ void allFunction::speed_changing ( SDL_Event & r_event, Uint32 & i_time , int & 
 //END : game speed changing
 
 
+
 Obstacle_type allFunction::Obstacle_type_select(const int & mx, const int & my) {
 
 	Obstacle_type type;
@@ -109,6 +121,8 @@ Obstacle_type allFunction::Obstacle_type_select(const int & mx, const int & my) 
 	return type;
 }
 
+
+
 void allFunction::fromArrtoRect( const int n, const int arr[][4], SDL_Rect & rect ) {
 
 	rect.x = arr[n][0];
@@ -117,9 +131,13 @@ void allFunction::fromArrtoRect( const int n, const int arr[][4], SDL_Rect & rec
 	rect.h = arr[n][3];
 }
 
+
+
 void allFunction::gravity_move( Point_Container & _pc ) {
 
 	Point * object = nullptr;
+
+
 
 	for ( int i = 0; i < _pc.get_number_hero(); i++ )
 	{
@@ -127,12 +145,12 @@ void allFunction::gravity_move( Point_Container & _pc ) {
 
 		if ( object->isStanding() == false )
 		{
-			std::cout << "gravity_move( Point_Container & _pc ) :: gravity works! for hero " << i << '\n';
-			//object->set_move_x( object->get_move_x() / 2 );
+			std :: cout << "void allFunction::gravity_move => gravity works for hero: " << &object << '\n';
 			object->set_move_y( object->get_move_y() < GRAVITY_SPEED_MAX ? object->get_move_y() + GRAVITY_SPEED : GRAVITY_SPEED_MAX );
-			std::cout << "speed: " << object->get_move_y() << '\n';
 		}
 	}
+
+
 
 	for ( int i = 0; i < _pc.get_number_obstacle(); i++ )
 	{
@@ -140,13 +158,13 @@ void allFunction::gravity_move( Point_Container & _pc ) {
 
 		if ( object->isStanding() == false && object->is_mobile())
 		{
-			std::cout << "gravity_move( Point_Container & _pc ) :: gravity works! for obstacle " << i << '\n';
-			//object->set_move_x( object->get_move_x() / 2 );
+			std :: cout << "void allFunction::gravity_move => gravity works for obstacle: " << &object << '\n';
 			object->set_move_y( object->get_move_y() < GRAVITY_SPEED_MAX ? object->get_move_y() + GRAVITY_SPEED : GRAVITY_SPEED_MAX );
-			std::cout << "speed: " << object->get_move_y() << '\n';
 		}
 	}
 }
+
+
 
 Point allFunction::create_wall( const SDL_Event * eve )
 {
@@ -163,13 +181,13 @@ Point allFunction::create_wall( const SDL_Event * eve )
 		selected_prop.i_health = 100;
 		selected_prop.i_speed = 0;
 		selected_prop.i_move_points = 0;
-		selected_prop.i_move_distance = 0;
+		selected_prop.i_self_move_distance = 0;
 		selected_prop.i_strenght = 100;
 		selected_prop.i_fire_accuracy = 0;
 
 	Stru_graph_prop selected_graph;
 		selected_graph.init_arr( Point_type::obstacle );
-		selected_graph.s_sprite = arr_sprite_files[5];
+		selected_graph.s_sprite = sprites_files[5];
 		selected_graph.i_num_sprite = 1;
 		selected_graph.arr_sprite_dim[0][0] = arr_sprite_obstacle[3][0];
 		selected_graph.arr_sprite_dim[0][1] = arr_sprite_obstacle[3][1];
@@ -177,7 +195,79 @@ Point allFunction::create_wall( const SDL_Event * eve )
 		selected_graph.arr_sprite_dim[0][3] = arr_sprite_obstacle[3][3];
 		selected_graph.actual_sprite = 3;
 		selected_graph.i_width = PLATFORM_W;
-		selected_graph.i_hight = PLATFORM_H;
+		selected_graph.i_height = PLATFORM_H;
 
 	return Point( selected_coor, selected_prop, selected_graph );
+}
+
+void allFunction::bullet_move( Point_Container & _pc )
+{
+	Point * object;
+
+	for ( int i = 0; i < _pc.get_number_bullet(); i++ )
+	{
+		object = _pc.get_point_bullet( i );
+
+		if ( object->isMoving() )
+		{
+			//std::cout << "bullet is moving\n";
+		}
+		else
+		{
+			if ( object->get_direction() == Coordinate::Direction::left )
+			{
+				object->set_move_x( -1 * BULLET_SPEED );//std::cout << "bullet moves left\n";
+			}
+			else
+			if ( object->get_direction() == Coordinate::Direction::right )
+			{
+				object->set_move_x( 1 * BULLET_SPEED );//std::cout << "bullet moves right\n";
+			}
+		}
+
+	}
+}
+
+void allFunction::check_health( Point_Container & _pc )
+{
+	/* Check hero health */
+	int numb = _pc.get_number_hero();
+
+	for ( int i = 0; i < numb; ++i )
+	{
+		if ( _pc.get_point_hero(i)->get_health() <= 0 )
+		{
+			_pc.del( _pc.get_point_hero(i) );
+			numb = _pc.get_number_hero();
+			--i;		//One object has been deleted and next object takes its place, so you must check this place again;
+		}
+	}
+
+
+	/* Check bullet health */
+	numb = _pc.get_number_bullet();
+
+	for ( int i = 0; i < numb; ++i )
+	{
+		if ( _pc.get_point_bullet(i)->get_health() <= 0 )
+		{
+			_pc.del( _pc.get_point_bullet(i) );
+			numb = _pc.get_number_bullet();
+			--i;		//One object has been deleted and next object takes its place, so you must check this place again;
+		}
+	}
+
+
+	/* Check obstacle health */
+	numb = _pc.get_number_obstacle();
+
+	for ( int i = 0; i < numb; ++i )
+	{
+		if ( _pc.get_point_obstacle(i)->get_health() <= 0 )
+		{
+			_pc.del( _pc.get_point_obstacle(i) );
+			numb = _pc.get_number_obstacle();
+			--i;		//One object has been deleted and next object takes its place, so you must check this place again;
+		}
+	}
 }
