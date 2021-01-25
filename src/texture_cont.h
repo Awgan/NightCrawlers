@@ -76,6 +76,8 @@ class Text_Cont
 		bool add( const Point & _pt );
 		bool add( const Point * _pt );
 
+		bool del( const Point * _pt );
+
 		Text_Cont & operator=( const Text_Cont & _tc );
 		Text_Cont & operator=( Text_Cont && _tc );
 
@@ -115,7 +117,7 @@ Text_Cont< T >::Text_Cont( Text_Cont && _tc )
 {
 	rend = _tc.rend;
 	_tc.rend = nullptr;
-	
+
 	hero_head = _tc.hero_head;
 	_tc.hero_head = nullptr;
 
@@ -127,7 +129,7 @@ Text_Cont< T >::Text_Cont( Text_Cont && _tc )
 
 	bullet_tail = _tc.bullet_tail;
 	_tc.bullet_tail = nullptr;
-	
+
 	obstacle_head = _tc.obstacle_head;
 	_tc.obstacle_head = nullptr;
 
@@ -188,7 +190,7 @@ bool Text_Cont< T >::add( const Point & _pt )
 
 				temp->prev = nullptr;
 				temp->next = nullptr;
-				
+
 				hero_head = temp;
 				hero_tail = temp;
 
@@ -207,7 +209,7 @@ bool Text_Cont< T >::add( const Point & _pt )
 			}
 			hero_count++;
 		}
-		
+
 		break;
 
 //bullet
@@ -219,7 +221,7 @@ bool Text_Cont< T >::add( const Point & _pt )
 
 				temp->prev = nullptr;
 				temp->next = nullptr;
-				
+
 				bullet_head = temp;
 				bullet_tail = temp;
 
@@ -250,7 +252,7 @@ bool Text_Cont< T >::add( const Point & _pt )
 
 				temp->prev = nullptr;
 				temp->next = nullptr;
-				
+
 				obstacle_head = temp;
 				obstacle_tail = temp;
 
@@ -291,7 +293,7 @@ bool Text_Cont< T >::add( const Point & _pt )
 //changing texture background
 	if ( BACKGROUND != 1 )
 		SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
-	
+
 
 //adding texture
 	SDL_Texture * temp_text = SDL_CreateTextureFromSurface( rend, surf );
@@ -353,7 +355,7 @@ bool Text_Cont< T >::add( const Point * _pt )
 
 				temp->prev = nullptr;
 				temp->next = nullptr;
-				
+
 				hero_head = temp;
 				hero_tail = temp;
 
@@ -373,7 +375,7 @@ bool Text_Cont< T >::add( const Point * _pt )
 			hero_count++;
 
 		}
-		
+
 		break;
 
 //bullet
@@ -385,7 +387,7 @@ bool Text_Cont< T >::add( const Point * _pt )
 
 				temp->prev = nullptr;
 				temp->next = nullptr;
-				
+
 				bullet_head = temp;
 				bullet_tail = temp;
 
@@ -416,7 +418,7 @@ bool Text_Cont< T >::add( const Point * _pt )
 
 				temp->prev = nullptr;
 				temp->next = nullptr;
-				
+
 				obstacle_head = temp;
 				obstacle_tail = temp;
 
@@ -443,7 +445,7 @@ bool Text_Cont< T >::add( const Point * _pt )
 
 
 
-/* adding SDL_Texture to Text_Objt object */
+/* add SDL_Texture to Text_Objt object */
 
 	SDL_Surface * surf;
 
@@ -454,12 +456,12 @@ bool Text_Cont< T >::add( const Point * _pt )
 			return false;
 		}
 
-//changing texture background
+//change texture background
 	if ( BACKGROUND != 1 )
 		SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
-	
 
-//adding texture
+
+//add texture
 	SDL_Texture * temp_text = SDL_CreateTextureFromSurface( rend, surf );
 
 
@@ -496,6 +498,13 @@ bool Text_Cont< T >::add( const Point * _pt )
 	return true;
 }
 
+template< typename T>
+bool Text_Cont< T >::del ( const Point * _pt )
+{
+
+	return false;
+}
+
 template< typename T >
 Text_Cont< T > & Text_Cont< T >::operator=( const Text_Cont & _tc )
 {
@@ -525,11 +534,11 @@ Text_Cont< T > & Text_Cont< T >::operator=( const Text_Cont & _tc )
 	{
 		T * temp = new T;
 		temp->p_type = p->p_type;
-		
+
 		if ( hero_head == nullptr )
 		{
 			temp = p;
-			
+
 			temp->prev = nullptr;
 			temp->next = nullptr;
 
@@ -540,7 +549,7 @@ Text_Cont< T > & Text_Cont< T >::operator=( const Text_Cont & _tc )
 		else
 		{
 			temp = p;
-			
+
 			temp->prev = hero_head;
 			temp->prev->next = temp;
 
@@ -568,11 +577,11 @@ Text_Cont< T > & Text_Cont< T >::operator=( const Text_Cont & _tc )
 	{
 		T * temp = new T;
 		temp->p_type = p->p_type;
-		
+
 		if ( bullet_head == nullptr )
 		{
 			temp = p;
-			
+
 			temp->prev = nullptr;
 			temp->next = nullptr;
 
@@ -583,7 +592,7 @@ Text_Cont< T > & Text_Cont< T >::operator=( const Text_Cont & _tc )
 		else
 		{
 			temp = p;
-			
+
 			temp->prev = bullet_head;
 			temp->prev->next = temp;
 
@@ -611,11 +620,11 @@ for ( T * p = obstacle_head; p != nullptr; p++ )
 	{
 		T * temp = new T;
 		temp->p_type = p->p_type;
-		
+
 		if ( obstacle_head == nullptr )
 		{
 			temp = p;
-			
+
 			temp->prev = nullptr;
 			temp->next = nullptr;
 
@@ -626,7 +635,7 @@ for ( T * p = obstacle_head; p != nullptr; p++ )
 		else
 		{
 			temp = p;
-			
+
 			temp->prev = obstacle_head;
 			temp->prev->next = temp;
 
@@ -651,7 +660,7 @@ std::cout << "operator= 2\n";
 template< typename T >
 SDL_Texture * Text_Cont< T >::get_texture_hero( int i )
 {
-	return hero_head->operator[]( i );	//TODO:: How to create template function for typename T which return SDL_Texture? 
+	return hero_head->operator[]( i );	//TODO:: How to create template function for typename T which return SDL_Texture?
 }
 
 /*
@@ -688,7 +697,7 @@ SDL_Texture * Text_Cont< T >::get_texture( int i )
 {
 	const int SUM = hero_count + bullet_count + obstacle_count ;
 
-	
+
 	if ( i < 0 || i >= SUM )
 		return nullptr;
 
@@ -705,9 +714,9 @@ SDL_Texture * Text_Cont< T >::get_texture( int i )
 	if ( i >= hero_count + obstacle_count && i < SUM )
 	{
 		return get_texture_obstacle( i - hero_count - bullet_count );
-	} 
+	}
 
-	
+
 	return nullptr;
 }
 
@@ -716,10 +725,10 @@ void Text_Cont< T >::print()
 {
 	std::cout << "\n\nhero_head: " << hero_head << "\thero_tail: " << hero_tail << "\thero_count: " << hero_count;
 	hero_head->print();
-	
+
 	std::cout << "\n\nbullet_head: " << bullet_head << "\tbullet_tail: " << bullet_tail << "\tbullet_count: " << bullet_count;
 	bullet_head->print();
-	
+
 	std::cout << "\n\nobstacle_head: " << obstacle_head << "\tobstacle_tail: " << obstacle_tail << "\tobstacle_count: " << obstacle_count;
 	obstacle_head->print();
 

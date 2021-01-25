@@ -211,7 +211,7 @@ void Point::move_dy( double _dy )
 			return;
 		}
 
-		std::cout << "void Point::move_dy => move value: " << _dy << '\n';
+		//std::cout << "void Point::move_dy => move value: " << _dy << '\n';
 
 	double temp = get_coor_y() + _dy * DEF_SPEED;
 	double before = get_coor_y();
@@ -380,7 +380,7 @@ bool Point::isSelfMoving() {
 
 	if ( moveSelf >= 0 && moveSelf < maxDistance )
 	{
-		std::cout << "Point::isSelfMoving() :: is self moving: " << this << '\n';
+		//std::cout << "Point::isSelfMoving() :: is self moving: " << this << '\n';
 		increas_self_move_distance( get_speed() );		//variable is increasing and when overflow max posible distance then object is stopped
 
 		return true;

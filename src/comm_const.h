@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 
-#define WIN_WIDTH	720
+#define WIN_WIDTH	700
 #define WIN_HEIGHT	450
 
 #define HERO_WIDTH	30
@@ -12,7 +12,7 @@
 #define BULLET_WIDTH	20
 #define BULLET_HEIGHT	10
 
-#define BULLET_SPEED 50
+#define BULLET_SPEED 5
 
 #define PLATFORM_W	135
 #define PLATFORM_H	HERO_HEIGHT/2
@@ -21,7 +21,7 @@
 
 #define BACKGROUND 1
 
-#define GAME_DELAY	20
+#define GAME_DELAY	100
 
 #define GRAVITY_SPEED 1.7
 #define GRAVITY_SPEED_MAX 4

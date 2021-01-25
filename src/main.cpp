@@ -293,7 +293,7 @@ int main( int argc, char * argv[] ) {
 								while ( event.type == SDL_MOUSEBUTTONDOWN )
 								{
 									SDL_PollEvent( &event );
-									std::cout << "Mouse flush \n";
+									//std::cout << "Mouse flush \n";
 								}
 
 					//Change mouse cursor: wait for mouse button down
@@ -318,7 +318,7 @@ int main( int argc, char * argv[] ) {
 									selected_prop.type = Point_type::obstacle;
 									selected_prop.b_mobile = true;
 									selected_prop.b_visible = true;
-									selected_prop.i_health = 10;
+									selected_prop.i_health = 1000;
 									selected_prop.i_speed = 3;
 									selected_prop.i_move_points = 5;
 									selected_prop.i_self_move_distance = 0;
@@ -371,10 +371,11 @@ int main( int argc, char * argv[] ) {
 
 						if ( point_container.add( &bullet ) == true )
 						{
+						std::cout << "Bullet add 01\n";
 							tex_container.add( &bullet );
-
+						std::cout << "Bullet add 02\n";
 							all_SDL::rect_position_add( rect_container, &bullet );
-						}
+						std::cout << "Bullet add 03\n";}
 
 
 					}

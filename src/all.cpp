@@ -145,7 +145,7 @@ void allFunction::gravity_move( Point_Container & _pc ) {
 
 		if ( object->isStanding() == false )
 		{
-			std :: cout << "void allFunction::gravity_move => gravity works for hero: " << &object << '\n';
+			//std :: cout << "void allFunction::gravity_move => gravity works for hero: " << &object << '\n';
 			object->set_move_y( object->get_move_y() < GRAVITY_SPEED_MAX ? object->get_move_y() + GRAVITY_SPEED : GRAVITY_SPEED_MAX );
 		}
 	}
@@ -158,7 +158,7 @@ void allFunction::gravity_move( Point_Container & _pc ) {
 
 		if ( object->isStanding() == false && object->is_mobile())
 		{
-			std :: cout << "void allFunction::gravity_move => gravity works for obstacle: " << &object << '\n';
+			//std :: cout << "void allFunction::gravity_move => gravity works for obstacle: " << &object << '\n';
 			object->set_move_y( object->get_move_y() < GRAVITY_SPEED_MAX ? object->get_move_y() + GRAVITY_SPEED : GRAVITY_SPEED_MAX );
 		}
 	}
@@ -243,14 +243,13 @@ void allFunction::check_health( Point_Container & _pc )
 		}
 	}
 
-
 	/* Check bullet health */
 	numb = _pc.get_number_bullet();
 
 	for ( int i = 0; i < numb; ++i )
 	{
 		if ( _pc.get_point_bullet(i)->get_health() <= 0 )
-		{
+		{;
 			_pc.del( _pc.get_point_bullet(i) );
 			numb = _pc.get_number_bullet();
 			--i;		//One object has been deleted and next object takes its place, so you must check this place again;
