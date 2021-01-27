@@ -1,6 +1,8 @@
 #ifndef COMM_CONST_H_
 #define COMM_CONST_H_
 
+#include <iostream>
+
 #include <SDL2/SDL.h>
 
 #define WIN_WIDTH	700
@@ -74,5 +76,11 @@ const int arr_sprite_obstacle[4][4] = {
 	{205,107,141,80},	//flower
 	{11,74,616,53}		//wall
 };
+
+
+inline void debug(std::string str)
+{
+	std::cout << str << std::endl;
+}
 
 #endif

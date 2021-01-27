@@ -28,7 +28,7 @@ struct Text_Objt
 };
 
 //DRAFT
-struct Rect_Objt
+/*struct Rect_Objt
 {
 	Rect_Objt * next;
 	Rect_Objt * prev;
@@ -37,7 +37,7 @@ struct Rect_Objt
 
 	Point_type p_type;
 
-};
+};*/
 //
 
 
@@ -76,7 +76,7 @@ class Text_Cont
 		bool add( const Point & _pt );
 		bool add( const Point * _pt );
 
-		bool del( const Point * _pt );
+		bool del( const Point * _pt, const int numb );
 
 		Text_Cont & operator=( const Text_Cont & _tc );
 		Text_Cont & operator=( Text_Cont && _tc );
@@ -143,23 +143,24 @@ Text_Cont< T >::Text_Cont( Text_Cont && _tc )
 template< typename T >
 Text_Cont< T >::~Text_Cont()
 {
-	for( T * b = hero_head; b != nullptr; )
+	T * temp;
+	for( T * h = hero_head; h != nullptr; )
 	{
-		T * temp = b;
-		b = b->next;
+		temp = h;
+		h = h->next;
 		delete temp;
 	}
 
 	for( T * b = bullet_head; b != nullptr; )
 	{
-		T * temp = b;
+		temp = b;
 		b = b->next;
 		delete temp;
 	}
 
 	for( T * o = obstacle_head; o != nullptr; )
 	{
-		T * temp = o;
+		temp = o;
 		o = o->next;
 		delete temp;
 	}
@@ -499,8 +500,120 @@ bool Text_Cont< T >::add( const Point * _pt )
 }
 
 template< typename T>
-bool Text_Cont< T >::del ( const Point * _pt )
+bool Text_Cont< T >::del ( const Point * _pt, const int numb )
 {
+debug("bool Text_Cont< T >::del");
+	if ( _pt == nullptr )
+		return false;
+
+	T * temp_T;
+
+	switch ( _pt->get_point_type() )
+	{
+		case neutral:
+		break;
+
+		case hero:
+		{
+			debug("bool Text_Cont< T >::del => hero");
+			temp_T = hero_head;
+			if ( numb != 0 )
+			{
+				for ( int i = 0; i < numb; ++i )
+				{
+					temp_T = temp_T->next;
+				}
+			}
+
+			temp_T->prev->next = temp_T->next;
+			temp_T->next->prev = temp_T->prev;
+
+			if ( temp_T == hero_head )
+			{
+				hero_head = temp_T->next;
+			}
+			else
+			if ( temp_T == hero_tail )
+			{
+				hero_tail = temp_T->prev;
+			}
+
+			delete temp_T;
+			--hero_count;
+			debug("bool Text_Cont< T >::del => hero deleted");
+		}
+		return true;
+		break;
+
+		case bullet:
+		{
+			debug("bool Text_Cont< T >::del => bullet");
+			temp_T = bullet_head;
+			if ( numb != 0 )
+			{
+				for ( int i = 0; i < numb; ++i )
+				{
+					temp_T = temp_T->next;
+				}
+			}
+
+			temp_T->prev->next = temp_T->next;
+			temp_T->next->prev = temp_T->prev;
+
+			if ( temp_T == bullet_head )
+			{
+				bullet_head = temp_T->next;
+			}
+			else
+			if ( temp_T == hero_tail )
+			{
+				hero_tail = temp_T->prev;
+			}
+
+			delete temp_T;
+			--hero_count;
+			debug("bool Text_Cont< T >::del => bullet deleted");
+		}
+		return true;
+		break;
+
+		case obstacle:
+		{
+			debug("bool Text_Cont< T >::del => bullet");
+			temp_T = obstacle_head;
+			if ( numb != 0 )
+			{
+				for ( int i = 0; i < numb; ++i )
+				{
+					temp_T = temp_T->next;
+				}
+			}
+
+			temp_T->prev->next = temp_T->next;
+			temp_T->next->prev = temp_T->prev;
+
+			if ( temp_T == obstacle_head )
+			{
+				obstacle_head = temp_T->next;
+			}
+			else
+			if ( temp_T == hero_tail )
+			{
+				hero_tail = temp_T->prev;
+			}
+
+			delete temp_T;
+			--hero_count;
+			debug("bool Text_Cont< T >::del => bullet deleted");
+		}
+		return true;
+		break;
+
+		default:
+		break;
+
+	}
+
 
 	return false;
 }
