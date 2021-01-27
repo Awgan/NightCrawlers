@@ -249,7 +249,7 @@ void allFunction::check_health( Point_Container & _pc )
 	for ( int i = 0; i < numb; ++i )
 	{
 		if ( _pc.get_point_bullet(i)->get_health() <= 0 )
-		{;
+		{
 			_pc.del( _pc.get_point_bullet(i) );
 			numb = _pc.get_number_bullet();
 			--i;		//One object has been deleted and next object takes its place, so you must check this place again;

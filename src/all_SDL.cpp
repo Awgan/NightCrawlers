@@ -174,6 +174,49 @@ bool all_SDL::rect_position_add ( std::vector< SDL_Rect > (& _rect)[3], Point * 
 	return true;
 }
 
+bool all_SDL::rect_position_del ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point * _poi, const int & numb )
+{
+	debug("all_SDL::rect_position_del");
+	if ( _poi == nullptr )
+		return false;
+
+	switch ( _poi->get_point_type() )
+	{
+		case neutral:
+		break;
+
+		case hero:
+		{
+			_rect[ 0 ].erase( _rect[ 0 ].begin() + numb );
+			debug("all_SDL::rect_position_del ==> hero erased");
+		}
+		return true;
+		break;
+
+		case bullet:
+		{
+			_rect[ 1 ].erase( _rect[ 1 ].begin() + numb );
+			debug("all_SDL::rect_position_del ==> bullet erased");
+		}
+		return true;
+		break;
+
+		case obstacle:
+		{
+			_rect[ 2 ].erase( _rect[ 2 ].begin() + numb );
+			debug("all_SDL::rect_position_del ==> obstacle erased");
+		}
+		return true;
+		break;
+
+		default:
+		break;
+
+	}
+	debug("all_SDL::rect_position_del ==> nothing erased");
+	return false;
+}
+
 bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect * _rect, Point * _poi ) {
 
 	static time_t timer 	= 0;

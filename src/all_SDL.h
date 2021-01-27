@@ -18,6 +18,8 @@ namespace all_SDL {
 
 	bool rect_position_add ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point * _poi );
 
+	bool rect_position_del ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point * _poi, const int & numb );
+
 	bool render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect * _rect, Point * _poi );
 
 	bool render_all( SDL_Renderer * _rend, SDL_Texture ** _tex, SDL_Rect * _rect, Point_Container * _poi );
