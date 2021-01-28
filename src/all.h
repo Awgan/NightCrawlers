@@ -3,8 +3,10 @@
 
 #include <SDL2/SDL.h>
 
+#include "all_SDL.h"
 #include "comm_const.h"
 #include "point.h"
+#include "texture_cont.h"
 
 namespace allFunction {
 
@@ -22,7 +24,7 @@ namespace allFunction {
 
 	void bullet_move( Point_Container & _pc );
 
-	void check_health( Point_Container & _pc );
+	void check_health( Point_Container & _pc, Text_Cont < Text_Objt > & _tc, std::vector< SDL_Rect > (& _rect)[ 3 ] );
 }
 
 

@@ -23,7 +23,7 @@
 
 #define BACKGROUND 1
 
-#define GAME_DELAY	100
+#define GAME_DELAY	20
 
 #define GRAVITY_SPEED 1.7
 #define GRAVITY_SPEED_MAX 4

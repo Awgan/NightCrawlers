@@ -503,6 +503,7 @@ template< typename T>
 bool Text_Cont< T >::del ( const Point * _pt, const int numb )
 {
 debug("bool Text_Cont< T >::del");
+std::cout << numb << std::endl;
 	if ( _pt == nullptr )
 		return false;
 
@@ -525,21 +526,35 @@ debug("bool Text_Cont< T >::del");
 				}
 			}
 
-			temp_T->prev->next = temp_T->next;
-			temp_T->next->prev = temp_T->prev;
-
 			if ( temp_T == hero_head )
 			{
-				hero_head = temp_T->next;
+				if ( temp_T->next != nullptr )
+					{
+						temp_T->next->prev = nullptr;
+						hero_head = temp_T->next;
+					}
 			}
 			else
 			if ( temp_T == hero_tail )
 			{
+				temp_T->prev->next = nullptr;
 				hero_tail = temp_T->prev;
+			}
+			else
+			{
+				temp_T->prev->next = temp_T->next;
+				temp_T->next->prev = temp_T->prev;
 			}
 
 			delete temp_T;
 			--hero_count;
+
+			if ( hero_count == 0 )
+			{
+				hero_head = nullptr;
+				hero_tail = nullptr;
+			}
+
 			debug("bool Text_Cont< T >::del => hero deleted");
 		}
 		return true;
@@ -547,31 +562,49 @@ debug("bool Text_Cont< T >::del");
 
 		case bullet:
 		{
-			debug("bool Text_Cont< T >::del => bullet");
+			debug("bool Text_Cont< T >::del => bullet1");
 			temp_T = bullet_head;
 			if ( numb != 0 )
-			{
+			{debug("bool Text_Cont< T >::del => bullet2a");
 				for ( int i = 0; i < numb; ++i )
 				{
 					temp_T = temp_T->next;
+					std::cout << i << std::endl;
 				}
 			}
 
-			temp_T->prev->next = temp_T->next;
-			temp_T->next->prev = temp_T->prev;
 
+debug("bool Text_Cont< T >::del => bullet2b");
 			if ( temp_T == bullet_head )
-			{
-				bullet_head = temp_T->next;
+			{debug("bool Text_Cont< T >::del => bullet2c");
+				if ( temp_T->next != nullptr )
+					{
+						temp_T->next->prev = nullptr;
+						bullet_head = temp_T->next;
+					}
 			}
 			else
-			if ( temp_T == hero_tail )
-			{
-				hero_tail = temp_T->prev;
+			if ( temp_T == bullet_tail )
+			{debug("bool Text_Cont< T >::del => bullet2d");
+				temp_T->prev->next = nullptr;
+				bullet_tail = temp_T->prev;
 			}
-
+			else
+			{debug("bool Text_Cont< T >::del => bullet2e");
+				temp_T->prev->next = temp_T->next;
+				debug("bool Text_Cont< T >::del => bullet2f");
+				temp_T->next->prev = temp_T->prev;
+				debug("bool Text_Cont< T >::del => bullet2g");
+			}
+debug("bool Text_Cont< T >::del => bullet3");
 			delete temp_T;
-			--hero_count;
+			--bullet_count;
+
+			if ( bullet_count == 0 )
+			{
+				bullet_head = nullptr;
+				bullet_tail = nullptr;
+			}
 			debug("bool Text_Cont< T >::del => bullet deleted");
 		}
 		return true;
@@ -589,21 +622,34 @@ debug("bool Text_Cont< T >::del");
 				}
 			}
 
-			temp_T->prev->next = temp_T->next;
-			temp_T->next->prev = temp_T->prev;
-
 			if ( temp_T == obstacle_head )
 			{
-				obstacle_head = temp_T->next;
+				if ( temp_T->next != nullptr )
+					{
+						temp_T->next->prev = nullptr;
+						obstacle_head = temp_T->next;
+					}
 			}
 			else
-			if ( temp_T == hero_tail )
+			if ( temp_T == obstacle_tail )
 			{
-				hero_tail = temp_T->prev;
+				temp_T->prev->next = nullptr;
+				obstacle_tail = temp_T->prev;
+			}
+			else
+			{
+				temp_T->prev->next = temp_T->next;
+				temp_T->next->prev = temp_T->prev;
 			}
 
 			delete temp_T;
-			--hero_count;
+			--obstacle_count;
+
+			if ( obstacle_count == 0 )
+			{
+				obstacle_head = nullptr;
+				obstacle_tail = nullptr;
+			}
 			debug("bool Text_Cont< T >::del => bullet deleted");
 		}
 		return true;

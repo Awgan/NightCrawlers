@@ -114,21 +114,22 @@ int main( int argc, char * argv[] ) {
 		if ( event.type == SDL_QUIT )
 			break;
 
-
+		std::cout << "Check gravity\n";
 		/* Check gravity */
 		allFunction::gravity_move( point_container );
 
-
+		std::cout << "Update obstacle position\n";
 		/* Update obstacle position */
 		for ( int i = 0; i < point_container.get_number_obstacle(); ++i ) {
-
+std::cout << "Update obstacle position : " << i << '\n';
 			if ( point_container.get_point_obstacle( i )->move() ) {
-
+std::cout << "Update obstacle position A\n";
 				rect_container[2][i].x = point_container.get_point_obstacle( i )->get_coor_x();
 				rect_container[2][i].y = point_container.get_point_obstacle( i )->get_coor_y();
+std::cout << "Update obstacle position B\n";
 			}
 		}
-
+		std::cout << "Update bullet postion\n";
 		/* Update bullet postion */
 		allFunction::bullet_move( point_container );
 
@@ -142,8 +143,8 @@ int main( int argc, char * argv[] ) {
 			}
 		}
 
-		/* check healt after bullets move */
-		allFunction::check_health( point_container );
+		/* Check healt after bullets move */
+		allFunction::check_health( point_container, tex_container, rect_container );
 
 
 		/* Update hero position */
@@ -156,7 +157,9 @@ int main( int argc, char * argv[] ) {
 			}
 		}
 
+		point_container.list_points_test();
 
+	std::cout << "Rendering START\n";
 	//Main Rendering START
 		SDL_RenderClear(rend);
 
@@ -169,7 +172,8 @@ int main( int argc, char * argv[] ) {
 
 
 		/* Handle events */
-		switch (event.type) {
+		switch (event.type)
+		{
 
 			case SDL_KEYDOWN:
 			case SDL_KEYUP:
@@ -366,16 +370,17 @@ int main( int argc, char * argv[] ) {
 					if ( key == BULLET_FIRE ) {
 
 						// TODO:: bullet firing
-
+//std::cout << "Bullet add -01\n";
 						Bullet bullet( active_hero );
-
+//std::cout << "Bullet add 00\n";
 						if ( point_container.add( &bullet ) == true )
 						{
-						std::cout << "Bullet add 01\n";
+						//std::cout << "Bullet add 01\n";
 							tex_container.add( &bullet );
-						std::cout << "Bullet add 02\n";
+						//std::cout << "Bullet add 02\n";
 							all_SDL::rect_position_add( rect_container, &bullet );
-						std::cout << "Bullet add 03\n";}
+						//std::cout << "Bullet add 03\n";
+						}
 
 
 					}

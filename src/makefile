@@ -30,7 +30,7 @@ win_general.o: win_general.cpp win_general.h
 obstacle_win.o: obstacle_win.cpp obstacle_win.h win_general.o 
 	g++ -c -o $@ obstacle_win.cpp -I.
 
-all.o: all.cpp all.h comm_const.h point.o
+all.o: all.cpp all.h comm_const.h point.o texture_cont.o
 	g++ -c -o $@ all.cpp -I.
 
 cursor_picture.o: cursor_picture.cpp cursor_picture.h comm_const.h win_general.o

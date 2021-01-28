@@ -211,7 +211,7 @@ void Point::move_dy( double _dy )
 			return;
 		}
 
-		//std::cout << "void Point::move_dy => move value: " << _dy << '\n';
+		std::cout << "void Point::move_dy => move value  A: " << _dy << '\n';
 
 	double temp = get_coor_y() + _dy * DEF_SPEED;
 	double before = get_coor_y();
@@ -230,7 +230,7 @@ void Point::move_dy( double _dy )
 
 	/* set new position */
 	set_coor_y( temp );
-
+std::cout << "void Point::move_dy => move value: B\n";
 
 	/*check collision and place object as close as it is possible to the collision object */
 	while ( isCollision( *pointCont ) == true && _dy != 0 )
@@ -263,7 +263,7 @@ void Point::move_dy( double _dy )
 
 	/* self moving counter */
 		isSelfMoving();
-
+std::cout << "void Point::move_dy => move value: C\n";
 }
 
 void Point::move_dz( int _dz ) {
@@ -302,10 +302,10 @@ void Point::move_dz( int _dz ) {
 }
 
 bool Point::move() {
-//std::cout << "bool Point::move() => x: " << get_move_x() << " | y: " << get_move_y() << " | z: " << get_move_z() << '\n';
+std::cout << "bool Point::move() => x: " << get_move_x() << " | y: " << get_move_y() << " | z: " << get_move_z() << '\n';
 	bool flag = false;
 
-
+std::cout << "bool Point::move() 01\n";
 	if ( const_move_x != 0 ) {
 		move_dx( const_move_x );
 		flag |= true;
@@ -318,9 +318,9 @@ bool Point::move() {
 		move_dz( const_move_z );
 		flag |= true;
 	}
-
+std::cout << "bool Point::move() 02\n";
 	checkStanding();
-
+std::cout << "bool Point::move() 03\n";
 return flag;
 }
 
@@ -387,7 +387,7 @@ bool Point::isSelfMoving() {
 	}
 	else
 	{
-		std::cout << "isSelMoving problem\n";
+		//std::cout << "isSelMoving problem\n";
 		/* stop self move object */
 		set_self_move_distance( 0 );
 

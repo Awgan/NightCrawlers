@@ -4,7 +4,7 @@
 #include "all.h"
 
 bool allFunction::move_keyboard( Point * _point, SDL_Event * _event) {
-std::cout << "bool allFunction::move_keyboard\n";
+//std::cout << "bool allFunction::move_keyboard\n";
 	if ( _point->is_mobile() )
 	{
 		switch ( _event->type ) {
@@ -107,7 +107,7 @@ Obstacle_type allFunction::Obstacle_type_select(const int & mx, const int & my) 
 
 	Obstacle_type type;
 
-	std::cout << "mx: " << mx << '\n';
+	//std::cout << "mx: " << mx << '\n';
 
 	if ( mx >= 0 && mx <= 50 )
 		type = box;
@@ -228,7 +228,7 @@ void allFunction::bullet_move( Point_Container & _pc )
 	}
 }
 
-void allFunction::check_health( Point_Container & _pc )
+void allFunction::check_health( Point_Container & _pc, Text_Cont< Text_Objt > & _tc, std::vector< SDL_Rect > (& _rect)[ 3 ] )
 {
 	/* Check hero health */
 	int numb = _pc.get_number_hero();
@@ -237,6 +237,8 @@ void allFunction::check_health( Point_Container & _pc )
 	{
 		if ( _pc.get_point_hero(i)->get_health() <= 0 )
 		{
+			_tc.del( _pc.get_point_hero(i), i );
+			all_SDL::rect_position_del(_rect, _pc.get_point_hero(i), i );
 			_pc.del( _pc.get_point_hero(i) );
 			numb = _pc.get_number_hero();
 			--i;		//One object has been deleted and next object takes its place, so you must check this place again;
@@ -250,6 +252,8 @@ void allFunction::check_health( Point_Container & _pc )
 	{
 		if ( _pc.get_point_bullet(i)->get_health() <= 0 )
 		{
+			_tc.del( _pc.get_point_bullet(i), i );
+			all_SDL::rect_position_del(_rect, _pc.get_point_bullet(i), i );
 			_pc.del( _pc.get_point_bullet(i) );
 			numb = _pc.get_number_bullet();
 			--i;		//One object has been deleted and next object takes its place, so you must check this place again;
@@ -264,6 +268,8 @@ void allFunction::check_health( Point_Container & _pc )
 	{
 		if ( _pc.get_point_obstacle(i)->get_health() <= 0 )
 		{
+			_tc.del( _pc.get_point_obstacle(i), i );
+			all_SDL::rect_position_del(_rect, _pc.get_point_obstacle(i), i );
 			_pc.del( _pc.get_point_obstacle(i) );
 			numb = _pc.get_number_obstacle();
 			--i;		//One object has been deleted and next object takes its place, so you must check this place again;
