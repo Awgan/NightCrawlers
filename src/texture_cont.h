@@ -503,7 +503,7 @@ template< typename T>
 bool Text_Cont< T >::del ( const Point * _pt, const int numb )
 {
 debug("bool Text_Cont< T >::del");
-std::cout << numb << std::endl;
+
 	if ( _pt == nullptr )
 		return false;
 
@@ -562,10 +562,10 @@ std::cout << numb << std::endl;
 
 		case bullet:
 		{
-			debug("bool Text_Cont< T >::del => bullet1");
+
 			temp_T = bullet_head;
 			if ( numb != 0 )
-			{debug("bool Text_Cont< T >::del => bullet2a");
+			{
 				for ( int i = 0; i < numb; ++i )
 				{
 					temp_T = temp_T->next;
@@ -574,9 +574,8 @@ std::cout << numb << std::endl;
 			}
 
 
-debug("bool Text_Cont< T >::del => bullet2b");
 			if ( temp_T == bullet_head )
-			{debug("bool Text_Cont< T >::del => bullet2c");
+			{
 				if ( temp_T->next != nullptr )
 					{
 						temp_T->next->prev = nullptr;
@@ -585,18 +584,18 @@ debug("bool Text_Cont< T >::del => bullet2b");
 			}
 			else
 			if ( temp_T == bullet_tail )
-			{debug("bool Text_Cont< T >::del => bullet2d");
+			{
 				temp_T->prev->next = nullptr;
 				bullet_tail = temp_T->prev;
 			}
 			else
-			{debug("bool Text_Cont< T >::del => bullet2e");
+			{
 				temp_T->prev->next = temp_T->next;
-				debug("bool Text_Cont< T >::del => bullet2f");
+
 				temp_T->next->prev = temp_T->prev;
-				debug("bool Text_Cont< T >::del => bullet2g");
+
 			}
-debug("bool Text_Cont< T >::del => bullet3");
+
 			delete temp_T;
 			--bullet_count;
 
@@ -605,14 +604,14 @@ debug("bool Text_Cont< T >::del => bullet3");
 				bullet_head = nullptr;
 				bullet_tail = nullptr;
 			}
-			debug("bool Text_Cont< T >::del => bullet deleted");
+
 		}
 		return true;
 		break;
 
 		case obstacle:
 		{
-			debug("bool Text_Cont< T >::del => bullet");
+			debug("bool Text_Cont< T >::del => obstacle");
 			temp_T = obstacle_head;
 			if ( numb != 0 )
 			{
@@ -650,7 +649,7 @@ debug("bool Text_Cont< T >::del => bullet3");
 				obstacle_head = nullptr;
 				obstacle_tail = nullptr;
 			}
-			debug("bool Text_Cont< T >::del => bullet deleted");
+			debug("bool Text_Cont< T >::del => obstacle deleted");
 		}
 		return true;
 		break;

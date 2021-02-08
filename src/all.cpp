@@ -202,17 +202,17 @@ Point allFunction::create_wall( const SDL_Event * eve )
 
 void allFunction::bullet_move( Point_Container & _pc )
 {
-	Point * object;
+	Point * object = nullptr;
 
-	for ( int i = 0; i < _pc.get_number_bullet(); i++ )
+	for ( int i = 0; i < _pc.get_number_bullet(); ++i )
 	{
 		object = _pc.get_point_bullet( i );
 
-		if ( object->isMoving() )
+		if ( object != nullptr && object->isMoving() )
 		{
 			//std::cout << "bullet is moving\n";
 		}
-		else
+		else if ( object != nullptr )
 		{
 			if ( object->get_direction() == Coordinate::Direction::left )
 			{
@@ -250,7 +250,7 @@ void allFunction::check_health( Point_Container & _pc, Text_Cont< Text_Objt > & 
 
 	for ( int i = 0; i < numb; ++i )
 	{
-		if ( _pc.get_point_bullet(i)->get_health() <= 0 )
+		if ( _pc.get_point_bullet(i) && (_pc.get_point_bullet(i)->get_health() <= 0) )
 		{
 			_tc.del( _pc.get_point_bullet(i), i );
 			all_SDL::rect_position_del(_rect, _pc.get_point_bullet(i), i );

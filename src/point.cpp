@@ -211,8 +211,6 @@ void Point::move_dy( double _dy )
 			return;
 		}
 
-		std::cout << "void Point::move_dy => move value  A: " << _dy << '\n';
-
 	double temp = get_coor_y() + _dy * DEF_SPEED;
 	double before = get_coor_y();
 
@@ -230,7 +228,6 @@ void Point::move_dy( double _dy )
 
 	/* set new position */
 	set_coor_y( temp );
-std::cout << "void Point::move_dy => move value: B\n";
 
 	/*check collision and place object as close as it is possible to the collision object */
 	while ( isCollision( *pointCont ) == true && _dy != 0 )
@@ -263,7 +260,7 @@ std::cout << "void Point::move_dy => move value: B\n";
 
 	/* self moving counter */
 		isSelfMoving();
-std::cout << "void Point::move_dy => move value: C\n";
+
 }
 
 void Point::move_dz( int _dz ) {
@@ -302,10 +299,10 @@ void Point::move_dz( int _dz ) {
 }
 
 bool Point::move() {
-std::cout << "bool Point::move() => x: " << get_move_x() << " | y: " << get_move_y() << " | z: " << get_move_z() << '\n';
+//std::cout << "bool Point::move() => x: " << get_move_x() << " | y: " << get_move_y() << " | z: " << get_move_z() << '\n';
 	bool flag = false;
 
-std::cout << "bool Point::move() 01\n";
+
 	if ( const_move_x != 0 ) {
 		move_dx( const_move_x );
 		flag |= true;
@@ -318,9 +315,9 @@ std::cout << "bool Point::move() 01\n";
 		move_dz( const_move_z );
 		flag |= true;
 	}
-std::cout << "bool Point::move() 02\n";
+
 	checkStanding();
-std::cout << "bool Point::move() 03\n";
+
 return flag;
 }
 
@@ -429,6 +426,7 @@ void Point::checkStanding() {
 	}
 
 	collision_with = collWith;	//returning to previous state
+
 	set_coor_y( before );
 
 	//std::cout << "Point::checkStanding() => before: " << before << '\n';
@@ -437,7 +435,9 @@ void Point::checkStanding() {
 bool Point::isCollision( Point * sP) {
 
 	if
-	( 	(this != sP)
+	( 	(sP != nullptr)
+			&&
+		(this != sP)
 			&&
 		( *borders.x + *borders.width >= *sP->borders.x )
 			&&
@@ -475,7 +475,7 @@ bool Point::isCollision( Point_Container & pc ) {
 
 	for ( int i = 0; i < numb; ++i ) {
 
-		if ( isCollision( pc.get_point_bullet(i) ) ) {
+		if ( pc.get_point_bullet(i) && isCollision( pc.get_point_bullet(i) ) ) {
 			//std::cout << "i : " << i << '\n';
 
 			return true;

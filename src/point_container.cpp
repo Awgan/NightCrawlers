@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <stdlib.h>
 
@@ -66,8 +67,8 @@ bool Point_Container::add( Point * _p ){
 		case Point_type::hero: {
 
 			point_stru * temp = new point_stru;
-			temp->next = new point_stru;
-			temp->prev = new point_stru;
+			//temp->next = new point_stru;
+			//temp->prev = new point_stru;
 			temp->thing = new Point;
 
 			if ( hero_first == nullptr ) {
@@ -97,8 +98,8 @@ bool Point_Container::add( Point * _p ){
 
 			//temp->thing->print_borders();
 
-			number_hero++;
-			number_all++;
+			++number_hero;
+			++number_all;
 
 			break;
 		}
@@ -106,8 +107,8 @@ bool Point_Container::add( Point * _p ){
 		case Point_type::bullet: {
 
 			point_stru * temp = new point_stru;
-			temp->next = new point_stru;
-			temp->prev = new point_stru;
+			//temp->next = new point_stru;
+			//temp->prev = new point_stru;
 			temp->thing = new Point;
 
 			if ( bullet_first == nullptr ) {
@@ -118,8 +119,6 @@ bool Point_Container::add( Point * _p ){
 				bullet_first->next = nullptr;
 				bullet_first->prev = nullptr;
 
-				//hero_active = hero_first->thing; 	---> there is no similar variable for obstacle, but maybe should be
-				//hero_active_numb = 0;				---> there is no similar variable for obstacle, but maybe should be
 			}
 			else
 			{
@@ -137,18 +136,21 @@ bool Point_Container::add( Point * _p ){
 
 			//temp->thing->print_borders();
 
-			number_bullet++;
-			number_all++;
-			std::cout << "Point_Container::add( Point * _p ) => " << "address: " << bullet_last->thing <<
-			"\tbullet numebr/all: " << number_bullet << '/' << number_all << '\n';
+			++number_bullet;
+			++number_all;
+			std::cout << "\nPoint_Container::add( Point * _p ) => " <<
+			"\nprev address: " << bullet_last->prev <<
+			"\nthis address: " << bullet_last <<
+			"\nnext address: " << bullet_last->next <<
+			"\nbullet numebr/all: " << number_bullet << '/' << number_all << "\n\n";
 
 			break;
 		}
 		case Point_type::obstacle:	{
 
 			point_stru * temp = new point_stru;
-			temp->next = new point_stru;
-			temp->prev = new point_stru;
+			//temp->next = new point_stru;
+			//temp->prev = new point_stru;
 			temp->thing = new Point;
 
 			if ( obstacle_first == nullptr ) {
@@ -178,9 +180,9 @@ bool Point_Container::add( Point * _p ){
 
 			//temp->thing->print_borders();
 
-			number_obstacle++;
-			number_all++;
-			std::cout << "Point_Container::add( Point * _p ) => " << "address: " << obstacle_last->thing <<
+			++number_obstacle;
+			++number_all;
+			std::cout << "Point_Container::add( Point * _p ) => " << "address: " << obstacle_last <<
 			"\tobstacle numebr/all: " << number_obstacle << '/' << number_all << '\n';
 			break;
 		}
@@ -196,7 +198,7 @@ bool Point_Container::add( Point * _p ){
 
 bool Point_Container::add( Point && _p ){
 
-//std::cout << "bool Point_Container::add( Point && _p )\n";
+std::cout << "bool Point_Container::add( Point && _p )\n";
 
 	switch ( _p.get_type() ) {
 
@@ -206,8 +208,8 @@ bool Point_Container::add( Point && _p ){
 		case Point_type::hero: {
 
 			point_stru * temp = new point_stru;
-			temp->next = new point_stru;
-			temp->prev = new point_stru;
+			//temp->next = new point_stru;
+			//temp->prev = new point_stru;
 			temp->thing = new Point;
 
 			if ( hero_first == nullptr ) {
@@ -237,19 +239,20 @@ bool Point_Container::add( Point && _p ){
 
 			//temp->thing->print_borders();
 
-			number_hero++;
-			number_all++;
+			++number_hero;
+			++number_all;
 
 			break;
 		}
 		case Point_type::bullet: {
 
 			point_stru * temp = new point_stru;
-			temp->next = new point_stru;
-			temp->prev = new point_stru;
+			//temp->next = new point_stru;
+			//temp->prev = new point_stru;
 			temp->thing = new Point;
 
-			if ( bullet_first == nullptr ) {
+			if ( bullet_first == nullptr )
+			{
 
 				bullet_first = temp;
 				bullet_last = bullet_first;
@@ -276,8 +279,8 @@ bool Point_Container::add( Point && _p ){
 
 			//temp->thing->print_borders();
 
-			number_bullet++;
-			number_all++;
+			++number_bullet;
+			++number_all;
 			std::cout << "Point_Container::add( Point * _p )\n" << "address: " << bullet_last->thing <<
 			"\tbullet numebr/all: " << number_bullet << '/' << number_all << '\n';
 
@@ -285,9 +288,10 @@ bool Point_Container::add( Point && _p ){
 		}
 
 		case Point_type::obstacle:	{
+
 			point_stru * temp = new point_stru;
-			temp->next = new point_stru;
-			temp->prev = new point_stru;
+			//temp->next = new point_stru;
+			//temp->prev = new point_stru;
 			temp->thing = new Point;
 
 			if ( obstacle_first == nullptr ) {
@@ -331,10 +335,13 @@ bool Point_Container::add( Point && _p ){
 }
 
 
-bool Point_Container::del( Point * _p ) {
-//std::cout << "Point_Container::del( Point * _p )\n";
+
+bool Point_Container::del( Point * _p )
+{
+
+std::cout << "Point_Container::del( Point * _p )\n";
 	Point_type type = _p->get_point_type();
-	//std::cout << "Point_Container::del( Point * _p ) 01\n";
+
 	point_stru * temp_stru = nullptr;
 	Point * temp_thing = nullptr;
 
@@ -345,6 +352,7 @@ bool Point_Container::del( Point * _p ) {
 
 		}
 		break;
+
 		case hero:
 		{
 			temp_stru = hero_first;
@@ -359,11 +367,19 @@ bool Point_Container::del( Point * _p ) {
 
 					if( temp_stru != hero_first )
 					{
-						if ( temp_stru->next != nullptr )
+
+						if ( temp_stru != hero_last )
+						{
 							temp_stru->next->prev = temp_stru->prev;
+							temp_stru->prev->next = temp_stru->next;
+						}
+						else
+						{
+							hero_last = bullet_last->prev;
+							hero_last->next = nullptr;
+						}
 
-						temp_stru->prev->next = temp_stru->next;
-
+						delete temp_del->thing;
 						delete temp_del;
 						--number_hero;
 						--number_all;
@@ -375,10 +391,11 @@ bool Point_Container::del( Point * _p ) {
 					{
 						if ( temp_stru->next != nullptr )
 						{
-							temp_stru->next->prev = nullptr;
 							hero_first = hero_first->next;
+							hero_first->prev = nullptr;
 						}
 
+						delete temp_del->thing;
 						delete temp_del;
 						--number_hero;
 						--number_all;
@@ -387,7 +404,7 @@ bool Point_Container::del( Point * _p ) {
 						{
 							hero_first = nullptr;
 						}
-//std::cout<<"II hero delete\n";
+
 						return true;
 					}
 				}
@@ -406,40 +423,62 @@ bool Point_Container::del( Point * _p ) {
 			}
 		}
 		break;
+
 		case bullet:
 		{
 			temp_stru = bullet_first;
 			temp_thing = temp_stru->thing;
 
-			for ( int i = 0; i < number_bullet; i++ )
+			for ( int i = 0; i < number_bullet; ++i )
 			{
 				/* Looking for point */
 				if ( _p == temp_thing )
 				{
+					std::cout << "Point_Container::del() ==> bullet delete number: " << i << '\n';
 					point_stru * temp_del = temp_stru;
 
 					if( temp_stru != bullet_first )
 					{
-						if ( temp_stru->next != nullptr )
+						std::cout<<"\nbullet not first :: BEFORE\n";
+						list_points_test();
+
+						if ( temp_stru != bullet_last )
+						{
 							temp_stru->next->prev = temp_stru->prev;
+							temp_stru->prev->next = temp_stru->next;
+						}
+						else
+						{
+							std::cout<<"bullet last\n";
+							bullet_last = bullet_last->prev;
+							bullet_last->next = nullptr;
+						}
 
-						temp_stru->prev->next = temp_stru->next;
 
+
+						delete temp_del->thing;
 						delete temp_del;
 						--number_bullet;
 						--number_all;
-//std::cout<<"bullet delete1\n";
+
+						std::cout<<"bullet not first :: AFTER\n";
+						list_points_test();
+
 						return true;
 
 					}
 					else //temp_stru == bullet_first
 					{
+						std::cout<<"\nbullet first :: BEFORE\n";
+						list_points_test();
+
 						if ( temp_stru->next != nullptr )
 						{
-							temp_stru->next->prev = nullptr;
 							bullet_first = bullet_first->next;
+							bullet_first->prev = nullptr;
 						}
 
+						delete temp_del->thing;
 						delete temp_del;
 						--number_bullet;
 						--number_all;
@@ -449,6 +488,9 @@ bool Point_Container::del( Point * _p ) {
 							bullet_first = nullptr;
 						}
 //std::cout<<"bullet delete2\n";
+						std::cout<<"bullet first :: AFTER\n";
+						list_points_test();
+
 						return true;
 					}
 				}
@@ -457,7 +499,8 @@ bool Point_Container::del( Point * _p ) {
 				temp_stru = temp_stru->next;
 
 				if ( temp_stru == nullptr )
-				{	std::cout << "Point_Container::del( Point * _p ) => END. Bullet not found\n";
+				{
+					std::cout << "Point_Container::del( Point * _p ) => END. Bullet not found\n";
 					return false;
 				}
 				else
@@ -467,6 +510,7 @@ bool Point_Container::del( Point * _p ) {
 			}
 		}
 		break;
+
 		case obstacle:
 		{
 			temp_stru = obstacle_first;
@@ -481,10 +525,16 @@ bool Point_Container::del( Point * _p ) {
 
 					if( temp_stru != obstacle_first )
 					{
-						if ( temp_stru->next != nullptr )
+						if ( temp_stru != obstacle_last )
+						{
 							temp_stru->next->prev = temp_stru->prev;
-
-						temp_stru->prev->next = temp_stru->next;
+							temp_stru->prev->next = temp_stru->next;
+						}
+						else
+						{
+							obstacle_last = obstacle_last->prev;
+							obstacle_last->next = nullptr;
+						}
 
 						delete temp_del;
 						--number_obstacle;
@@ -497,8 +547,8 @@ bool Point_Container::del( Point * _p ) {
 					{
 						if ( temp_stru->next != nullptr )
 						{
-							temp_stru->next->prev = nullptr;
 							obstacle_first = obstacle_first->next;
+							obstacle_first->prev = nullptr;
 						}
 
 						delete temp_del;
@@ -528,6 +578,7 @@ bool Point_Container::del( Point * _p ) {
 			}
 		}
 		break;
+
 		default:
 		break;
 	}
@@ -555,18 +606,22 @@ Point * Point_Container::get_point_hero( const int numb ) {
 return nullptr;
 }
 
-Point * Point_Container::get_point_bullet( const int numb ) {
+Point * Point_Container::get_point_bullet( const int numb )
+{
 
-	if ( numb >= 0 && numb < number_bullet ) {
-
+	if ( numb >= 0 && numb < number_bullet )
+	{
 		point_stru	* temp = bullet_first;
 
-		for( int i = 0; i < numb; ++i ) {
-
+		for( int i = 0; i < numb; ++i )
+		{
 			temp = temp->next;
 		}
-		if ( temp == nullptr ) {
-			//std::cout << "error: no BULLET object\n";
+
+		if ( temp == nullptr )
+		{
+			std::cout << "for no.: " << numb << " is error: no BULLET object\n";
+			return nullptr;
 		}
 		return temp->thing;
 	}
@@ -667,27 +722,35 @@ void Point_Container::list_points_test()
 	std::cout << "Point Container List:\n\n";
 
 	std::cout << "Hero point list:\n";
+	int i = 0;
+	point_stru * temp = hero_first;
 
-	for ( int i = 0; i < number_hero; ++i )
+	for ( i = 0; i < number_hero; ++i )
 	{
-		std::cout << "\tHero no: " << i << " : " << get_point_hero( i ) << std::endl;
+		std::cout << "\tHero no: " << i << " : " << temp << std::endl;
+		temp = temp->next;
 	}
+	std::cout << "\tHero no: " << i << " : " << temp << std::endl;
 
 
 	std::cout << "Bullet point list:\n";
-
-	for ( int i = 0; i < number_bullet; ++i )
+	temp = bullet_first;
+	for ( i = 0; i < number_bullet; ++i )
 	{
-		std::cout << "\tBullet no: " << i << " : " << get_point_bullet( i ) << std::endl;
+		std::cout << "\tBullet no: " << i << " : " << temp << std::endl;
+		temp = temp->next;
 	}
+	std::cout << "\tBullet no: " << i << " : " << temp << std::endl;
 
 
 	std::cout << "Obstacle point list:\n";
-
-	for ( int i = 0; i < number_obstacle; ++i )
+	temp = obstacle_first;
+	for ( i = 0; i < number_obstacle; ++i )
 	{
-		std::cout << "\tObstacle no: " << i << " : " << get_point_obstacle( i ) << std::endl;
+		std::cout << "\tObstacle no: " << i << " : " << temp << std::endl;
+		temp=temp->next;
 	}
+	std::cout << "\tObstacle no: " << i << " : " << temp << std::endl;
 
 }
 

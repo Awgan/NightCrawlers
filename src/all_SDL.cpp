@@ -325,7 +325,7 @@ bool all_SDL::render_all( SDL_Renderer * _rend, Text_Cont< Text_Objt >  * _tex, 
 
 	}
 
-	for ( int i = 0; i < _poi->get_number_bullet(); ++i ) {
+	for ( int i = 0;  _poi->get_point_bullet(i) && i < _poi->get_number_bullet(); ++i ) {
 
 		all_SDL::render( _rend, _tex->get_texture_bullet( i ), &_rect[1][i], _poi->get_point_bullet(i) );
 

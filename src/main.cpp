@@ -114,39 +114,39 @@ int main( int argc, char * argv[] ) {
 		if ( event.type == SDL_QUIT )
 			break;
 
-		std::cout << "Check gravity\n";
+////std::cout << "Check gravity\n";
 		/* Check gravity */
 		allFunction::gravity_move( point_container );
 
-		std::cout << "Update obstacle position\n";
+		//std::cout << "Update obstacle position\n";
 		/* Update obstacle position */
 		for ( int i = 0; i < point_container.get_number_obstacle(); ++i ) {
-std::cout << "Update obstacle position : " << i << '\n';
+//std::cout << "Update obstacle position : " << i << '\n';
 			if ( point_container.get_point_obstacle( i )->move() ) {
-std::cout << "Update obstacle position A\n";
+//std::cout << "Update obstacle position A\n";
 				rect_container[2][i].x = point_container.get_point_obstacle( i )->get_coor_x();
 				rect_container[2][i].y = point_container.get_point_obstacle( i )->get_coor_y();
-std::cout << "Update obstacle position B\n";
+//std::cout << "Update obstacle position B\n";
 			}
 		}
-		std::cout << "Update bullet postion\n";
+		//std::cout << "Update bullet postion\n";
 		/* Update bullet postion */
 		allFunction::bullet_move( point_container );
-
+		//std::cout << "Update bullet postion container\n";
 		for ( int i = 0; i < point_container.get_number_bullet(); ++i ) {
 
-			if ( point_container.get_point_bullet( i )->move() ) {
+			if ( point_container.get_point_bullet( i ) && point_container.get_point_bullet( i )->move() ) {
 
 				rect_container[1][i].x = point_container.get_point_bullet( i )->get_coor_x();
 				rect_container[1][i].y = point_container.get_point_bullet( i )->get_coor_y();
 
 			}
 		}
-
+		//std::cout << "Update health\n";
 		/* Check healt after bullets move */
 		allFunction::check_health( point_container, tex_container, rect_container );
 
-
+		//std::cout << "Update hero postion\n";
 		/* Update hero position */
 		for ( int i = 0; i < point_container.get_number_hero(); ++i ) {
 
@@ -157,9 +157,9 @@ std::cout << "Update obstacle position B\n";
 			}
 		}
 
-		point_container.list_points_test();
+		//point_container.list_points_test();
 
-	std::cout << "Rendering START\n";
+	//std::cout << "Rendering START\n";
 	//Main Rendering START
 		SDL_RenderClear(rend);
 
@@ -189,7 +189,7 @@ std::cout << "Update obstacle position B\n";
 					//TODO:: BUG: when moving key is pressed and you change selected hero then new hero move normaly but old one is
 					//		moving without stop until edge of the display; And sprite is not updated
 
-					//std::cout << "moving... \n";
+					////std::cout << "moving... \n";
 
 					allFunction::move_keyboard( active_hero, &event );
 				}
@@ -223,7 +223,7 @@ std::cout << "Update obstacle position B\n";
 							if ( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
 
 								selection = allFunction::Obstacle_type_select(event.button.x, event.button.y);
-								std::cout << "sellection\n";
+								//std::cout << "sellection\n";
 							}
 						}
 
@@ -247,7 +247,7 @@ std::cout << "Update obstacle position B\n";
 					//Change mouse cursor
 						if ( selection == none ) {
 
-							std::cout << "none selection\n";
+							//std::cout << "none selection\n";
 						}
 						else {
 
@@ -297,7 +297,7 @@ std::cout << "Update obstacle position B\n";
 								while ( event.type == SDL_MOUSEBUTTONDOWN )
 								{
 									SDL_PollEvent( &event );
-									//std::cout << "Mouse flush \n";
+									////std::cout << "Mouse flush \n";
 								}
 
 					//Change mouse cursor: wait for mouse button down
@@ -322,7 +322,7 @@ std::cout << "Update obstacle position B\n";
 									selected_prop.type = Point_type::obstacle;
 									selected_prop.b_mobile = true;
 									selected_prop.b_visible = true;
-									selected_prop.i_health = 1000;
+									selected_prop.i_health = 25;
 									selected_prop.i_speed = 3;
 									selected_prop.i_move_points = 5;
 									selected_prop.i_self_move_distance = 0;
@@ -370,12 +370,12 @@ std::cout << "Update obstacle position B\n";
 					if ( key == BULLET_FIRE ) {
 
 						// TODO:: bullet firing
-//std::cout << "Bullet add -01\n";
+////std::cout << "Bullet add -01\n";
 						Bullet bullet( active_hero );
-//std::cout << "Bullet add 00\n";
+////std::cout << "Bullet add 00\n";
 						if ( point_container.add( &bullet ) == true )
 						{
-						//std::cout << "Bullet add 01\n";
+						////std::cout << "Bullet add 01\n";
 							tex_container.add( &bullet );
 						//std::cout << "Bullet add 02\n";
 							all_SDL::rect_position_add( rect_container, &bullet );
