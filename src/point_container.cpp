@@ -375,7 +375,7 @@ std::cout << "Point_Container::del( Point * _p )\n";
 						}
 						else
 						{
-							hero_last = bullet_last->prev;
+							hero_last = hero_last->prev;
 							hero_last->next = nullptr;
 						}
 

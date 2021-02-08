@@ -216,14 +216,14 @@ void Point::move_dy( double _dy )
 
 
 	/* changing direction and sprite (if it is possible for an object) */
-	//if ( _dy < 0 && get_direction() != CoorDir::up )
-	//{
-		//set_direction( CoorDir::up );
-	//}
-	//else if ( _dy > 0 && get_direction() != CoorDir::down )
-	//{
-		//set_direction( CoorDir::down );
-	//}
+	if ( _dy < 0 && get_direction() != CoorDir::up )
+	{
+		set_direction( CoorDir::up );
+	}
+	else if ( _dy > 0 && get_direction() != CoorDir::down )
+	{
+		set_direction( CoorDir::down );
+	}
 
 
 	/* set new position */
@@ -321,6 +321,43 @@ bool Point::move() {
 return flag;
 }
 
+bool Point::can_move( Coordinate::Direction dd )
+{
+
+	double temp = get_coor_y() + 1 * DEF_SPEED * (dd == CoorDir::up ? -1 : 1);
+	double before = get_coor_y();				//saving variable data
+
+	Point * collWith = collision_with;		//saving variable data
+
+	/* change point position */
+	set_coor_y ( temp );
+
+	/* if object does not touch game borders or does not collide than it can move */
+	if ( within_lim_max_y( temp ) && isCollision( *pointCont ) == false )
+	{
+		/* returning to previous state */
+		collision_with = collWith;
+
+		set_coor_y( before );
+
+		return true;
+
+	}
+	else
+	{
+		/* returning to previous state */
+		collision_with = collWith;
+
+		set_coor_y( before );
+
+		const_move_y = 0;
+
+		return false;
+	}
+
+return false;
+}
+
 void Point::push( Point * _p )
 {
 	if ( _p->is_mobile() ) {
@@ -343,7 +380,8 @@ void Point::push( Point * _p )
 				_p->set_move_x( 0 );
 				_p->set_move_z( 0 );
 
-				_p->set_move_y( _p->get_speed() * (cd == CoorDir::up ? -1 : 1) );
+				if ( _p->can_move( cd ) )
+					_p->set_move_y( _p->get_speed() * (cd == CoorDir::up ? -1 : 1) );
 				//_p->set_self_move_distance( 0 );
 				//std::cout << "obstacle is pushing Y : " << const_move_y << '\n';
 			break;
@@ -366,7 +404,7 @@ return false;
 bool Point::isSelfMoving() {
 
 	int moveSelf = get_self_move_distance();
-//std::cout << "#debug isSelMoving => move_distance: " << get_self_move_distance() << '\n';
+
 	/* '-1' value means that object can't be pushed */
 	if ( moveSelf == -1 )
 		return false;
@@ -377,14 +415,12 @@ bool Point::isSelfMoving() {
 
 	if ( moveSelf >= 0 && moveSelf < maxDistance )
 	{
-		//std::cout << "Point::isSelfMoving() :: is self moving: " << this << '\n';
 		increas_self_move_distance( get_speed() );		//variable is increasing and when overflow max posible distance then object is stopped
 
 		return true;
 	}
 	else
 	{
-		//std::cout << "isSelMoving problem\n";
 		/* stop self move object */
 		set_self_move_distance( 0 );
 
@@ -416,20 +452,17 @@ void Point::checkStanding() {
 	{
 		standing = false;
 
-		//std::cout << "Point::checkStanding() :: "; print_type(); std::cout << " losts ground\n";
 	}
 	else
 	{
 		standing = true;
 		const_move_y = 0;
-		//std::cout << "Point::checkStanding() :: "; print_type(); std::cout << " gets ground\n";
 	}
 
 	collision_with = collWith;	//returning to previous state
 
 	set_coor_y( before );
 
-	//std::cout << "Point::checkStanding() => before: " << before << '\n';
 }
 
 bool Point::isCollision( Point * sP) {
@@ -449,7 +482,7 @@ bool Point::isCollision( Point * sP) {
 	)
 	{
 		collision_with = sP;
-		//std::cout << "collision\n";
+
 		return true;
 	}
 
@@ -475,7 +508,7 @@ bool Point::isCollision( Point_Container & pc ) {
 
 	for ( int i = 0; i < numb; ++i ) {
 
-		if ( pc.get_point_bullet(i) && isCollision( pc.get_point_bullet(i) ) ) {
+		if ( isCollision( pc.get_point_bullet(i) ) ) {
 			//std::cout << "i : " << i << '\n';
 
 			return true;
@@ -488,9 +521,8 @@ bool Point::isCollision( Point_Container & pc ) {
 
 	for ( int i = 0; i < numb; ++i ) {
 
-		if ( isCollision( pc.get_point_obstacle(i) ) ) {
-			//std::cout << "i : " << i << '\n';
-
+		if ( isCollision( pc.get_point_obstacle(i) ) )
+		{
 			return true;
 		}
 	}

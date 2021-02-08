@@ -250,7 +250,7 @@ void allFunction::check_health( Point_Container & _pc, Text_Cont< Text_Objt > & 
 
 	for ( int i = 0; i < numb; ++i )
 	{
-		if ( _pc.get_point_bullet(i) && (_pc.get_point_bullet(i)->get_health() <= 0) )
+		if ( _pc.get_point_bullet(i)->get_health() <= 0 )
 		{
 			_tc.del( _pc.get_point_bullet(i), i );
 			all_SDL::rect_position_del(_rect, _pc.get_point_bullet(i), i );

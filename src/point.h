@@ -66,6 +66,8 @@ class Point : public Position, public Property, public Graph_prop {
 
 		bool move();
 
+		bool can_move( Coordinate::Direction dd );
+
 		void push( Point * _p );//pushing object when there is collision
 
 		bool isMoving();		//checking if an object has no zero const_move values

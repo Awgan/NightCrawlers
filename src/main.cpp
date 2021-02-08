@@ -135,7 +135,7 @@ int main( int argc, char * argv[] ) {
 		//std::cout << "Update bullet postion container\n";
 		for ( int i = 0; i < point_container.get_number_bullet(); ++i ) {
 
-			if ( point_container.get_point_bullet( i ) && point_container.get_point_bullet( i )->move() ) {
+			if ( point_container.get_point_bullet( i )->move() ) {
 
 				rect_container[1][i].x = point_container.get_point_bullet( i )->get_coor_x();
 				rect_container[1][i].y = point_container.get_point_bullet( i )->get_coor_y();
