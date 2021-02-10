@@ -190,7 +190,7 @@ void Position::set_coor( int _x, double _y, int _z ) {
 
 bool Position::set_coor_x( int _x )	{
 
-	//checking limits
+	/* check limits */
 	if ( !within_lim_min_x( _x ) )
 	{
 		coord.x = limits.min.x;

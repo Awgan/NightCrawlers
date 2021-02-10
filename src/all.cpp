@@ -11,7 +11,7 @@ bool allFunction::move_keyboard( Point * _point, SDL_Event * _event) {
 			case SDL_KEYDOWN:
 				switch ( _event->key.keysym.sym ) {
 
-					case SDLK_UP:
+					case SDLK_SPACE:
 						if ( _point->isStanding() )
 							_point->set_move_y( -15 );
 						break;
@@ -45,7 +45,7 @@ bool allFunction::move_keyboard( Point * _point, SDL_Event * _event) {
 
 				switch ( _event->key.keysym.sym ) {
 
-					case SDLK_UP:
+					case SDLK_SPACE:
 						_point->set_move_y(0);
 						break;
 
@@ -210,18 +210,19 @@ void allFunction::bullet_move( Point_Container & _pc )
 
 		if ( object != nullptr && object->isMoving() )
 		{
-			//std::cout << "bullet is moving\n";
+			/* bullet is already moving */;
 		}
 		else if ( object != nullptr )
 		{
+			/* Giving bullet move */
 			if ( object->get_direction() == Coordinate::Direction::left )
 			{
-				object->set_move_x( -1 * BULLET_SPEED );//std::cout << "bullet moves left\n";
+				object->set_move_x( -1 * BULLET_SPEED );
 			}
 			else
 			if ( object->get_direction() == Coordinate::Direction::right )
 			{
-				object->set_move_x( 1 * BULLET_SPEED );//std::cout << "bullet moves right\n";
+				object->set_move_x( 1 * BULLET_SPEED );
 			}
 		}
 
@@ -237,6 +238,7 @@ void allFunction::check_health( Point_Container & _pc, Text_Cont< Text_Objt > & 
 	{
 		if ( _pc.get_point_hero(i)->get_health() <= 0 )
 		{
+			/* delete point and associated elements */
 			_tc.del( _pc.get_point_hero(i), i );
 			all_SDL::rect_position_del(_rect, _pc.get_point_hero(i), i );
 			_pc.del( _pc.get_point_hero(i) );
@@ -252,6 +254,7 @@ void allFunction::check_health( Point_Container & _pc, Text_Cont< Text_Objt > & 
 	{
 		if ( _pc.get_point_bullet(i)->get_health() <= 0 )
 		{
+			/* delete point and associated elements */
 			_tc.del( _pc.get_point_bullet(i), i );
 			all_SDL::rect_position_del(_rect, _pc.get_point_bullet(i), i );
 			_pc.del( _pc.get_point_bullet(i) );
@@ -268,6 +271,7 @@ void allFunction::check_health( Point_Container & _pc, Text_Cont< Text_Objt > & 
 	{
 		if ( _pc.get_point_obstacle(i)->get_health() <= 0 )
 		{
+			/* delete point and associated elements */
 			_tc.del( _pc.get_point_obstacle(i), i );
 			all_SDL::rect_position_del(_rect, _pc.get_point_obstacle(i), i );
 			_pc.del( _pc.get_point_obstacle(i) );

@@ -11,8 +11,8 @@
 #define HERO_WIDTH	30
 #define HERO_HEIGHT	30
 
-#define BULLET_WIDTH	20
-#define BULLET_HEIGHT	10
+#define BULLET_WIDTH	10
+#define BULLET_HEIGHT	5
 
 #define BULLET_SPEED 5
 

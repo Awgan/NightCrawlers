@@ -157,7 +157,6 @@ int main( int argc, char * argv[] ) {
 			}
 		}
 
-		//point_container.list_points_test();
 
 	//std::cout << "Rendering START\n";
 	//Main Rendering START
@@ -183,7 +182,7 @@ int main( int argc, char * argv[] ) {
 
 
 
-				if ( (key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT) /*&& active_hero->isStanding()*/ ) {
+				if ( (key == SDLK_SPACE || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT) /*&& active_hero->isStanding()*/ ) {
 
 					//TODO:: flush event; SDL remamber last event; when it is KEYUP and one of the arrows, code comes here constatly
 					//TODO:: BUG: when moving key is pressed and you change selected hero then new hero move normaly but old one is
@@ -370,24 +369,25 @@ int main( int argc, char * argv[] ) {
 					if ( key == BULLET_FIRE ) {
 
 						// TODO:: bullet firing
-////std::cout << "Bullet add -01\n";
+
 						Bullet bullet( active_hero );
-////std::cout << "Bullet add 00\n";
+
 						if ( point_container.add( &bullet ) == true )
 						{
-						////std::cout << "Bullet add 01\n";
+
 							tex_container.add( &bullet );
-						//std::cout << "Bullet add 02\n";
+
 							all_SDL::rect_position_add( rect_container, &bullet );
-						//std::cout << "Bullet add 03\n";
+
 						}
 
 
 					}
 				else
-					if ( key == PLATFORM_PLACE and event.type == SDL_KEYDOWN ) {
+					if ( key == PLATFORM_PLACE and event.type == SDL_KEYDOWN )
+					{
 
-					//Place platform for walking
+						//Place platform for walking
 
 						SDL_Cursor * curs = nullptr;
 
@@ -400,33 +400,46 @@ int main( int argc, char * argv[] ) {
 
 						//SDL_SetCursor( curs );
 
-						while( event.key.keysym.sym != SDLK_q && event.type != SDL_MOUSEBUTTONDOWN ) {
-
-							SDL_PollEvent( &event );
-
-						}
-
-						Point wall_temp = allFunction::create_wall( & event );
-
-						if ( wall_temp == true )
+						while( event.key.keysym.sym != SDLK_q && event.button.button != SDL_BUTTON_RIGHT )
 						{
-						point_container.add( &wall_temp );
 
-						//all_SDL::texture_add( &tex, rend, &selected_obstacle );
-						tex_container.add( &wall_temp );
+							/* mouse event flush */
+							while ( event.type == SDL_MOUSEBUTTONDOWN )
+							{
+								SDL_PollEvent( &event );
+							}
 
-						//all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
-						all_SDL::rect_position_add( rect_container, &wall_temp );
+							/* wait for event */
+							while ( event.key.keysym.sym != SDLK_q && event.type != SDL_MOUSEBUTTONDOWN )
+							{
+								SDL_PollEvent( &event );
+							}
+
+							/* break if 'q' key or right mouse butto */
+							if ( event.key.keysym.sym == SDLK_q || event.button.button == SDL_BUTTON_RIGHT )
+								break;
+
+							Point wall_temp = allFunction::create_wall( & event );
+
+							if ( wall_temp == true )
+							{
+								point_container.add( &wall_temp );
+
+								//all_SDL::texture_add( &tex, rend, &selected_obstacle );
+								tex_container.add( &wall_temp );
+
+								//all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
+								all_SDL::rect_position_add( rect_container, &wall_temp );
+
+							}
+
+							SDL_RenderClear(rend);
+
+							all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
+
+							SDL_RenderPresent(rend);
 
 						}
-
-						SDL_RenderClear(rend);
-
-						all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
-
-						SDL_RenderPresent(rend);
-
-
 
 
 

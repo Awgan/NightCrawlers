@@ -171,7 +171,12 @@ void Point::move_dx( int _dx ) {
 
 
 		/* Set new position and place object as close as it is possible to the collision object */
-		set_coor_x( temp );
+		/* Check if bullet reach edge of map */
+		if ( set_coor_x( temp ) == false && get_point_type() == bullet )
+		{
+			set_health( 0 );
+			return;
+		}
 
 		while ( isCollision( *pointCont ) == true && _dx != 0 )
 		{
@@ -191,13 +196,13 @@ void Point::move_dx( int _dx ) {
 			}
 
 
-			/* Reduce distance */
+			/* Reduce distance to get as close as possible*/
 			_dx > 0 ? --_dx : ++_dx;
 			temp = before + _dx * DEF_SPEED;
 			set_coor_x ( temp );
 
-
 		}
+
 
 
 		/* self moving counter */
@@ -492,31 +497,30 @@ return false;
 
 bool Point::isCollision( Point_Container & pc ) {
 
-	/* checking if there is collision with another hero */
+	/* check if there is collision with another hero */
 	int numb = pc.get_number_hero();
 
 	for ( int i = 0; i < numb; ++i ) {
-		if ( isCollision( pc.get_point_hero(i) ) ) {
-
+		if ( isCollision( pc.get_point_hero(i) ) )
+		{
 			/* return; no more action */
 			return true;
 		}
 	}
 
-	/* checking if there is collision with bullet */
+	/* check if there is collision with bullet */
 	numb = pc.get_number_bullet();
 
 	for ( int i = 0; i < numb; ++i ) {
 
-		if ( isCollision( pc.get_point_bullet(i) ) ) {
-			//std::cout << "i : " << i << '\n';
-
+		if ( isCollision( pc.get_point_bullet(i) ) )
+		{
 			return true;
 		}
 	}
 
 
-	/* checking if there is collision with obstacle */
+	/* check if there is collision with obstacle */
 	numb = pc.get_number_obstacle();
 
 	for ( int i = 0; i < numb; ++i ) {
