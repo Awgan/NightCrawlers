@@ -138,11 +138,11 @@ bool Point_Container::add( Point * _p ){
 
 			++number_bullet;
 			++number_all;
-			std::cout << "\nPoint_Container::add( Point * _p ) => " <<
+			/*std::cout << "\nPoint_Container::add( Point * _p ) => " <<
 			"\nprev address: " << bullet_last->prev <<
 			"\nthis address: " << bullet_last <<
 			"\nnext address: " << bullet_last->next <<
-			"\nbullet numebr/all: " << number_bullet << '/' << number_all << "\n\n";
+			"\nbullet numebr/all: " << number_bullet << '/' << number_all << "\n\n";*/
 
 			break;
 		}
@@ -182,8 +182,8 @@ bool Point_Container::add( Point * _p ){
 
 			++number_obstacle;
 			++number_all;
-			std::cout << "Point_Container::add( Point * _p ) => " << "address: " << obstacle_last <<
-			"\tobstacle numebr/all: " << number_obstacle << '/' << number_all << '\n';
+			/*std::cout << "Point_Container::add( Point * _p ) => " << "address: " << obstacle_last <<
+			"\tobstacle numebr/all: " << number_obstacle << '/' << number_all << '\n';*/
 			break;
 		}
 
@@ -198,7 +198,7 @@ bool Point_Container::add( Point * _p ){
 
 bool Point_Container::add( Point && _p ){
 
-std::cout << "bool Point_Container::add( Point && _p )\n";
+//std::cout << "bool Point_Container::add( Point && _p )\n";
 
 	switch ( _p.get_type() ) {
 
@@ -281,8 +281,8 @@ std::cout << "bool Point_Container::add( Point && _p )\n";
 
 			++number_bullet;
 			++number_all;
-			std::cout << "Point_Container::add( Point * _p )\n" << "address: " << bullet_last->thing <<
-			"\tbullet numebr/all: " << number_bullet << '/' << number_all << '\n';
+			/*std::cout << "Point_Container::add( Point * _p )\n" << "address: " << bullet_last->thing <<
+			"\tbullet numebr/all: " << number_bullet << '/' << number_all << '\n';*/
 
 			break;
 		}
@@ -339,7 +339,7 @@ std::cout << "bool Point_Container::add( Point && _p )\n";
 bool Point_Container::del( Point * _p )
 {
 
-std::cout << "Point_Container::del( Point * _p )\n";
+//std::cout << "Point_Container::del( Point * _p )\n";
 	Point_type type = _p->get_point_type();
 
 	point_stru * temp_stru = nullptr;
@@ -434,13 +434,13 @@ std::cout << "Point_Container::del( Point * _p )\n";
 				/* Looking for point */
 				if ( _p == temp_thing )
 				{
-					std::cout << "Point_Container::del() ==> bullet delete number: " << i << '\n';
+					//std::cout << "Point_Container::del() ==> bullet delete number: " << i << '\n';
 					point_stru * temp_del = temp_stru;
 
 					if( temp_stru != bullet_first )
 					{
-						std::cout<<"\nbullet not first :: BEFORE\n";
-						list_points_test();
+						//std::cout<<"\nbullet not first :: BEFORE\n";
+						//list_points_test();
 
 						if ( temp_stru != bullet_last )
 						{
@@ -461,16 +461,16 @@ std::cout << "Point_Container::del( Point * _p )\n";
 						--number_bullet;
 						--number_all;
 
-						std::cout<<"bullet not first :: AFTER\n";
-						list_points_test();
+						//std::cout<<"bullet not first :: AFTER\n";
+						//list_points_test();
 
 						return true;
 
 					}
 					else //temp_stru == bullet_first
 					{
-						std::cout<<"\nbullet first :: BEFORE\n";
-						list_points_test();
+						//std::cout<<"\nbullet first :: BEFORE\n";
+						//list_points_test();
 
 						if ( temp_stru->next != nullptr )
 						{
@@ -488,8 +488,8 @@ std::cout << "Point_Container::del( Point * _p )\n";
 							bullet_first = nullptr;
 						}
 //std::cout<<"bullet delete2\n";
-						std::cout<<"bullet first :: AFTER\n";
-						list_points_test();
+						//std::cout<<"bullet first :: AFTER\n";
+						//list_points_test();
 
 						return true;
 					}
@@ -500,7 +500,7 @@ std::cout << "Point_Container::del( Point * _p )\n";
 
 				if ( temp_stru == nullptr )
 				{
-					std::cout << "Point_Container::del( Point * _p ) => END. Bullet not found\n";
+					//std::cout << "Point_Container::del( Point * _p ) => END. Bullet not found\n";
 					return false;
 				}
 				else
@@ -568,7 +568,7 @@ std::cout << "Point_Container::del( Point * _p )\n";
 				temp_stru = temp_stru->next;
 
 				if ( temp_stru == nullptr )
-				{	std::cout << "Point_Container::del( Point * _p ) => END. Obstacle not found\n";
+				{	//std::cout << "Point_Container::del( Point * _p ) => END. Obstacle not found\n";
 					return false;
 				}
 				else

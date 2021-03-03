@@ -21,7 +21,7 @@
 
 #define HERO_SPRITES	8
 
-#define BACKGROUND 1
+#define BACKGROUND 0	//0-there is no background; 1-there is background
 
 #define GAME_DELAY	20
 
@@ -41,13 +41,14 @@ enum Point_type { neutral = 0, hero = 1, bullet = 2, obstacle = 3 };
 
 enum Obstacle_type { none = -1, box = 0, rock = 1, flower = 2, wall = 3 };
 
-const std::string sprites_files[6] = { //TODO:: put real path to files
+const std::string sprites_files[7] = { //TODO:: put real path to files
 	"../fig/xxx.bmp",			//neutral
 	"../fig/worms02.bmp",		//hero
 	"../fig/bullet01.bmp",		//bullet
 	"../fig/worms02.bmp",		//obstacle
 	"../fig/xxx.bmp",			//cursor white
-	"../fig/wall01.bmp"			//wall/platform
+	"../fig/wall01.bmp",		//wall/platform
+	"../fig/gunpoint_01.bmp"	//gunpoint
 };
 
 const int arr_sprite_dimensions[8][4] = {

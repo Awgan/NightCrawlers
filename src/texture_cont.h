@@ -502,7 +502,7 @@ bool Text_Cont< T >::add( const Point * _pt )
 template< typename T>
 bool Text_Cont< T >::del ( const Point * _pt, const int numb )
 {
-debug("bool Text_Cont< T >::del");
+//debug("bool Text_Cont< T >::del");
 
 	if ( _pt == nullptr )
 		return false;
@@ -516,7 +516,7 @@ debug("bool Text_Cont< T >::del");
 
 		case hero:
 		{
-			debug("bool Text_Cont< T >::del => hero");
+			//debug("bool Text_Cont< T >::del => hero");
 			temp_T = hero_head;
 			if ( numb != 0 )
 			{
@@ -555,7 +555,7 @@ debug("bool Text_Cont< T >::del");
 				hero_tail = nullptr;
 			}
 
-			debug("bool Text_Cont< T >::del => hero deleted");
+			//debug("bool Text_Cont< T >::del => hero deleted");
 		}
 		return true;
 		break;
@@ -611,7 +611,7 @@ debug("bool Text_Cont< T >::del");
 
 		case obstacle:
 		{
-			debug("bool Text_Cont< T >::del => obstacle");
+			//debug("bool Text_Cont< T >::del => obstacle");
 			temp_T = obstacle_head;
 			if ( numb != 0 )
 			{
@@ -649,7 +649,7 @@ debug("bool Text_Cont< T >::del");
 				obstacle_head = nullptr;
 				obstacle_tail = nullptr;
 			}
-			debug("bool Text_Cont< T >::del => obstacle deleted");
+			//debug("bool Text_Cont< T >::del => obstacle deleted");
 		}
 		return true;
 		break;

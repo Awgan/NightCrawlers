@@ -176,7 +176,7 @@ bool all_SDL::rect_position_add ( std::vector< SDL_Rect > (& _rect)[3], Point * 
 
 bool all_SDL::rect_position_del ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point * _poi, const int & numb )
 {
-	debug("all_SDL::rect_position_del");
+	//debug("all_SDL::rect_position_del");
 	if ( _poi == nullptr )
 		return false;
 
@@ -188,7 +188,7 @@ bool all_SDL::rect_position_del ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point 
 		case hero:
 		{
 			_rect[ 0 ].erase( _rect[ 0 ].begin() + numb );
-			debug("all_SDL::rect_position_del ==> hero erased");
+			//debug("all_SDL::rect_position_del ==> hero erased");
 		}
 		return true;
 		break;
@@ -196,7 +196,7 @@ bool all_SDL::rect_position_del ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point 
 		case bullet:
 		{
 			_rect[ 1 ].erase( _rect[ 1 ].begin() + numb );
-			debug("all_SDL::rect_position_del ==> bullet erased");
+			//debug("all_SDL::rect_position_del ==> bullet erased");
 		}
 		return true;
 		break;
@@ -204,7 +204,7 @@ bool all_SDL::rect_position_del ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point 
 		case obstacle:
 		{
 			_rect[ 2 ].erase( _rect[ 2 ].begin() + numb );
-			debug("all_SDL::rect_position_del ==> obstacle erased");
+			//debug("all_SDL::rect_position_del ==> obstacle erased");
 		}
 		return true;
 		break;
@@ -213,7 +213,7 @@ bool all_SDL::rect_position_del ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point 
 		break;
 
 	}
-	debug("all_SDL::rect_position_del ==> nothing erased");
+	//debug("all_SDL::rect_position_del ==> nothing erased");
 	return false;
 }
 
@@ -350,16 +350,18 @@ bool all_SDL::cursor_change( const std::string * pic, SDL_Cursor * cur )
 	if ( surf_sour == nullptr )
 		throw(std::string("błąd ładowania BMP") );
 
-	SDL_Surface * surf_dest = SDL_CreateRGBSurface (
+	SDL_Surface * surf_dest = SDL_CreateRGBSurface
+	(
 		surf_sour->flags,
 		PLATFORM_W, PLATFORM_H,
 		surf_sour->format->BitsPerPixel,
 		surf_sour->format->Rmask,
 		surf_sour->format->Gmask,
 		surf_sour->format->Bmask,
-		surf_sour->format->Amask );
+		surf_sour->format->Amask
+	);
 
-	SDL_Rect rect_dest = {0, 0, PLATFORM_W, PLATFORM_H};
+	SDL_Rect rect_dest = { 0, 0, PLATFORM_W, PLATFORM_H };
 
 	SDL_Rect rect_sour;
 
@@ -379,4 +381,53 @@ bool all_SDL::cursor_change( const std::string * pic, SDL_Cursor * cur )
 
 return true;
 
+}
+
+int all_SDL::SDL_EventFilter_gunpointer( void* userdata, SDL_Event* event )
+{
+	time_t * time_01 = (time_t*)userdata;
+
+	if ( event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_a && difftime( time(nullptr), *time_01 ) < 0.350 )
+	{
+		std::cout << "GUNPOINT out!\n";
+		return 0;
+	}
+	return 1;
+}
+
+int all_SDL::SDL_EventFilter_bullet( void* userdata, SDL_Event* event )
+{
+	time_t * time_01 = (time_t*)userdata;
+
+	if ( event == nullptr )
+		std::cout << "Event is nullptr!\n";
+
+	std::cout << "Many times I'm here\n";
+	std::cout << SDL_GetKeyName( event->key.keysym.sym );
+
+	SDL_Keycode kkk = event->key.keysym.sym;
+
+	if ( kkk == SDLK_k /* && difftime( time(nullptr), *time_01 ) < 10.250 */ )
+	{
+		std::cout << "BULLET out!!!\n";
+		return 0;
+	}
+	return 1;
+}
+
+int all_SDL::SDL_EventFilter_any( void* userdata, SDL_Event* event )
+{
+	SDL_Keycode * ky;
+
+	if ( userdata != nullptr )
+		ky = (SDL_Keycode*)userdata;
+	else
+		return 1;
+
+	if ( event->key.keysym.sym == *ky )
+	{
+		std::cout << "KEY out!!!\n";
+		return 0;
+	}
+	return 1;
 }

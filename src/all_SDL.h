@@ -27,6 +27,13 @@ namespace all_SDL {
 	bool render_all( SDL_Renderer * _rend, Text_Cont <Text_Objt> * _tex, const std::vector< SDL_Rect > (& _rect)[3], Point_Container * _poi );
 
 	bool cursor_change( const std::string * pic, SDL_Cursor * cur );
+
+	int SDL_EventFilter_gunpointer( void* userdata, SDL_Event* event );
+
+	int SDL_EventFilter_bullet( void* userdata, SDL_Event* event );
+
+	int SDL_EventFilter_any( void* userdata, SDL_Event* event );
+
 }
 
 #endif

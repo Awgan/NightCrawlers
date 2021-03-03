@@ -14,6 +14,7 @@ protected:
 	struct Bulletproperty
 	{
 		int damage;
+		int angle;
 	};
 
 private:
@@ -23,11 +24,12 @@ private:
 protected:
 
 	Bullet( const Bullet & __bullet ){}
-	Bullet(){};
+	Bullet(){}
 
 public:
 
 	Bullet( const Point * __point );
+	Bullet( const Point * __point, const int angle );
 	~Bullet();
 
 	Bullet & operator=(const Bullet & __bullet);

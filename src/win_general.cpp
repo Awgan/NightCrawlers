@@ -22,7 +22,7 @@ void WinGenSDL::setWidthAndHight( const int & _w, const int & _h ) {
 void WinGenSDL::initWin( const int & pos_x, const int & pos_y ) {
 	if ( win == nullptr ) {
 
-		int wFlags = ( SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_MOUSE_FOCUS );
+		int wFlags = ( SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS | SDL_WINDOW_MOUSE_FOCUS | SDL_WINDOW_OPENGL );
 
 		win = SDL_CreateWindow( "Obstacle Box", pos_x, pos_y, width, height, wFlags );
 
@@ -39,12 +39,18 @@ void WinGenSDL::initTex( const char * background ) {
 			surf = SDL_LoadBMP( fBaGr.c_str() );
 
 			if ( surf == nullptr )
+			{
+				std::cout << "Error : WinGenSDL::initTex : surface not created\n";
 				return;
+			}
 
 			tex = SDL_CreateTextureFromSurface( rend, surf );
 
 			if ( tex == nullptr )
+			{
+				std::cout << "Error : WinGenSDL::initTex : texture not created\n";
 				return;
+			}
 
 			SDL_FreeSurface ( surf );
 		}

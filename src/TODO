@@ -1,3 +1,8 @@
 
-1. Brak funkcji 'del' dla textur i pozycji.
-2. Brak wywołania 'del' dla funkcji sprawdzajacej życie obiektów
+
+>> Dodać do klasy Point (lub innej) cechę objektu 'visible_for_objects'
+	Cecha dowyświetlania obiektóe, które nie biorą udziału w interakcji z otoczenim
+
+>> podświetlanie elementu pod kursorem w oknie wyboru objektów
+
+

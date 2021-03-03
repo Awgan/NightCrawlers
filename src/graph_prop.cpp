@@ -150,8 +150,6 @@ Graph_prop::Graph_prop( Point_type & _pt, Stru_graph_prop & _gprop ) {
 	grap_prop.i_height = _gprop.i_height;
 	grap_prop.i_width = _gprop.i_width;
 
-std::cout << "height:"<<grap_prop.i_height<<" width: "<<grap_prop.i_width<<std::endl;
-
 }
 
 Graph_prop::~Graph_prop() {
