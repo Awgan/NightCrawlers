@@ -3,11 +3,13 @@
 
 
 #include <string>
+#include <ctime>
 
 #include "comm_const.h"
 
 
-struct Stru_graph_prop {
+struct Stru_graph_prop
+{
 
 	std::string s_sprite;		//file name with pictures
 
@@ -31,11 +33,14 @@ struct Stru_graph_prop {
 	Stru_graph_prop & operator=(const Stru_graph_prop & _str_);
 };
 
-class Graph_prop {
+class Graph_prop
+{
 
 	private:
 		Stru_graph_prop	grap_prop;
 		Point_type p_type;
+
+		time_t idleSpriteTime;
 
 	protected:
 
@@ -55,12 +60,19 @@ class Graph_prop {
 		void setSpriteWidth( int w ) 	{ grap_prop.i_width = w; }
 		void setSpriteHeight( int h ) 	{ grap_prop.i_height = h; }
 
+		void setIdleSpriteTime( int t ) { idleSpriteTime = t; }
+		void resetIdleSpriteTime()		{ idleSpriteTime = 0; }
+		void updateIdleSpriteTime()		{ idleSpriteTime = time( nullptr ); }
+		double diffIdleSpriteTime();
+
+		void changeIdleSprite();
+
 		const int & get_graph_width() 		{ return grap_prop.i_width; }
 		const int & get_graph_height() 		{ return grap_prop.i_height; }
 		int * get_graph_width_p()			{ return &grap_prop.i_width; }
 		int * get_graph_height_p()			{ return &grap_prop.i_height; }
-		std::string get_graph_sprite() const	{return grap_prop.s_sprite; }
-		const int & getActualSprite( )			{ return grap_prop.actual_sprite; };
+		std::string get_graph_sprite() const	{ return grap_prop.s_sprite; }
+		const int & getActualSprite( )			{ return grap_prop.actual_sprite; }
 
 		void print() ;
 };

@@ -14,7 +14,6 @@ protected:
 	struct Bulletproperty
 	{
 		int damage;
-		int angle;
 	};
 
 private:
@@ -30,7 +29,7 @@ public:
 
 	Bullet( const Point * __point );
 	Bullet( const Point * __point, const int angle );
-	~Bullet();
+	virtual ~Bullet();
 
 	Bullet & operator=(const Bullet & __bullet);
 

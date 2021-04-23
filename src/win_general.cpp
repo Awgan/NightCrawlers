@@ -44,6 +44,9 @@ void WinGenSDL::initTex( const char * background ) {
 				return;
 			}
 
+			if ( BACKGROUND != 1 )
+				SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
+
 			tex = SDL_CreateTextureFromSurface( rend, surf );
 
 			if ( tex == nullptr )
@@ -57,7 +60,8 @@ void WinGenSDL::initTex( const char * background ) {
 	}
 }
 
-bool WinGenSDL::show() {
+bool WinGenSDL::show()
+{
 
 	if ( tex == nullptr )
 		return false;

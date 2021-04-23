@@ -3,7 +3,8 @@
 
 #include "graph_prop.h"
 
-void Stru_graph_prop::init_arr( Point_type _pt ) {
+void Stru_graph_prop::init_arr( Point_type _pt )
+{
 
 	/*
 	 * Init function for 'arr_sprite_dim'
@@ -78,7 +79,8 @@ void Stru_graph_prop::init_arr( Point_type _pt ) {
 
 //end function
 
-void Stru_graph_prop::show() {
+void Stru_graph_prop::show()
+{
 
 	std::cout << "\nGRAPH show() :: file: " << s_sprite << " sprite numbers: " << i_num_sprite <<  " actual sprite: " << actual_sprite << " width: " << i_width << " height: " << i_height << " sprite_dim: " <<
 	arr_sprite_dim[0][0] << " " <<
@@ -88,7 +90,8 @@ void Stru_graph_prop::show() {
 
 }
 
-Stru_graph_prop & Stru_graph_prop::operator=(const Stru_graph_prop & _str_) {
+Stru_graph_prop & Stru_graph_prop::operator=(const Stru_graph_prop & _str_)
+{
 
 	if( this == & _str_ )
 		return *this;
@@ -131,9 +134,12 @@ Stru_graph_prop & Stru_graph_prop::operator=(const Stru_graph_prop & _str_) {
 	return *this;
 }
 
-Graph_prop::Graph_prop( Point_type & _pt, std::string _str, int & _wid, int & _hig ) {
+Graph_prop::Graph_prop( Point_type & _pt, std::string _str, int & _wid, int & _hig )
+{
 
 	p_type = _pt;
+
+	idleSpriteTime = time( nullptr );
 
 	grap_prop.init_arr( _pt );
 
@@ -142,17 +148,22 @@ Graph_prop::Graph_prop( Point_type & _pt, std::string _str, int & _wid, int & _h
 	grap_prop.i_height 	= _hig;
 }
 
-Graph_prop::Graph_prop( Point_type & _pt, Stru_graph_prop & _gprop ) {
+Graph_prop::Graph_prop( Point_type & _pt, Stru_graph_prop & _gprop )
+{
 
 	grap_prop.init_arr(  );
+
 	p_type = _pt;
+	idleSpriteTime = time( nullptr );
+
 	grap_prop = _gprop;
 	grap_prop.i_height = _gprop.i_height;
 	grap_prop.i_width = _gprop.i_width;
 
 }
 
-Graph_prop::~Graph_prop() {
+Graph_prop::~Graph_prop()
+{
 
 	//printf( "\nGraph_prop DELETE\n" );
 
@@ -167,17 +178,75 @@ Graph_prop::~Graph_prop() {
 
 }
 
-Graph_prop::Graph_prop( const Point_type & _pt ) {
+Graph_prop::Graph_prop( const Point_type & _pt )
+{
 
 	grap_prop.init_arr( _pt );
 
 }
 
-void Graph_prop::setActualSprite( int ac ) {
+double Graph_prop::diffIdleSpriteTime()
+{
+	return std::difftime( time( nullptr ), idleSpriteTime );
+}
+
+void Graph_prop::changeIdleSprite()
+{
+	if ( diffIdleSpriteTime() < 1.5 )
+	{
+		return;
+	}
+
+	switch (p_type)
+	{
+		case Point_type::neutral:
+		break;
+
+		case Point_type::hero:
+
+			if ( grap_prop.actual_sprite >= 0 && grap_prop.actual_sprite < 4)
+			{
+
+				++grap_prop.actual_sprite;
+
+				if ( grap_prop.actual_sprite > 3 )
+					grap_prop.actual_sprite = 0;
+
+			}
+			else if ( grap_prop.actual_sprite >= 4 && grap_prop.actual_sprite < 8 )
+			{
+
+				++grap_prop.actual_sprite;
+
+				if ( grap_prop.actual_sprite > 7 )
+					grap_prop.actual_sprite = 4;
+
+			}
+
+		break;
+
+		case Point_type::bullet:
+		break;
+
+		case Point_type::obstacle:
+		break;
+
+		default:
+		break;
+
+	}
+
+	updateIdleSpriteTime();
+
+}
+
+void Graph_prop::setActualSprite( int ac )
+{
 
 	int pointTypeRange;
 
-	switch (p_type) {
+	switch (p_type)
+	{
 
 		case Point_type::neutral:
 		pointTypeRange = 1;
@@ -199,17 +268,19 @@ void Graph_prop::setActualSprite( int ac ) {
 		break;
 	}
 
-	if ( ac >= 0 && ac < pointTypeRange	) {
-
+	if ( ac >= 0 && ac < pointTypeRange	)
+	{
 		grap_prop.actual_sprite = ac;
 	}
-	else {
+	else
+	{
 		grap_prop.actual_sprite = 0;
 		printf("Graph_prop::setActualSprite >> Error: parameter is out of range, and set to 0\n");
 	}
 }
 
-void Graph_prop::print() {
+void Graph_prop::print()
+{
 
 	printf( "arr sprite dim: %d %d %d %d\n", grap_prop.arr_sprite_dim[0][0], grap_prop.arr_sprite_dim[0][1], grap_prop.arr_sprite_dim[0][2], grap_prop.arr_sprite_dim[0][3] );
 	grap_prop.Stru_graph_prop::show();

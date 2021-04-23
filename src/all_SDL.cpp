@@ -217,47 +217,17 @@ bool all_SDL::rect_position_del ( std::vector< SDL_Rect > (& _rect)[ 3 ], Point 
 	return false;
 }
 
-bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect * _rect, Point * _poi ) {
+bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect * _rect, Point * _poi )
+{
 
-	static time_t timer 	= 0;
-	static time_t time_eye  = 0;
+	/* change sprite if object is in idle state */
+	_poi->changeIdleSprite();
 
-	time(&timer);
-
-	if ( time_eye == 0 )
-		time(&time_eye);
-
-
-	int actSprite = (int)_poi->getActualSprite();
-
-	//choosing sprite for hero eye movement. If time elapses than change next picture
-	if ( (timer - time_eye) >= 1.5) {
-
-		if (actSprite >= 0 && actSprite < 4) {
-
-			++actSprite;
-
-			if ( actSprite > 3 )
-				actSprite = 0;
-
-			_poi->setActualSprite( actSprite );
-		}
-		else if ( actSprite >= 4 && actSprite < 8 ) {
-
-			++actSprite;
-
-			if ( actSprite > 7 )
-				actSprite = 4;
-
-			_poi->setActualSprite( actSprite );
-		}
-	}
-
-
-	//Dimensions of the picture from sprite
+	/* Dimensions of the picture from sprite */
 		SDL_Rect rect_sprite;
 
-	if ( _poi->get_type() == Point_type::hero ) {
+	if ( _poi->get_type() == Point_type::hero )
+	{
 	//select sprite
 		rect_sprite.x = arr_sprite_dimensions[ (int)_poi->getActualSprite() ][0];
 		rect_sprite.y = arr_sprite_dimensions[ (int)_poi->getActualSprite() ][1];
@@ -266,7 +236,8 @@ bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect *
 
 	}
 	else
-	if ( _poi->get_type() == Point_type::obstacle ) {
+	if ( _poi->get_type() == Point_type::obstacle )
+	{
 		rect_sprite.x = arr_sprite_obstacle[ (int)_poi->getActualSprite() ][0];
 		rect_sprite.y = arr_sprite_obstacle[ (int)_poi->getActualSprite() ][1];
 		rect_sprite.w = arr_sprite_obstacle[ (int)_poi->getActualSprite() ][2];
@@ -274,7 +245,8 @@ bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect *
 
 	}
 	else
-	if ( _poi->get_type() == Point_type::bullet ) {
+	if ( _poi->get_type() == Point_type::bullet )
+	{
 		rect_sprite.x = arr_sprite_bullet[ (int)_poi->getActualSprite() ][0];
 		rect_sprite.y = arr_sprite_bullet[ (int)_poi->getActualSprite() ][1];
 		rect_sprite.w = arr_sprite_bullet[ (int)_poi->getActualSprite() ][2];
@@ -282,42 +254,40 @@ bool all_SDL::render( SDL_Renderer * _rend, SDL_Texture * _tex, const SDL_Rect *
 	}
 		SDL_RenderCopy( _rend, _tex, &rect_sprite, _rect );
 
-	if ( (timer - time_eye) >= 2) {
-			time(&time_eye);
-		}
 
 	return true;
 }
 
+bool all_SDL::render_background( SDL_Renderer * _rend )
+{
+	//Create texture for background
 
-/*
- * It can only work when there are no bullets;
- * When there will be bullets, it goes wrong;
- */
-/*bool all_SDL::render_all( SDL_Renderer * _rend, SDL_Texture ** _tex, SDL_Rect * _rect, Point_Container * _poi ) {
+	static SDL_Texture * tex_background = nullptr;
 
-	//rendering the frame
-		for ( int i = 0; i < _poi->get_number_hero(); ++i ) {
+	if ( tex_background == nullptr )
+	{
+		SDL_Surface * surf;
 
-			all_SDL::render( _rend, _tex[i], &_rect[i], _poi->get_point_hero(i) );
-		}
+		surf = SDL_LoadBMP( sprites_files[7].c_str() );
 
-		for ( int i = 0; i < _poi->get_number_bullet(); ++i ) {
+		if ( surf == nullptr )
+			return false;
 
-			all_SDL::render( _rend, _tex[ _poi->get_number_hero() + i ], &_rect[ _poi->get_number_hero() + i ], _poi->get_point_bullet(i) );
-		}
+		tex_background = SDL_CreateTextureFromSurface( _rend, surf );
+		if ( tex_background == nullptr )
+			return false;
 
+		SDL_FreeSurface( surf );
+	}
 
-		for ( int i = 0; i < _poi->get_number_obstacle(); ++i ) {
-
-			all_SDL::render( _rend, _tex[ _poi->get_number_hero() + _poi->get_number_bullet() + i ], &_rect[ _poi->get_number_hero() + _poi->get_number_bullet() + i ], _poi->get_point_obstacle(i) );
-
-		}
+		SDL_RenderCopy( _rend, tex_background, nullptr, nullptr );
 
 	return true;
-}*/
+}
 
-bool all_SDL::render_all( SDL_Renderer * _rend, Text_Cont< Text_Objt >  * _tex, const std::vector< SDL_Rect > (& _rect)[3], Point_Container * _poi ) {
+bool all_SDL::render_all( SDL_Renderer * _rend, Text_Cont< Text_Objt >  * _tex, const std::vector< SDL_Rect > (& _rect)[3], Point_Container * _poi )
+{
+	all_SDL::render_background( _rend );
 
 	for ( int i = 0; i < _poi->get_number_hero(); ++i ) {
 
@@ -397,7 +367,7 @@ int all_SDL::SDL_EventFilter_gunpointer( void* userdata, SDL_Event* event )
 
 int all_SDL::SDL_EventFilter_bullet( void* userdata, SDL_Event* event )
 {
-	time_t * time_01 = (time_t*)userdata;
+	//time_t * time_01 = (time_t*)userdata;
 
 	if ( event == nullptr )
 		std::cout << "Event is nullptr!\n";

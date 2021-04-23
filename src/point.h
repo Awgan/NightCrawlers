@@ -44,7 +44,7 @@ class Point : public Position, public Property, public Graph_prop {
 		Point( const Point_type & _pt = neutral );
 		Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop & _gprop );
 		Point( const Point & _p );
-		~Point() ;
+		virtual ~Point() ;
 
 		Point ( Point && _p );
 
@@ -56,7 +56,7 @@ class Point : public Position, public Property, public Graph_prop {
 		void set_move_y( const double & _m) { const_move_y = _m; }
 		void set_move_z( const int & _m) { const_move_z = _m; }
 
-		void move_dx( int _dx );
+		void move_dx( int _dx, int angle = 0 );
 		void move_dy( double _dy );
 		void move_dz( int _dz );
 
@@ -64,7 +64,7 @@ class Point : public Position, public Property, public Graph_prop {
 		double get_move_y()	{ return const_move_y; }
 		int get_move_z()	{ return const_move_z; }
 
-		bool move();
+		virtual bool move( int angle = 0 );
 
 		bool can_move( Coordinate::Direction dd );
 
@@ -83,6 +83,8 @@ class Point : public Position, public Property, public Graph_prop {
 		/* Functions for checking if points collide */
 		bool isCollision( Point * secPoint );
 		bool isCollision( Point_Container & pc );
+
+		Point_Container * get_point_container() { return pointCont; }
 
 		void set_collision_with( Point * cw )	{ collision_with = cw; }
 		void reset_collision_with()				{ collision_with = nullptr; }

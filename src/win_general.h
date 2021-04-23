@@ -9,6 +9,8 @@
 #include <string>
 #include <SDL2/SDL.h>
 
+#include "comm_const.h"
+
 
 class WinGenSDL {
 

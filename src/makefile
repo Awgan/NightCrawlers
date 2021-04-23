@@ -24,7 +24,7 @@ property.o: property.cpp property.h comm_const.h
 info_win.o: info_win.cpp info_win.h point.o point_container.o
 	g++ -c -o $@ info_win.cpp -I.
 
-win_general.o: win_general.cpp win_general.h
+win_general.o: win_general.cpp win_general.h comm_const.h
 	g++ -c -o $@ win_general.cpp -I.
 
 obstacle_win.o: obstacle_win.cpp obstacle_win.h win_general.o

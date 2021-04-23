@@ -91,7 +91,8 @@ Point::Point ( Point && _p ) : Position( _p ), Property( _p ), Graph_prop( _p ) 
 
 }
 
-Point::~Point() {
+Point::~Point()
+{
 
 }
 
@@ -105,12 +106,54 @@ void Point::init_borders()
 	borders.height = get_graph_height_p();
 }
 
-void Point::move_dx( int _dx ) {
+void Point::move_dx( int _dx, int angle ) {
 
 	if ( is_mobile() != true )
 		return;
 
+	updateIdleSpriteTime();
+
 	int temp = get_coor_x() + _dx * DEF_SPEED;
+
+	/* Movment only for BULLET case */
+
+	if ( get_point_type() == Point_type::bullet)
+	{
+
+		//std::cout << "/* Bullets are always mobile */\n";
+
+		/* set new coordinates */
+		if (set_coor_x( temp ) == false )
+		{
+			set_health( 0 );
+			std:: cout << "Bullet: End of display X\n";
+
+			return;
+		}
+
+		if ( set_coor_y( get_coor_y() + ( _dx * tan((angle * 3.14159 ) / 180) ) ) == false )
+		{
+			set_health( 0 );
+			std:: cout << "Bullet: End of display Y\n";
+
+			return;
+		}
+
+		/* Hit object */
+		if ( isCollision( *(get_point_container()) ) == true )
+		{
+			get_collision_with()->change_health( -10 );	//Demage object
+			set_health( 0 );							//Delete bullet
+			std:: cout << "Bullet: Collision\n";
+
+			return;
+		}
+
+		return;
+
+	}
+
+
 	int before = get_coor_x();
 
 
@@ -118,13 +161,14 @@ void Point::move_dx( int _dx ) {
 		int actSpr = getActualSprite();
 
 
-		if ( _dx < 0 /*&& get_direction() != CoorDir::left*/ ) {
+		if ( _dx < 0 && get_direction() != CoorDir::left )
+		{
 			set_direction( CoorDir::left );
 
 			if ( this->get_point_type() == Point_type::hero )
 			{
-				switch ( actSpr ) {
-
+				switch ( actSpr )
+				{
 					case 4:
 					setActualSprite( 3 );
 					break;
@@ -143,13 +187,14 @@ void Point::move_dx( int _dx ) {
 				}
 			}
 		}
-		else if ( _dx > 0 /*&& get_direction() != CoorDir::right*/ ) {
+		else if ( _dx > 0 && get_direction() != CoorDir::right )
+		{
 			set_direction( CoorDir::right );
 
 			if ( this->get_point_type() == Point_type::hero )
 			{
-				switch ( actSpr ) {
-
+				switch ( actSpr )
+				{
 					case 0:
 					setActualSprite( 7 );
 					break;
@@ -215,6 +260,8 @@ void Point::move_dy( double _dy )
 		{
 			return;
 		}
+
+	updateIdleSpriteTime();
 
 	double temp = get_coor_y() + _dy * DEF_SPEED;
 	double before = get_coor_y();
@@ -303,13 +350,13 @@ void Point::move_dz( int _dz ) {
 		}
 }
 
-bool Point::move() {
+bool Point::move( int angle ) {
 //std::cout << "bool Point::move() => x: " << get_move_x() << " | y: " << get_move_y() << " | z: " << get_move_z() << '\n';
 	bool flag = false;
 
 
 	if ( const_move_x != 0 ) {
-		move_dx( const_move_x );
+		move_dx( const_move_x, angle );
 		flag |= true;
 	}
 	if ( const_move_y != 0  ) {

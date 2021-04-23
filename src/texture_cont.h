@@ -291,7 +291,7 @@ bool Text_Cont< T >::add( const Point & _pt )
 			return false;
 		}
 
-//changing texture background
+//change texture background
 	if ( BACKGROUND != 1 )
 		SDL_SetColorKey( surf, SDL_TRUE, SDL_MapRGB( surf->format, 255, 0, 255 ) );
 

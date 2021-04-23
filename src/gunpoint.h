@@ -35,6 +35,7 @@ class Gunpoint : public WinGenSDL
 		void setcenterposition( const int x, const int y ); 		/* Set position */
 		void setcenterangle( const int ang );
 		void getcenterposition( int * x, int * y ); 				/* Get position */
+		int getcenterangle() {return position.angle; }
 		void changecenterposition( const int dx, const int dy );	/* Change center position by adding or subtracting */
 		void changecenterangle( const int da );						/* Change angle */
 		void updateposition();										/* Update visible position */

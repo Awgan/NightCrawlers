@@ -6,7 +6,7 @@
 /* Hero Move */
 bool allFunction::move_keyboard( Point * _point, SDL_Event * _event)
 {
-
+std::cout << "allFunction:: Move Keyboard\n";
 //TODO:: flush event; SDL remamber last event; when it is KEYUP and one of the arrows, code comes here constatly
 					//TODO:: BUG: when moving key is pressed and you change selected hero then new hero move normaly but old one is
 					//		moving without stop until edge of the display; And sprite is not updated
@@ -15,7 +15,7 @@ bool allFunction::move_keyboard( Point * _point, SDL_Event * _event)
 
 	SDL_Keycode & key = _event->key.keysym.sym;
 
-	if ( (key == SDLK_SPACE || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT) && _point->is_mobile() )
+	if ( (key == SDLK_SPACE || key == SDLK_UP || key == SDLK_DOWN || key == SDLK_LEFT || key == SDLK_RIGHT) && _point->is_mobile() )
 	{
 		switch ( _event->type )
 		{
@@ -23,6 +23,7 @@ bool allFunction::move_keyboard( Point * _point, SDL_Event * _event)
 				switch ( _event->key.keysym.sym )
 				{
 					case SDLK_SPACE:
+					case SDLK_UP:
 						if ( _point->isStanding() )
 							_point->set_move_y( -15 );
 						break;
@@ -85,11 +86,12 @@ bool allFunction::move_keyboard( Point * _point, SDL_Event * _event)
 	return false;
 }
 
-void allFunction::aim( SDL_Event & event, SDL_Renderer * rend, Point_Container & point_cont, std::vector< SDL_Rect > (& rect_cont)[3], Text_Cont < Text_Objt > & tex_cont, Point * active_hero )
+void allFunction::aim( SDL_Window * win, SDL_Event & event, SDL_Renderer * rend, Point_Container & point_cont, std::vector< SDL_Rect > (& rect_cont)[3], Text_Cont < Text_Objt > & tex_cont, Point * active_hero )
 {
+	std::cout << "allFunction:: Aim\n";
 	SDL_Keycode & key = event.key.keysym.sym;
 
-	if( key == SDLK_a && event.type == SDL_KEYDOWN )
+	if( active_hero->isStanding() && key == SDLK_a && event.type == SDL_KEYDOWN )
 	{
 		Gunpoint gpp;
 
@@ -105,9 +107,8 @@ void allFunction::aim( SDL_Event & event, SDL_Renderer * rend, Point_Container &
 
 		gpp.updateposition();
 
-
 		/* Flush event queue */
-		while( key == SDLK_a )
+		while( event.key.keysym.sym == SDLK_a )
 		{
 			SDL_PollEvent( &event );
 		}
@@ -127,13 +128,15 @@ void allFunction::aim( SDL_Event & event, SDL_Renderer * rend, Point_Container &
 
 			gpp.show();
 
+			SDL_SetWindowInputFocus( win );
+
 			if ( event.key.keysym.sym == BULLET_FIRE )
 			{
-				time_t timer;
-				time( &timer );
+				/*time_t timer;
+				time( &timer );*/
 				// TODO:: bullet firing
 
-				Bullet bullet( active_hero );
+				Bullet bullet( active_hero, gpp.getcenterangle() );
 
 				if ( point_cont.add( &bullet ) == true )
 				{
@@ -158,16 +161,28 @@ void allFunction::aim( SDL_Event & event, SDL_Renderer * rend, Point_Container &
 				{
 					case SDLK_UP:
 					{
-						gpp.changecenterangle( dir == Coordinate::Direction::left ? 3 : -3 );
+						gpp.changecenterangle( dir == Coordinate::Direction::left ? 5 : -5 );
 						gpp.updateposition();
+
+						SDL_FlushEvent( SDL_KEYDOWN );
 					}
 					break;
 
 					case SDLK_DOWN:
 					{
-						gpp.changecenterangle( dir == Coordinate::Direction::left ? -3 : 3 );
+						gpp.changecenterangle( dir == Coordinate::Direction::left ? -5 : 5 );
 						gpp.updateposition();
+
+						SDL_FlushEvent( SDL_KEYDOWN );
 					}
+					break;
+
+					case SDLK_LEFT:
+						//active_hero->inc_coor_x( -5 );
+					break;
+
+					case SDLK_RIGHT:
+						//active_hero->inc_coor_x( 5 );
 					break;
 
 					default:
@@ -180,6 +195,30 @@ void allFunction::aim( SDL_Event & event, SDL_Renderer * rend, Point_Container &
 			}
 
 
+			/* Change hero direction if gunpoint change direction too */
+			std::cout << "Actual sprite: " << active_hero->getActualSprite() << '\n';
+
+			if ( dir == Coordinate::Direction::left && ((gpp.getcenterangle() > 270 && gpp.getcenterangle() < 359) || (gpp.getcenterangle() < 90 && gpp.getcenterangle() > 0)) )
+			{
+				active_hero->set_direction( CoorDir::right );
+
+				active_hero->setActualSprite(4);
+
+				dir = active_hero->get_direction();
+
+			}
+			else if ( dir == Coordinate::Direction::right && (gpp.getcenterangle() < 270 && gpp.getcenterangle() > 90) )
+			{
+				active_hero->set_direction( CoorDir::left );
+
+				active_hero->setActualSprite(0);
+
+				dir = active_hero->get_direction();
+
+			}
+
+			std::cout << "Actual sprite AFTER: " << active_hero->getActualSprite() << '\n';
+
 			/* Filter events for multipressed key */
 			time_t timer;
 			time( &timer );
@@ -190,13 +229,17 @@ void allFunction::aim( SDL_Event & event, SDL_Renderer * rend, Point_Container &
 
 		/* Hide the window */
 		gpp.hide();
+		SDL_FlushEvents( SDL_QUIT, SDL_LASTEVENT );
 	}
+
+
 }
 
 
 /* Game Speed changing */
 void allFunction::speed_changing ( SDL_Event & r_event, Uint32 & i_time , int & i_delay )
 {
+	std::cout << "allFunction:: Speed Change\n";
 	SDL_Keycode & key = r_event.key.keysym.sym;
 
 	if ( key == GAME_SPEED_UP || key == GAME_SPEED_DOWN )
@@ -231,6 +274,7 @@ void allFunction::speed_changing ( SDL_Event & r_event, Uint32 & i_time , int & 
 /* Put Obstacle*/
 bool allFunction::obstacle_place( SDL_Event & event, SDL_Renderer * rend, Point_Container & point_cont, std::vector< SDL_Rect > (& rect_cont)[3], Text_Cont < Text_Objt > & tex_cont )
 {
+	std::cout << "allFunction:: Obstacle Place\n";
 	SDL_Keycode & key = event.key.keysym.sym;
 
 	if ( key == OBSTACLE_PLACE && event.type == SDL_KEYDOWN )
@@ -401,6 +445,7 @@ bool allFunction::obstacle_place( SDL_Event & event, SDL_Renderer * rend, Point_
 
 bool allFunction::platform_place( SDL_Event & event, SDL_Renderer * rend, Point_Container & point_cont, std::vector< SDL_Rect > (& rect_cont)[3], Text_Cont < Text_Objt > & tex_cont )
 {
+	std::cout << "allFunction:: Platform Place\n";
 	SDL_Keycode & key = event.key.keysym.sym;
 
 	if ( key == PLATFORM_PLACE and event.type == SDL_KEYDOWN )
@@ -444,16 +489,13 @@ bool allFunction::platform_place( SDL_Event & event, SDL_Renderer * rend, Point_
 
 			Point wall_temp = allFunction::create_wall( & event );
 
-			if ( wall_temp == true )
+			if ( wall_temp == true && point_cont.add( &wall_temp ) )
 			{
-				point_cont.add( &wall_temp );
-
 				//all_SDL::texture_add( &tex, rend, &selected_obstacle );
 				tex_cont.add( &wall_temp );
 
 				//all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
 				all_SDL::rect_position_add( rect_cont, &wall_temp );
-
 			}
 
 			SDL_RenderClear( rend );
@@ -473,6 +515,110 @@ bool allFunction::platform_place( SDL_Event & event, SDL_Renderer * rend, Point_
 
 	return true;
 }
+
+bool allFunction::platform_place_file( const char * _file, SDL_Renderer * rend, Point_Container & point_cont, std::vector< SDL_Rect > (& rect_cont)[3], Text_Cont < Text_Objt > & tex_cont )
+{
+
+	/* Open file with coordinates for platforms */
+	std::fstream file_in;
+	file_in.open( "test.txt", std::fstream::in );
+
+	if ( file_in.is_open() != 1 )
+		return false;
+
+
+	/* Get all data to one variable */
+	std::string lines, all;
+	int size = 0;
+
+	while ( std::getline( file_in, lines ) )
+	{
+		all += lines + '\n';
+		++size;
+	}
+
+	if ( size == 0 )
+		return false;
+
+
+	/* Change string to int and save in array */
+	unsigned int pos_s = 0;
+	unsigned int pos_e = all.find_first_of( ",\n", 0 );
+	int arr_pos[ size ] [ 3 ];
+	int count = 0;
+
+	while ( pos_e < all.size() )
+	{
+
+		char temp_char[ 4 ];
+		all.copy( temp_char, pos_e - pos_s, pos_s );
+		arr_pos[ count / 3 ] [ count % 3 ] = std::atoi( temp_char );
+
+		pos_s = pos_e + 1;
+		pos_e = all.find_first_of( ",\n", pos_s );
+
+		++count;
+	}
+
+
+	/* Create platforms */
+	for ( int i = 0; i < size; ++i )
+	{
+		Coordinate selected_coor;
+			selected_coor.x = arr_pos[i][0];
+			selected_coor.y = arr_pos[i][1];
+			selected_coor.z = arr_pos[i][2];
+			selected_coor.dir = Coordinate::Direction::up;
+
+		Stru_property selected_prop;
+			selected_prop.type = Point_type::obstacle;
+			selected_prop.b_mobile = false;
+			selected_prop.b_visible = true;
+			selected_prop.i_health = 100;
+			selected_prop.i_speed = 0;
+			selected_prop.i_move_points = 0;
+			selected_prop.i_self_move_distance = 0;
+			selected_prop.i_strenght = 100;
+			selected_prop.i_fire_accuracy = 0;
+
+		Stru_graph_prop selected_graph;
+			selected_graph.init_arr( Point_type::obstacle );
+			selected_graph.s_sprite = sprites_files[5];
+			selected_graph.i_num_sprite = 1;
+			selected_graph.arr_sprite_dim[0][0] = arr_sprite_obstacle[3][0];
+			selected_graph.arr_sprite_dim[0][1] = arr_sprite_obstacle[3][1];
+			selected_graph.arr_sprite_dim[0][2] = arr_sprite_obstacle[3][2];
+			selected_graph.arr_sprite_dim[0][3] = arr_sprite_obstacle[3][3];
+			selected_graph.actual_sprite = 3;
+			selected_graph.i_width = PLATFORM_W;
+			selected_graph.i_height = PLATFORM_H;
+
+
+		Point wall_temp( selected_coor, selected_prop, selected_graph );
+
+		if ( wall_temp == true && point_cont.add( &wall_temp ) )
+		{
+			//all_SDL::texture_add( &tex, rend, &selected_obstacle );
+			tex_cont.add( &wall_temp );
+
+			//all_SDL::rect_position_add( &rect_pos, &selected_obstacle );
+			all_SDL::rect_position_add( rect_cont, &wall_temp );
+		}
+	}
+
+
+	/* Render all */
+	SDL_RenderClear( rend );
+
+	all_SDL::render_all( rend, &tex_cont, rect_cont, &point_cont );
+
+	SDL_RenderPresent( rend );
+
+
+return true;
+
+}
+
 
 Obstacle_type allFunction::Obstacle_type_select(const int & mx, const int & my)
 {
@@ -505,8 +651,9 @@ void allFunction::fromArrtoRect( const int n, const int arr[][4], SDL_Rect & rec
 
 
 
-void allFunction::gravity_move( Point_Container & _pc ) {
-
+void allFunction::gravity_move( Point_Container & _pc )
+{
+	std::cout << "allFunction:: Gravity Move\n";
 	Point * object = nullptr;
 
 
@@ -574,6 +721,8 @@ Point allFunction::create_wall( const SDL_Event * eve )
 
 void allFunction::bullet_move( Point_Container & _pc )
 {
+	std::cout << "allFunction:: Bullet Move\n";
+	std::cout << "\tBullet Number: " << _pc.get_number_bullet() << '\n';
 	Point * object = nullptr;
 
 	for ( int i = 0; i < _pc.get_number_bullet(); ++i )
@@ -586,7 +735,7 @@ void allFunction::bullet_move( Point_Container & _pc )
 		}
 		else if ( object != nullptr )
 		{
-			/* Giving bullet move */
+			/* Give bullet a move */
 			if ( object->get_direction() == Coordinate::Direction::left )
 			{
 				object->set_move_x( -1 * BULLET_SPEED );
@@ -603,6 +752,7 @@ void allFunction::bullet_move( Point_Container & _pc )
 
 void allFunction::check_health( Point_Container & _pc, Text_Cont< Text_Objt > & _tc, std::vector< SDL_Rect > (& _rect)[ 3 ] )
 {
+	std::cout << "allFunction:: Check Health\n";
 	/* Check hero health */
 	int numb = _pc.get_number_hero();
 
@@ -651,4 +801,43 @@ void allFunction::check_health( Point_Container & _pc, Text_Cont< Text_Objt > & 
 			--i;		//One object has been deleted and next object takes its place, so you must check this place again;
 		}
 	}
+}
+
+void allFunction::dump_platform_position( const char * _plik, Point_Container * _pc )
+{
+
+	std::fstream dump_file;
+
+	dump_file.open( _plik, std::fstream::out | std::fstream::trunc );
+
+	if ( dump_file.fail() )
+	{
+		std::cout << "dump position::File open error\n";
+		return;
+	}
+
+	for ( int i = 0; i < _pc->get_number_obstacle(); ++i )
+	{
+		Point * p = _pc->get_point_obstacle( i );
+
+		dump_file << p->get_coor_x() << "," << p->get_coor_y() << "," << p->get_coor_z() << '\n';
+	}
+
+	if ( dump_file.eof() )
+	{
+		std::cout << "dump position::End of file\n";
+	}
+
+	dump_file.close();
+
+}
+
+void allFunction::dump( const char * _plik, Point_Container * _pc, SDL_Event * _event )
+{
+		if ( _event->key.keysym.sym == SDLK_d )
+		{
+
+			dump_platform_position( _plik, _pc );
+
+		}
 }

@@ -12,6 +12,7 @@ struct Coordinate {
 	int x;
 	double y;
 	int z;
+	int angle;
 
 	enum Direction { right, up, left, down, deep, shallow };
 
@@ -61,7 +62,7 @@ class Position {
 
 		const Coordinate & get_coor() const		{ return coord; }
 		const int & get_coor_x() const 			{ return coord.x; }
-		const double & get_coor_y() const 			{ return coord.y; }
+		const double & get_coor_y() const 		{ return coord.y; }
 		const int & get_coor_z() const 			{ return coord.z; }
 
 		int * get_coor_x_p()			{ return &coord.x; }
@@ -72,6 +73,9 @@ class Position {
 		bool set_coor_x( int _x );
 		bool set_coor_y( double _y );
 		bool set_coor_z( int _z );
+
+		void setAngle( const int ang );
+		int getAngle() { return coord.angle; }
 
 		//add or sub value to/from coord
 		void inc_coor_x( int _x );

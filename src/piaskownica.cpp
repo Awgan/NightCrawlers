@@ -1,12 +1,14 @@
-#include <stdio.h>
+#include <fstream>
 #include <iostream>
+#include <stdio.h>
 
 #include <SDL2/SDL.h>
 
 #include "comm_const.h"
 
 
-int main () {
+int main ()
+{
 
 	SDL_Window * win;
 	SDL_Window * win2;
@@ -25,36 +27,47 @@ int main () {
 	rend2 = SDL_CreateRenderer(win2, -1, SDL_RENDERER_ACCELERATED);
 
 
-	while ( 1 )
+	std::fstream file_in;
+	file_in.open( "test.txt", std::fstream::in );
+
+	std::cout << "file open? : " << file_in.is_open() << '\n';
+
+	std::string lines, all;
+	int size = 0;
+
+	while ( std::getline( file_in, lines ) )
 	{
-		SDL_SetRenderDrawColor( rend, 0xad, 0x3f, 0x05, 0xFF );
-		SDL_RenderClear( rend );
-		SDL_RenderPresent( rend );
-		SDL_RenderClear( rend2 );
-		SDL_RenderPresent( rend2 );
-		SDL_Delay( 1000 );
-
-		SDL_HideWindow( win );
-
-		SDL_Delay( 1000 );
-
-		SDL_ShowWindow( win );
-		SDL_RenderPresent( rend );
-
-		SDL_Delay( 1000 );
-
-		SDL_HideWindow( win );
-
-		SDL_Delay( 1000 );
-
-		SDL_ShowWindow( win );
-		SDL_RenderPresent( rend );
-
-		SDL_Delay( 1000 );
-
-		break;
-
+		all += lines + '\n';
+		++size;
 	}
 
-	return 0;
+	unsigned int pos_s = 0;
+	unsigned int pos_e = all.find_first_of( ",\n", 0 );
+	int arr_pos[ size ] [ 3 ];
+	int count = 0;
+
+	while ( pos_e < all.size() )
+	{
+
+		char temp_char[ 4 ];
+		all.copy( temp_char, pos_e - pos_s, pos_s );
+		arr_pos[ count / 3 ] [ count % 3 ] = std::atoi( temp_char );
+
+		pos_s = pos_e + 1;
+		pos_e = all.find_first_of( ",\n", pos_s );
+
+		++count;
+	}
+
+	for ( int i = 0; i < size; ++i )
+	{
+		for ( int j = 0; j < 3; ++j )
+		{
+			std::cout << arr_pos[i][j] << " ";
+		}
+
+		std::cout << '\n';
+	}
+
+return 0;
 }

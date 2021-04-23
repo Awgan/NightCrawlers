@@ -26,7 +26,8 @@
 #include "texture_cont.h"
 
 
-int main( int argc, char * argv[] ) {
+int main( int argc, char * argv[] )
+{
 
 	SDL_Window * win;
 	SDL_Renderer * rend;
@@ -105,11 +106,15 @@ int main( int argc, char * argv[] ) {
 	Info_win infWin( &event, &point_container );
 
 
+//Default platforms
+allFunction::platform_place_file( "test.txt", rend, point_container, rect_container, tex_container );
+
 //***********
 //MAIN LOOP//
 //***********
 
-	while( event.type != SDL_QUIT && event.key.keysym.sym != SDLK_q ) {
+	while( event.type != SDL_QUIT && event.key.keysym.sym != SDLK_q )
+	{
 
 		//TODO:: flush event; there is issue with KEYUP and arrows; code constatly execute move function
 		if ( !SDL_PollEvent(&event) )
@@ -118,41 +123,44 @@ int main( int argc, char * argv[] ) {
 		if ( event.type == SDL_QUIT )
 			break;
 
-////std::cout << "Check gravity\n";
+
 		/* Check gravity */
 		allFunction::gravity_move( point_container );
 
-		//std::cout << "Update obstacle position\n";
+
 		/* Update obstacle position */
-		for ( int i = 0; i < point_container.get_number_obstacle(); ++i ) {
-//std::cout << "Update obstacle position : " << i << '\n';
+		for ( int i = 0; i < point_container.get_number_obstacle(); ++i )
+		{
+
 			if ( point_container.get_point_obstacle( i )->move() ) {
-//std::cout << "Update obstacle position A\n";
+
 				rect_container[2][i].x = point_container.get_point_obstacle( i )->get_coor_x();
 				rect_container[2][i].y = point_container.get_point_obstacle( i )->get_coor_y();
-//std::cout << "Update obstacle position B\n";
+
 			}
 		}
-		//std::cout << "Update bullet postion\n";
+
 		/* Update bullet postion */
 		allFunction::bullet_move( point_container );
-		//std::cout << "Update bullet postion container\n";
-		for ( int i = 0; i < point_container.get_number_bullet(); ++i ) {
 
-			if ( point_container.get_point_bullet( i )->move() ) {
+		for ( int i = 0; i < point_container.get_number_bullet(); ++i )
+		{
+
+			if ( point_container.get_point_bullet( i )->move( point_container.get_point_bullet( i )->getAngle() ) ) {
 
 				rect_container[1][i].x = point_container.get_point_bullet( i )->get_coor_x();
 				rect_container[1][i].y = point_container.get_point_bullet( i )->get_coor_y();
 
 			}
 		}
-		//std::cout << "Update health\n";
-		/* Check healt after bullets move */
+
+		/* Check health after bullets move */
 		allFunction::check_health( point_container, tex_container, rect_container );
 
-		//std::cout << "Update hero postion\n";
+
 		/* Update hero position */
-		for ( int i = 0; i < point_container.get_number_hero(); ++i ) {
+		for ( int i = 0; i < point_container.get_number_hero(); ++i )
+		{
 
 			if ( point_container.get_point_hero( i )->move() )
 			{
@@ -164,7 +172,7 @@ int main( int argc, char * argv[] ) {
 
 	//std::cout << "Rendering START\n";
 	//Main Rendering START
-		SDL_RenderClear(rend);
+		SDL_RenderClear( rend );
 
 		all_SDL::render_all( rend, &tex_container, rect_container, &point_container );
 
@@ -193,7 +201,9 @@ int main( int argc, char * argv[] ) {
 				allFunction::platform_place( event, rend, point_container, rect_container, tex_container );
 
 				/* Shwo GunPoint and Fire */
-				allFunction::aim( event, rend, point_container, rect_container, tex_container, active_hero );
+				allFunction::aim( win, event, rend, point_container, rect_container, tex_container, active_hero );
+
+				allFunction::dump( "test.txt", &point_container, &event );
 
 			break;
 

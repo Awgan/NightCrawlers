@@ -462,7 +462,7 @@ bool Point_Container::del( Point * _p )
 						--number_all;
 
 						//std::cout<<"bullet not first :: AFTER\n";
-						//list_points_test();
+						list_points_test();
 
 						return true;
 

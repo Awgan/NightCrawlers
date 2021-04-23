@@ -3,11 +3,11 @@
 
 #include "position.h"
 
-//Coordinate members definition
+/* Coordinate members definition */
 
 void Coordinate::show() {
 
-	std::cout << "COORDINATE show() > x: " << x << " y: " << y << " z: " << z << " dir: " << (int)dir << std::endl;
+	std::cout << "COORDINATE show() > x: " << x << " y: " << y << " z: " << z << "angle: " << angle << " dir: " << (int)dir << std::endl;
 
 }
 
@@ -16,6 +16,7 @@ Coordinate & Coordinate::operator=(const Coordinate & _coor ) {
 	x = _coor.x;
 	y = _coor.y;
 	z = _coor.z;
+	angle = _coor.angle;
 	dir = _coor.dir;
 
 	return *this;
@@ -47,7 +48,7 @@ Coordinate::Direction dir_conv( const std::string & _str ) {
 	return Coordinate::Direction::right;
 }
 
-//Position members definition
+/* Position members definition */
 
 Position::Position ( int _x, int _y, int _z, CoorDir _dir ) {
 
@@ -165,7 +166,7 @@ bool Position::within_lim_min_y( const double & xyz ) {
 
 bool Position::within_lim_max_y( const double & xyz ) {
 
-	return ( xyz <= limits.max.y - PLATFORM_H );
+	return ( xyz <= limits.max.y - (2*PLATFORM_H) );
 }
 
 bool Position::within_lim_min_z( const int & xyz ) {
@@ -175,7 +176,7 @@ bool Position::within_lim_min_z( const int & xyz ) {
 
 bool Position::within_lim_max_z( const int & xyz ) {
 
-	return ( xyz <= limits.max.z - HERO_WIDTH );
+	return ( xyz <= limits.max.z );
 }
 
 void Position::set_coor( int _x, double _y, int _z ) {
@@ -208,7 +209,7 @@ bool Position::set_coor_x( int _x )	{
 
 bool Position::set_coor_y( double _y )	{
 
-	//checking limits
+	/* checking limits */
 	if ( !within_lim_min_y( _y ) )
 	{
 		coord.y = limits.min.y;
@@ -229,23 +230,41 @@ bool Position::set_coor_z( int _z )	{
 	return false;
 }
 
-void Position::inc_coor_x( int _x ) {
+void Position::setAngle( const int ang )
+{
+	coord.angle = ang;
 
-	set_coor_x( coord.x + _x);
+	if( coord.angle < 0 )
+	{
+		coord.angle = 360 + coord.angle;
+	}
+	else if( coord.angle >359 )
+	{
+		coord.angle = coord.angle - 360;
+	}
 }
 
-void Position::inc_coor_y( double _y ) {
+void Position::inc_coor_x( int _x )
+{
 
-	set_coor_y( coord.y + _y);
+	set_coor_x( coord.x + _x );
 }
 
-void Position::inc_coor_z( int _z ) {
+void Position::inc_coor_y( double _y )
+{
 
-	set_coor_z( coord.z + _z);
+	set_coor_y( coord.y + _y );
 }
 
-void Position::print() const {
+void Position::inc_coor_z( int _z )
+{
 
-	printf( "Coordinates: x: %d, y: %f, z: %d\n", coord.x, coord.y, coord.z );
+	set_coor_z( coord.z + _z );
+}
+
+void Position::print() const
+{
+
+	printf( "Coordinates: x: %d, y: %f, z: %d, angle: %d\n", coord.x, coord.y, coord.z, coord.angle );
 
 }
