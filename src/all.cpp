@@ -533,6 +533,8 @@ bool allFunction::platform_place_file( const char * _file, SDL_Renderer * rend, 
 
 	while ( std::getline( file_in, lines ) )
 	{
+		if ( lines[0] == '#' )
+			continue;
 		all += lines + '\n';
 		++size;
 	}
@@ -653,7 +655,7 @@ void allFunction::fromArrtoRect( const int n, const int arr[][4], SDL_Rect & rec
 
 void allFunction::gravity_move( Point_Container & _pc )
 {
-	std::cout << "allFunction:: Gravity Move\n";
+	//std::cout << "allFunction:: Gravity Move\n";
 	Point * object = nullptr;
 
 
@@ -721,8 +723,8 @@ Point allFunction::create_wall( const SDL_Event * eve )
 
 void allFunction::bullet_move( Point_Container & _pc )
 {
-	std::cout << "allFunction:: Bullet Move\n";
-	std::cout << "\tBullet Number: " << _pc.get_number_bullet() << '\n';
+	//std::cout << "allFunction:: Bullet Move\n";
+	//std::cout << "\tBullet Number: " << _pc.get_number_bullet() << '\n';
 	Point * object = nullptr;
 
 	for ( int i = 0; i < _pc.get_number_bullet(); ++i )
@@ -752,7 +754,7 @@ void allFunction::bullet_move( Point_Container & _pc )
 
 void allFunction::check_health( Point_Container & _pc, Text_Cont< Text_Objt > & _tc, std::vector< SDL_Rect > (& _rect)[ 3 ] )
 {
-	std::cout << "allFunction:: Check Health\n";
+	//std::cout << "allFunction:: Check Health\n";
 	/* Check hero health */
 	int numb = _pc.get_number_hero();
 

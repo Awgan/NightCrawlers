@@ -40,6 +40,10 @@ class Point : public Position, public Property, public Graph_prop {
 
 		bool standing;					//information if the object is standing on something
 
+
+		bool jump;						//variables for control moving between platform when they are not at the same level
+
+
 	public:
 		Point( const Point_type & _pt = neutral );
 		Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop & _gprop );

@@ -24,6 +24,9 @@ Point::Point( const Point_type & _pt ) : Graph_prop( _pt )
 
 	standing = false;
 
+
+	jump = false;
+
 }
 
 Point::Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop &_gprop ) : Position( _cord ), Property( _prop ), Graph_prop( _prop.type, _gprop ) {
@@ -45,6 +48,7 @@ Point::Point( Coordinate _cord, Stru_property _prop, Stru_graph_prop &_gprop ) :
 
 	standing = false;
 
+	jump = false;
 }
 
 Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _p ) {
@@ -65,6 +69,9 @@ Point::Point( const Point & _p ) : Position( _p ), Property( _p ), Graph_prop( _
 	collision_with = _p.collision_with;
 
 	standing = false;
+
+
+	jump = _p.jump;
 
 }
 
@@ -88,6 +95,8 @@ Point::Point ( Point && _p ) : Position( _p ), Property( _p ), Graph_prop( _p ) 
 	collision_with = _p.collision_with;
 
 	standing = false;
+
+	jump = _p.jump;
 
 }
 
@@ -223,6 +232,7 @@ void Point::move_dx( int _dx, int angle ) {
 			return;
 		}
 
+
 		while ( isCollision( *pointCont ) == true && _dx != 0 )
 		{
 			/* Hit object */
@@ -237,6 +247,23 @@ void Point::move_dx( int _dx, int angle ) {
 			/* Push object */
 			if ( collision_with->get_point_type() == Point_type::obstacle )
 			{
+
+				/* BRANCH PROJECT : moving across platforms */
+				if ( (collision_with->getActualSprite() == Obstacle_type::wall) && !jump )
+				{
+
+					move_dy ( -5 );
+					std::cout << "JUMP!\n";
+					jump = true;
+
+				}
+				else if ( collision_with->getActualSprite() == Obstacle_type::wall )
+				{
+
+					move_dy ( 5 );
+					jump = false;
+				}
+
 				push( collision_with );
 			}
 
@@ -247,7 +274,6 @@ void Point::move_dx( int _dx, int angle ) {
 			set_coor_x ( temp );
 
 		}
-
 
 
 		/* self moving counter */
@@ -279,7 +305,12 @@ void Point::move_dy( double _dy )
 
 
 	/* set new position */
-	set_coor_y( temp );
+	if ( set_coor_y( temp ) == false )
+	{
+		set_health( 0 );
+		return;
+	}
+
 
 	/*check collision and place object as close as it is possible to the collision object */
 	while ( isCollision( *pointCont ) == true && _dy != 0 )
@@ -412,10 +443,14 @@ return false;
 
 void Point::push( Point * _p )
 {
-	if ( _p->is_mobile() ) {
+	if ( _p == nullptr ) return;
+
+	if ( _p->is_mobile() )
+	{
 
 		CoorDir cd = this->get_direction();
-		switch( cd ) {
+		switch( cd )
+		{
 
 			case CoorDir::left:
 			case CoorDir::right:
@@ -487,33 +522,35 @@ bool Point::isSelfMoving() {
 return false;
 }
 
-void Point::checkStanding() {
-
+void Point::checkStanding()
+{
+	/* If object is not able to move then return */
 	if ( !is_mobile() )
 		return;
 
+
 	double temp = get_coor_y() + 1 * DEF_SPEED;
-	double before = get_coor_y();				//saving variable data
+	double before = get_coor_y();			//saving variable data
+
+
 
 	Point * collWith = collision_with;		//saving variable data
 
-	set_coor_y ( temp );
 
-	//if object does not touch game borders or does not collide than standing is set to false;
-	if ( within_lim_max_y( temp ) && isCollision( *pointCont ) == false )
+	/* If object does not touch game borders "set_coor_y ( temp )" and does not collide "isCollision( *pointCont )" then standing is set to false */
+	/* "set_coor_y ( temp )" Sets new position for 'isCollision' checking too */
+	if ( set_coor_y ( temp ) == true && isCollision( *pointCont ) == false )
 	{
 		standing = false;
-
 	}
 	else
 	{
 		standing = true;
-		const_move_y = 0;
 	}
 
-	collision_with = collWith;	//returning to previous state
+	collision_with = collWith;				//returning to previous state
 
-	set_coor_y( before );
+	set_coor_y( before );					//returning to previous state
 
 }
 

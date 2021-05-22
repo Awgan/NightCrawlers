@@ -1,4 +1,7 @@
-
+>> wprowadzic ograniczenie, które nie pozwoli wspinac sie po platformach.
+	opcja 1 :: zmienna klasy, która zapamięta, czy odbyło się podskoczenie
+		?? :: ale jak ją zerować
+	opcja 2 :: ____
 
 >> Dodać do klasy Point (lub innej) cechę objektu 'visible_for_objects'
 	Cecha dowyświetlania obiektóe, które nie biorą udziału w interakcji z otoczenim

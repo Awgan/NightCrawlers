@@ -217,11 +217,11 @@ bool Position::set_coor_y( double _y )	{
 	}
 	else if ( !within_lim_max_y( _y ) )
 	{
-		coord.y = limits.max.y - PLATFORM_H;
+		coord.y = limits.max.y;
 		return false;
 	}
 
-	coord.y = _y;
+	coord.y = (int)_y;
 	return true;
 }
 

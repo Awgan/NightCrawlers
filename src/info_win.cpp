@@ -44,10 +44,10 @@ Info_win::Info_win( SDL_Event * _event, Point_Container * _pCont ) : event(_even
 	font 		= nullptr;
 
 	font_size	= 14;
-	lines 		= 4;
+	lines 		= 6;
 	win_posX 	= 0;
 	win_posY 	= 0;
-	win_width	= 100;
+	win_width	= 150;
 	win_height	= ( font_size + 2 ) * lines;
 
 }
@@ -106,7 +106,7 @@ void Info_win::show() {
 		if (rend == nullptr )
 			printf("#Info_win::		no rend:	%s\n", SDL_GetError() );
 
-		SDL_SetRenderDrawColor( rend, 169, 122, 28, 255 );
+		SDL_SetRenderDrawColor( rend, 85, 87, 83, 255 );
 
 
 		TTF_Init();
@@ -143,6 +143,14 @@ void Info_win::show() {
 
 				case 3:
 				s_tmp = "speed: " + std::to_string( actPoint->get_speed() );
+				break;
+
+				case 4:
+				s_tmp = "move x: " + std::to_string( actPoint->get_move_x() ) + " move y: " + std::to_string( actPoint->get_move_y() );
+				break;
+
+				case 5:
+				s_tmp = "standing: " + std::to_string( actPoint->isStanding() );
 				break;
 			}
 
